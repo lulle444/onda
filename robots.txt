@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://useonda.org/sitemap.xml
+Sitemap: https://onda-plum.vercel.app/sitemap.xml
