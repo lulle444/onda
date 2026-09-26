@@ -3,7 +3,7 @@
 "use strict";
 const API_URL = "/api/stocks";
 const HIST_URL = "/api/stock-history?symbol=";
-const TG_BOT = "useOndaBot";
+const TG_BOT = "ondaalert_bot";
 const RANGES = {"24h": 864e5, "7d": 7 * 864e5, "30d": 30 * 864e5};
 const FAIR = 0.005;        // gaps within ±0.5% count as fairly priced
 const THIN = 10000;        // pools shallower than this move on small trades, so their gap means little

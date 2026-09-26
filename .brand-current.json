@@ -8,6 +8,6 @@
   "host": "useonda.org",
   "apex": "useonda.org",
   "x": "useonda",
-  "telegram": "useOndaBot",
+  "telegram": "ondaalert_bot",
   "prefix": "on"
 }

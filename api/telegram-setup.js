@@ -3,7 +3,7 @@
 const {tg, webhookSecret} = require("../lib/telegram");
 const {SITE} = require("../lib/alerts");
 
-const BOT = "useOndaBot";   // this site's own bot; any other token is refused, so the site can never take over another bot
+const BOT = "ondaalert_bot";   // this site's own bot; any other token is refused, so the site can never take over another bot
 
 module.exports = async function handler(req, res){
   try {
