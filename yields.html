@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Yields · Tidewatch</title>
+<meta name="description" content="Every yield pool on Robinhood Chain, sortable by APY, TVL and risk.">
+<link rel="canonical" href="https://www.usetidewatch.org/yields">
+<link rel="icon" type="image/png" href="/assets/favicon.png">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<meta property="og:title" content="Yields · Tidewatch">
+<meta property="og:description" content="Every yield pool on Robinhood Chain, sortable by APY, TVL and risk.">
+<meta property="og:url" content="https://www.usetidewatch.org/yields">
+<meta property="og:image" content="https://www.usetidewatch.org/api/og?p=yields">
+<meta name="twitter:image" content="https://www.usetidewatch.org/api/og?p=yields">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@usetidewatch">
+<meta name="theme-color" content="#EDF3F8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Montserrat:wght@500;600;700&display=swap">
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<canvas id="tide" aria-hidden="true"></canvas>
+<div class="wrap">
+  <nav class="nav glass" aria-label="Main">
+    <a class="logo" href="/" aria-label="Tidewatch home"><img src="/assets/logo-mark.png" alt="" width="36" height="36"><span class="word">TIDE<b>WATCH</b></span></a>
+    <div class="navlinks">
+      <a href="/yields" aria-current="page">Yields</a>
+      <a href="/calculator">Calculator</a>
+      <a href="/stock-yield">Stock yield</a>
+      <a href="/stocks">Stock tracker</a>
+      <a href="/leaderboard">Leaderboard</a>
+      <a href="/new">New</a>
+      <a href="/risk">Risk score</a>
+      <a href="/learn">Learn</a>
+    </div>
+    <div class="source" id="source"><span class="dot" id="dot"></span><span id="sourceText">Loading data…</span></div>
+  </nav>
+  <div class="mobilenav" aria-label="Sections">
+    <a href="/yields" aria-current="page">Yields</a>
+    <a href="/calculator">Calculator</a>
+    <a href="/stock-yield">Stock yield</a>
+    <a href="/stocks">Stock tracker</a>
+    <a href="/leaderboard">Leaderboard</a>
+    <a href="/new">New</a>
+    <a href="/risk">Risk score</a>
+    <a href="/learn">Learn</a>
+  </div>
+
+  <div class="banner" id="sampleBanner" hidden><b>Sample data.</b><span>Live data couldn’t be loaded in this view, so the figures below are illustrative, not current. Reload the page to try DefiLlama again.</span></div>
+
+  <header class="pagehead has-pic">
+    <div>
+      <p class="eyebrow">Live yield table</p>
+      <h1>Where your capital earns the most</h1>
+      <p class="lede">Every pool on Robinhood Chain. Click a column to sort. APY is the total annual return, split into base (interest and fees) and rewards (tokens that can lose value). Tap 🔔 for a Telegram alert.</p>
+    </div>
+    <figure class="headpic"><img src="/assets/brand/pools-table.webp" alt="A glass Tidewatch table of pools with APY, TVL and risk, standing on a rock by the sea" width="1400" height="788" fetchpriority="high"><figcaption>Illustration</figcaption></figure>
+  </header>
+
+  <section class="gauge glass" aria-label="Key figures">
+    <div><small>Pools</small><strong id="gPools">–</strong><span id="gPoolsSub">&nbsp;</span></div>
+    <div><small>TVL in pools</small><strong id="gTvl">–</strong><span id="gTvlSub">&nbsp;</span></div>
+    <div><small>Best stablecoin</small><strong id="gStable">–</strong><span id="gStableSub">&nbsp;</span></div>
+    <div><small>Best stock token</small><strong id="gStock">–</strong><span id="gStockSub">&nbsp;</span></div>
+  </section>
+
+  <main class="tablepanel glass">
+      <div class="controls">
+        <div class="chips" role="group" aria-label="Asset type">
+          <button class="chip" data-kind="all" aria-pressed="true">All</button>
+          <button class="chip" data-kind="stable" aria-pressed="false">Stablecoins</button>
+          <button class="chip" data-kind="stock" aria-pressed="false">Stock tokens</button>
+          <button class="chip" data-kind="crypto" aria-pressed="false">Crypto</button>
+        </div>
+        <label class="field" for="minTvl">Min. TVL
+          <select id="minTvl">
+            <option value="0">All</option>
+            <option value="100000" selected>$100k</option>
+            <option value="1000000">$1M</option>
+            <option value="10000000">$10M</option>
+          </select>
+        </label>
+        <label class="field" for="maxRisk">Risk
+          <select id="maxRisk">
+            <option value="high" selected>All</option>
+            <option value="mid">Low + medium</option>
+            <option value="low">Low only</option>
+          </select>
+        </label>
+        <label class="field check" for="hideOdd" title="DefiLlama flags these APYs as unusual compared with their own history"><input type="checkbox" id="hideOdd" checked> Hide unusual APYs</label>
+        <span class="grow"></span>
+        <input type="search" id="q" placeholder="Search asset or protocol" aria-label="Search asset or protocol">
+      </div>
+      <div class="tablebox">
+        <table>
+          <thead><tr>
+            <th><button data-sort="name">Protocol</button></th>
+            <th><button data-sort="symbol">Asset</button></th>
+            <th class="r"><button data-sort="apy">APY</button></th>
+            <th class="r"><button data-sort="apyMean30d">30d avg.</button></th>
+            <th class="r"><button data-sort="tvlUsd">TVL</button></th>
+            <th><button data-sort="score">Risk</button></th>
+          </tr></thead>
+          <tbody id="rows"><tr><td colspan="6" class="empty">Loading pools…</td></tr></tbody>
+        </table>
+      </div>
+      <div class="more"><span id="count"></span><button class="btn ghost small" id="showMore" hidden>Show more</button></div>
+  </main>
+
+  <section class="nextsteps" aria-label="Next steps">
+    <a class="glass" href="/calculator"><p class="eyebrow">Calculator</p><h3>Project your return →</h3><p>See what an amount could earn over a few months, after fees.</p></a>
+    <a class="glass" href="/risk"><p class="eyebrow">Risk score</p><h3>Understand the score →</h3><p>What goes into Low, Medium and High, and what it can’t tell you.</p></a>
+  </section>
+
+  <footer class="sitefoot">
+    <div class="footgrid">
+      <div class="footbrand">
+        <a class="logo" href="/" aria-label="Tidewatch home"><img src="/assets/logo-mark.png" alt="" width="26" height="26"><span class="word">TIDE<b>WATCH</b></span></a>
+        <p>Independent yield comparison for Robinhood Chain. Live on-chain data, a transparent risk score and no paid placements.</p>
+        <a class="social" href="https://x.com/usetidewatch" target="_blank" rel="noopener me" aria-label="Tidewatch on X"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>@usetidewatch</a>
+      </div>
+      <nav aria-label="Product"><h4>Product</h4><a href="/yields">Yields</a><a href="/calculator">Calculator</a><a href="/stock-yield">Stock yield</a><a href="/stocks">Stock tracker</a><a href="/leaderboard">Leaderboard</a><a href="/new">New on the chain</a><a href="/risk">Risk score</a><a href="https://t.me/Usetidewatch_bot" target="_blank" rel="noopener">Telegram alerts</a></nav>
+      <nav aria-label="Learn"><h4>Learn</h4><a href="/learn">Yield guide</a><a href="/learn#checklist">Before you deposit</a><a href="/#faq">FAQ</a></nav>
+      <nav aria-label="Company"><h4>Company</h4><a href="/about">About</a><a href="/about#disclaimer">Disclaimer</a><a href="https://x.com/usetidewatch" target="_blank" rel="noopener">X / Twitter</a></nav>
+    </div>
+    <div class="footbase">
+      <span>© 2026 Tidewatch. Not financial advice. Yields are variable and can turn negative.</span>
+      <span id="updated"></span>
+    </div>
+  </footer>
+</div>
+<script src="/chart.js"></script>
+<script src="/app.js"></script>
+<script src="/tide.js"></script>
+<script>window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };</script>
+<script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>

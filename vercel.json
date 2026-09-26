@@ -1,0 +1,28 @@
+{
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "crons": [
+    {
+      "path": "/api/check-alerts",
+      "schedule": "0 8 * * *"
+    },
+    {
+      "path": "/api/weekly",
+      "schedule": "30 8 * * 1"
+    }
+  ],
+  "functions": {
+    "api/lb-index.js": {
+      "maxDuration": 300
+    },
+    "api/og.js": {
+      "includeFiles": "assets/logo-mark.png"
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/api/live-trades",
+      "destination": "/api/leaderboard?live=1"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "_note": "Everything that names the site. Change it, then run: python3 rebrand.py",
+  "name": "Tidewatch",
+  "slug": "tidewatch",
+  "wordmark": [
+    "TIDE",
+    "WATCH"
+  ],
+  "host": "www.usetidewatch.org",
+  "apex": "usetidewatch.org",
+  "x": "usetidewatch",
+  "telegram": "Usetidewatch_bot",
+  "prefix": "tw"
+}

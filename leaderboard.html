@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Leaderboard · Tidewatch</title>
+<meta name="description" content="The wallets making the most from trading stock tokens on Robinhood Chain, updated hourly.">
+<link rel="canonical" href="https://www.usetidewatch.org/leaderboard">
+<link rel="icon" type="image/png" href="/assets/favicon.png">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<meta property="og:title" content="Leaderboard · Tidewatch">
+<meta property="og:description" content="The wallets making the most from trading stock tokens on Robinhood Chain, updated hourly.">
+<meta property="og:url" content="https://www.usetidewatch.org/leaderboard">
+<meta property="og:image" content="https://www.usetidewatch.org/api/og?p=leaderboard">
+<meta name="twitter:image" content="https://www.usetidewatch.org/api/og?p=leaderboard">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@usetidewatch">
+<meta name="theme-color" content="#EDF3F8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Montserrat:wght@500;600;700&display=swap">
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<canvas id="tide" aria-hidden="true"></canvas>
+<div class="wrap">
+  <nav class="nav glass" aria-label="Main">
+    <a class="logo" href="/" aria-label="Tidewatch home"><img src="/assets/logo-mark.png" alt="" width="36" height="36"><span class="word">TIDE<b>WATCH</b></span></a>
+    <div class="navlinks">
+      <a href="/yields">Yields</a>
+      <a href="/calculator">Calculator</a>
+      <a href="/stock-yield">Stock yield</a>
+      <a href="/stocks">Stock tracker</a>
+      <a href="/leaderboard" aria-current="page">Leaderboard</a>
+      <a href="/new">New</a>
+      <a href="/risk">Risk score</a>
+      <a href="/learn">Learn</a>
+    </div>
+    <div class="source" id="source"><span class="dot" id="dot"></span><span id="sourceText">Loading data…</span></div>
+  </nav>
+  <div class="mobilenav" aria-label="Sections">
+    <a href="/yields">Yields</a>
+    <a href="/calculator">Calculator</a>
+    <a href="/stock-yield">Stock yield</a>
+    <a href="/stocks">Stock tracker</a>
+    <a href="/leaderboard" aria-current="page">Leaderboard</a>
+    <a href="/new">New</a>
+    <a href="/risk">Risk score</a>
+    <a href="/learn">Learn</a>
+  </div>
+
+  <div class="banner" id="sampleBanner" hidden><b>Sample data.</b><span>Live data couldn’t be loaded in this view, so the figures below are illustrative, not current. Reload the page to try DefiLlama again.</span></div>
+
+  <header class="pagehead">
+    <div>
+      <p class="eyebrow">Leaderboard</p>
+      <h1>Who is winning at stock tokens?</h1>
+      <p class="lede">The wallets making the most from trading stock tokens on Robinhood Chain, read straight from the chain. Updated every hour. Tap a wallet to see what it traded.</p>
+    </div>
+  </header>
+
+  <section class="gauge glass" aria-label="Key figures">
+    <div><small>Wallets trading</small><strong id="lWallets">–</strong><span id="lWalletsSub">&nbsp;</span></div>
+    <div><small>Volume</small><strong id="lVolume">–</strong><span id="lVolumeSub">&nbsp;</span></div>
+    <div><small>Best wallet</small><strong id="lBest">–</strong><span id="lBestSub">&nbsp;</span></div>
+    <div><small>Most traded</small><strong id="lStock">–</strong><span id="lStockSub">&nbsp;</span></div>
+  </section>
+
+  <section class="livestrip glass" aria-labelledby="liveH">
+    <div class="livehead"><span class="dot live" id="liveDot" aria-hidden="true"></span><h2 id="liveH">Live trades</h2><span class="muted" id="liveNote">The biggest stock-token trades in the last 5 minutes</span></div>
+    <ol class="livelist" id="liveList" aria-live="polite"><li class="liveempty">Loading the latest trades…</li></ol>
+  </section>
+
+  <section class="tablepanel glass" aria-labelledby="lbH">
+    <div class="sectionhead">
+      <div><h2 id="lbH">Top stock-token traders</h2><p class="mkt" id="lbNote">Loading the leaderboard…</p></div>
+    </div>
+    <div class="controls">
+      <div class="chips" role="group" aria-label="Time window">
+        <button class="chip" data-win="24h" aria-pressed="false">24 hours</button>
+        <button class="chip" data-win="7d" aria-pressed="true">7 days</button>
+      </div>
+      <div class="chips" role="group" aria-label="Rank by">
+        <button class="chip" data-rank="profit" aria-pressed="true">Top profit</button>
+        <button class="chip" data-rank="loss" aria-pressed="false">Top loss</button>
+        <button class="chip" data-rank="volume" aria-pressed="false">Most volume</button>
+      </div>
+      <label class="field check" for="showBots" title="Wallets that trade more than about four times an hour on average"><input type="checkbox" id="showBots"> Show bots</label>
+      <span class="grow"></span>
+      <input type="search" id="q" placeholder="Search wallet or ticker" aria-label="Search wallet address or ticker">
+    </div>
+    <div class="tablebox">
+      <table>
+        <thead><tr>
+          <th class="r rank">#</th>
+          <th>Wallet</th>
+          <th class="r">Profit</th>
+          <th class="r">Volume</th>
+          <th class="r">Trades</th>
+          <th>Traded most</th>
+        </tr></thead>
+        <tbody id="rows"><tr><td colspan="6" class="empty">Loading the leaderboard…</td></tr></tbody>
+      </table>
+    </div>
+    <div class="more"><span id="count"></span><button class="btn ghost small" id="showMore" hidden>Show more</button></div>
+  </section>
+
+  <div class="twocol block-sm">
+    <div class="glass note-card">
+      <p class="eyebrow">How we calculate</p>
+      <h3>Profit from the trades in the window</h3>
+      <p>We read every swap in the stock-token pools on Uniswap and credit it to the wallet whose token balance changed. <b>Profit</b> is what a wallet received from selling, minus what it paid for buying, plus the tokens it still holds from those trades at today’s on-chain price.</p>
+      <p>Only trades inside the window count, so tokens bought before it don’t distort the result. Dollar values use the pool price at the time of the trade; ETH is converted at the current rate.</p>
+    </div>
+    <div class="glass note-card">
+      <p class="eyebrow">What’s left out</p>
+      <h3>Real traders, not routing</h3>
+      <p>Arbitrage bots and routers end each transaction without a position, so they drop out. Wallets averaging more than four trades an hour are marked as bots and hidden unless you switch them on. Wallets with under $250 of trades aren’t ranked.</p>
+      <p>Wallets are anonymous addresses, and a person can use several. This is on-chain data, not financial advice.</p>
+    </div>
+  </div>
+
+  <footer class="sitefoot">
+    <div class="footgrid">
+      <div class="footbrand">
+        <a class="logo" href="/" aria-label="Tidewatch home"><img src="/assets/logo-mark.png" alt="" width="26" height="26"><span class="word">TIDE<b>WATCH</b></span></a>
+        <p>Independent yield comparison for Robinhood Chain. Live on-chain data, a transparent risk score and no paid placements.</p>
+        <a class="social" href="https://x.com/usetidewatch" target="_blank" rel="noopener me" aria-label="Tidewatch on X"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>@usetidewatch</a>
+      </div>
+      <nav aria-label="Product"><h4>Product</h4><a href="/yields">Yields</a><a href="/calculator">Calculator</a><a href="/stock-yield">Stock yield</a><a href="/stocks">Stock tracker</a><a href="/leaderboard">Leaderboard</a><a href="/new">New on the chain</a><a href="/risk">Risk score</a><a href="https://t.me/Usetidewatch_bot" target="_blank" rel="noopener">Telegram alerts</a></nav>
+      <nav aria-label="Learn"><h4>Learn</h4><a href="/learn">Yield guide</a><a href="/learn#checklist">Before you deposit</a><a href="/#faq">FAQ</a></nav>
+      <nav aria-label="Company"><h4>Company</h4><a href="/about">About</a><a href="/about#disclaimer">Disclaimer</a><a href="https://x.com/usetidewatch" target="_blank" rel="noopener">X / Twitter</a></nav>
+    </div>
+    <div class="footbase">
+      <span>© 2026 Tidewatch. Not financial advice. Yields are variable and can turn negative.</span>
+      <span id="updated"></span>
+    </div>
+  </footer>
+</div>
+<script src="/chart.js"></script>
+<script src="/leaderboard.js"></script>
+<script src="/tide.js"></script>
+<script>window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };</script>
+<script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>

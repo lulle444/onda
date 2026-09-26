@@ -1,0 +1,18 @@
+name: Leaderboard
+# Every 15 minutes: indexes each newly completed hour of stock-token trades on Robinhood Chain for the
+# leaderboard (calls between hours return at once).
+# The first runs also fill in the past 7 days, a few hours of history at a time.
+on:
+  schedule:
+    - cron: "4,19,34,49 * * * *"
+  workflow_dispatch:
+jobs:
+  index:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      # prints the response either way, and fails the job when the indexer reports an error
+      - run: |
+          code=$(curl -sS --max-time 290 -o out.json -w "%{http_code}" https://www.usetidewatch.org/api/lb-index)
+          cat out.json; echo
+          test "$code" = 200
