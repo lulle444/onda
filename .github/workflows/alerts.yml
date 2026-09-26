@@ -9,4 +9,6 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 3
     steps:
-      - run: curl -fsS --max-time 90 https://useonda.org/api/check-alerts
+      - run: |
+          curl -sf -o /dev/null --max-time 20 https://useonda.org/ || { echo "site not live yet"; exit 0; }
+          curl -fsS --max-time 90 https://useonda.org/api/check-alerts
