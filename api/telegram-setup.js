@@ -3,7 +3,7 @@
 const {tg, webhookSecret} = require("../lib/telegram");
 const {SITE} = require("../lib/alerts");
 
-const BOT = "Usetidewatch_bot";   // this site's own bot; any other token is refused, so the site can never take over another bot
+const BOT = "useOndaBot";   // this site's own bot; any other token is refused, so the site can never take over another bot
 
 module.exports = async function handler(req, res){
   try {
@@ -18,9 +18,9 @@ module.exports = async function handler(req, res){
       {command: "new", description: "Get told about new pools"},
       {command: "weekly", description: "Monday recap of the week, ready to share"},
       {command: "stop", description: "Remove all alerts"},
-      {command: "start", description: "How Tidewatch alerts work"},
+      {command: "start", description: "How Onda alerts work"},
     ]});
-    await tg("setMyDescription", {description: "Alerts for Robinhood Chain: get a message when a pool's APY crosses your level, when a new pool appears, or when a stock token trades away from its share price. From Tidewatch."}).catch(() => {});
+    await tg("setMyDescription", {description: "Alerts for Robinhood Chain: get a message when a pool's APY crosses your level, when a new pool appears, or when a stock token trades away from its share price. From Onda."}).catch(() => {});
     const me = await tg("getMe", {});
     res.status(200).json({ok: true, bot: "@" + me.username, webhook: SITE + "/api/telegram"});
   } catch (e) {

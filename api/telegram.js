@@ -1,12 +1,12 @@
-// Telegram webhook for the Tidewatch alerts bot.
+// Telegram webhook for the Onda alerts bot.
 const {send, tg, esc, webhookSecret} = require("../lib/telegram");
 const {redis} = require("../lib/store");
 const {currentPools} = require("../lib/llama");
 const {currentStocks, THIN} = require("../lib/stocks");
 const A = require("../lib/alerts");
 
-const ctxKey = c => `tw:ctx:${c}`;       // the pool a chat last opened, for /above and /below
-const sctxKey = c => `tw:sctx:${c}`;     // the stock token a chat last opened, for /gap
+const ctxKey = c => `on:ctx:${c}`;       // the pool a chat last opened, for /above and /below
+const sctxKey = c => `on:sctx:${c}`;     // the stock token a chat last opened, for /gap
 const SYM = /^[A-Z0-9.]{1,12}$/;
 const GAP_LEVELS = [0.5, 1, 2];
 const signed = g => (g > 0 ? "+" : g < 0 ? "−" : "") + Math.abs(g * 100).toFixed(2) + "%";
@@ -27,7 +27,7 @@ async function poolCard(chat, id){
   await redis("SET", ctxKey(chat), id, "EX", 86400);
   const rows = [[{text: `🔔 Above ${up}%`, callback_data: `s|a|${id}|${up}`}]];
   if (down > 0) rows[0].push({text: `🔔 Below ${down}%`, callback_data: `s|b|${id}|${down}`});
-  rows.push([{text: "Open Tidewatch", url: A.SITE + "/yields"}]);
+  rows.push([{text: "Open Onda", url: A.SITE + "/yields"}]);
   return send(chat,
     `<b>${esc(p.symbol)} · ${esc(name)}</b>\nAPY now <b>${A.pct(apy)}</b> (30-day avg ${A.pct(p.apyMean30d)})\nTVL ${A.usd(p.tvlUsd)}\n\n` +
     `When should I ping you? Tap a level, or send <code>/above 9</code> or <code>/below 5</code> for your own.`,
@@ -92,7 +92,7 @@ async function list(chat){
     `\n\nNew-pool alerts: <b>${np ? "on" : "off"}</b> · Weekly recap: <b>${wk ? "on" : "off"}</b>`, {reply_markup: {inline_keyboard: rows}});
 }
 
-const WELCOME = `<b>Tidewatch alerts</b> for Robinhood Chain.\n\n` +
+const WELCOME = `<b>Onda alerts</b> for Robinhood Chain.\n\n` +
   `• Tap 🔔 next to a pool on ${A.SITE}/yields to get pinged when its APY crosses a level.\n` +
   `• Tap 🔔 next to a stock token on ${A.SITE}/stocks, or send <code>/gap TSLA 1</code>, to hear when it trades away from its share price.\n` +
   `• /new to hear about new pools on the chain.\n• /weekly for a Monday recap you can share on X.\n• /list to see or remove your alerts.\n• /stop to remove everything.\n\n` +
@@ -105,7 +105,7 @@ async function onMessage(m){
     const pl = args[0] || "";
     if (pl.startsWith("p_") && UUID.test(pl.slice(2))) return poolCard(chat, pl.slice(2));
     if (pl.startsWith("s_")) return stockCard(chat, pl.slice(2).replace(/-/g, ".").toUpperCase());
-    return send(chat, WELCOME, {reply_markup: {inline_keyboard: [[{text: "🆕 Alert me about new pools", callback_data: "n|on"}], [{text: "Open Tidewatch", url: A.SITE + "/yields"}]]}});
+    return send(chat, WELCOME, {reply_markup: {inline_keyboard: [[{text: "🆕 Alert me about new pools", callback_data: "n|on"}], [{text: "Open Onda", url: A.SITE + "/yields"}]]}});
   }
   if (c === "/above" || c === "/below"){
     const id = await redis("GET", ctxKey(chat));

@@ -1,4 +1,4 @@
-# Tidewatch
+# Onda
 
 Yield comparison for stock tokens and stablecoins on Robinhood Chain.
 
@@ -32,5 +32,5 @@ Sharing and search: `api/og.js` draws each main page's share preview (1200×630 
 
 Everything that names the site lives in `brand.json`: name, wordmark, address, X account, Telegram bot and the
 database key prefix. Change it, then run `python3 rebrand.py` (needs Pillow for the two pictures with the name in them)
-and commit. The copy refuses to run with @Usetidewatch_bot or Tidewatch's `tw` key prefix, and `/api/telegram-setup`
+and commit. The copy refuses to run with @useOndaBot or Onda's `tw` key prefix, and `/api/telegram-setup`
 refuses any bot token that isn't the one named in `brand.json`.

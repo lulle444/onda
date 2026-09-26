@@ -1,10 +1,13 @@
 {
-  "name": "Tidewatch",
-  "slug": "tidewatch",
-  "wordmark": ["TIDE", "WATCH"],
-  "host": "www.usetidewatch.org",
-  "apex": "usetidewatch.org",
-  "x": "usetidewatch",
-  "telegram": "Usetidewatch_bot",
-  "prefix": "tw"
+  "name": "Onda",
+  "slug": "onda",
+  "wordmark": [
+    "ON",
+    "DA"
+  ],
+  "host": "useonda.org",
+  "apex": "useonda.org",
+  "x": "useonda",
+  "telegram": "useOndaBot",
+  "prefix": "on"
 }

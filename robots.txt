@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://www.usetidewatch.org/sitemap.xml
+Sitemap: https://useonda.org/sitemap.xml

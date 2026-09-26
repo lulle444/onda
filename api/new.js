@@ -4,7 +4,7 @@ const {currentPools} = require("../lib/llama");
 const {redis} = require("../lib/store");
 const A = require("../lib/alerts");
 
-const KEY = "tw:firstseen";     // hash: pool id -> first-seen time in ms
+const KEY = "on:firstseen";     // hash: pool id -> first-seen time in ms
 const BUDGET_MS = 20000, PARALLEL = 8;
 const hasDb = () => !!(process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL);
 

@@ -85,7 +85,7 @@ const CARDS = {
     };
   },
   async new(){
-    const [{data}, seenRaw] = await Promise.all([currentPools(A.SITE), redis("HGETALL", "tw:firstseen")]);
+    const [{data}, seenRaw] = await Promise.all([currentPools(A.SITE), redis("HGETALL", "on:firstseen")]);
     const seen = {};
     for (let i = 0; i < (seenRaw || []).length; i += 2) seen[seenRaw[i]] = +seenRaw[i + 1];
     const since = Date.now() - 30 * 864e5;
@@ -108,14 +108,14 @@ function card(c, logo){
     h({alignItems: "center", justifyContent: "space-between"},
       h({alignItems: "center"},
         {type: "img", props: {src: logo, width: 52, height: 52, style: {marginRight: 16}}},
-        h({fontFamily: "Montserrat", fontWeight: 600, fontSize: 28, letterSpacing: 6, color: C.ink}, "TIDE", h({color: C.accent}, "WATCH"))),
+        h({fontFamily: "Montserrat", fontWeight: 600, fontSize: 28, letterSpacing: 6, color: C.ink}, "ON", h({color: C.accent}, "DA"))),
       h({fontFamily: "Montserrat", fontWeight: 600, fontSize: 20, letterSpacing: 5, color: C.accent, textTransform: "uppercase"}, c.eyebrow)),
     h({flexDirection: "column", marginTop: 46, flex: 1},
       h({fontFamily: "Montserrat", fontWeight: 700, fontSize: 132, lineHeight: 1, color: c.bigColor, letterSpacing: -3}, c.big),
       h({fontFamily: "IBM Plex Sans", fontWeight: 500, fontSize: 34, color: C.ink, marginTop: 18, maxWidth: 1000, lineHeight: 1.25}, c.label)),
     h({gap: 20}, c.stats.map(stat)),
     h({marginTop: 22, fontSize: 20, color: C.muted, justifyContent: "space-between"},
-      h({}, "usetidewatch.org" + c.path), h({}, "Live on-chain data · Not financial advice")));
+      h({}, "useonda.org" + c.path), h({}, "Live on-chain data · Not financial advice")));
 }
 
 module.exports = async function handler(req, res){
