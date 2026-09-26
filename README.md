@@ -1,5 +1,7 @@
 # Onda
 
+Live at https://onda-plum.vercel.app (Telegram alerts: @ondaalert_bot).
+
 Yield comparison for stock tokens and stablecoins on Robinhood Chain.
 
 - Static pages, no build step: `index.html` (home), `yields.html`, `calculator.html`, `stock-yield.html`, `stocks.html`, `new.html`, `risk.html`, `learn.html`, `about.html`, sharing `styles.css`, `app.js`, `chart.js` (the SVG line chart) and `tide.js`. `vercel.json` turns on clean URLs (`/yields`, `/calculator`, ...).
