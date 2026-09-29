@@ -7,7 +7,7 @@ const CHAIN_ID = 4663;
 const BATCH = 30;   // DexScreener's limit on addresses per request
 
 async function getJson(url){
-  const r = await fetch(url, {headers: {accept: "application/json", "user-agent": "legwork/1.0"},
+  const r = await fetch(url, {headers: {accept: "application/json", "user-agent": "tripod/1.0"},
     signal: AbortSignal.timeout(15000)});
   if (!r.ok) throw new Error(`${url.split("?")[0]} → HTTP ${r.status}`);
   return r.json();

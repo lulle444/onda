@@ -1,5 +1,5 @@
 {
-  "name": "legwork",
+  "name": "tripod",
   "private": true,
   "description": "Fixed-weight baskets of Robinhood Chain stock tokens, priced live. Static pages plus one Vercel function in /api."
 }
