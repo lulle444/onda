@@ -27,13 +27,23 @@
   ],
   "redirects": [
     {
+      "source": "/tripod",
+      "destination": "https://usetripod.vercel.app/",
+      "permanent": false
+    },
+    {
+      "source": "/tripod/:path*",
+      "destination": "https://usetripod.vercel.app/:path*",
+      "permanent": false
+    },
+    {
       "source": "/legwork",
-      "destination": "https://legwork-sage.vercel.app/",
+      "destination": "https://usetripod.vercel.app/",
       "permanent": false
     },
     {
       "source": "/legwork/:path*",
-      "destination": "https://legwork-sage.vercel.app/:path*",
+      "destination": "https://usetripod.vercel.app/:path*",
       "permanent": false
     }
   ]
