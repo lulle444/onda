@@ -1,6 +1,6 @@
-/* Legwork shared code: loads /api/market, resolves basket legs to live tokens, computes levels,
+/* Tripod shared code: loads /api/market, resolves basket legs to live tokens, computes levels,
    fills the status strip. Each page adds its own render on top. */
-window.Legwork = (function(){
+window.Tripod = (function(){
 "use strict";
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -77,7 +77,7 @@ function basketFromQuery(q){
   if (q.get("id")) { const d = [...BASKETS, ...autoBaskets()].find(b => b.id === q.get("id")); return d && resolve(d); }
   if (q.get("legs")){
     const legs = q.get("legs").split(",").map(s => s.split(":")).filter(p => p[0] && +p[1] > 0).slice(0, 5).map(([t, w]) => [t.toUpperCase().slice(0, 12), +w]);
-    if (legs.length) return resolve({id:"custom", name: (q.get("name") || "Custom basket").slice(0, 40), sub:"Built on Legwork.", cat:"custom", legs});
+    if (legs.length) return resolve({id:"custom", name: (q.get("name") || "Custom basket").slice(0, 40), sub:"Built on Tripod.", cat:"custom", legs});
   }
   return null;
 }
@@ -109,7 +109,7 @@ async function load(){
 }
 
 function fail(el, cols){
-  const msg = `Live data couldn't be loaded right now. Legwork only shows real prices, so there's nothing to show until the sources answer again. <a href="">Reload</a>`;
+  const msg = `Live data couldn't be loaded right now. Tripod only shows real prices, so there's nothing to show until the sources answer again. <a href="">Reload</a>`;
   if (el) el.innerHTML = cols ? `<tr><td colspan="${cols}" class="empty">${msg}</td></tr>` : `<p class="empty">${msg}</p>`;
   const s = $("stripState"); if (s) s.textContent = "Data unavailable";
 }

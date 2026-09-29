@@ -3,9 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Method · Legwork</title>
-<meta name="description" content="How Legwork prices baskets of Robinhood Chain stock tokens, where the data comes from, and what can go wrong.">
+<title>Method · Tripod</title>
+<meta name="description" content="How Tripod prices baskets of Robinhood Chain stock tokens, where the data comes from, and what can go wrong.">
 <meta name="theme-color" content="#FFFFFF">
+<meta name="twitter:site" content="@usetripod">
+<meta property="og:title" content="Method · Tripod">
+<meta property="og:description" content="How Tripod prices baskets of Robinhood Chain stock tokens, where the data comes from, and what can go wrong.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Crect width='30' height='30' rx='7' fill='%231B2A12'/%3E%3Cpath fill='%23B5E878' d='M5 24 10 6h4L9 24H5zm7 0 5-18h4l-5 18h-4zm7 0 3-11h4l-3 11h-4z'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,7 +17,7 @@
 </head>
 <body>
 <header class="top pad">
-  <a class="logo" href="/" aria-label="Legwork home"><svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><path fill="currentColor" d="M4 25 10 5h5L9 25H4zm8 0 6-20h5l-6 20h-5zm8 0 4-13h4l-4 13h-4z"/></svg>LEGWORK</a>
+  <a class="logo" href="/" aria-label="Tripod home"><svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><path fill="currentColor" d="M4 25 10 5h5L9 25H4zm8 0 6-20h5l-6 20h-5zm8 0 4-13h4l-4 13h-4z"/></svg>TRIPOD</a>
   <nav class="links" aria-label="Main">
     <a href="/">Markets</a>
     <a href="/tokens">Tokens</a>
@@ -63,7 +66,7 @@
     <details open><summary>Thin pools move on small trades</summary><p>Some stock tokens have only a few thousand dollars of liquidity. One trade can swing their pool price, and with it the basket. The liquidity column tells you how much to trust a move.</p></details>
     <details><summary>Outside US hours, the reference freezes</summary><p>Robinhood trades stock tokens Sunday 8 pm to Friday 8 pm New York time. Outside that, pool prices can drift from the frozen share price, which shows up as a gap on the Tokens page.</p></details>
     <details><summary>It's a 24-hour view, not a history</summary><p>Levels are rebased every moment against 24 hours earlier. They don't track a basket from the day it was made.</p></details>
-    <details><summary>Nothing here is tradeable</summary><p>Legwork is read-only. There are no contracts, no positions and no leverage. To act on a basket you'd buy the legs yourself, on Robinhood or on-chain.</p></details>
+    <details><summary>Nothing here is tradeable</summary><p>Tripod is read-only. There are no contracts, no positions and no leverage. To act on a basket you'd buy the legs yourself, on Robinhood or on-chain.</p></details>
   </section>
 
   <section class="faq" id="faq" aria-labelledby="faqH">
@@ -79,21 +82,21 @@
   <div class="pad">
     <div class="fgrid">
       <div class="fbrand">
-        <a class="logo" href="/" aria-label="Legwork home"><svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><path fill="currentColor" d="M4 25 10 5h5L9 25H4zm8 0 6-20h5l-6 20h-5zm8 0 4-13h4l-4 13h-4z"/></svg>LEGWORK</a>
+        <a class="logo" href="/" aria-label="Tripod home"><svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><path fill="currentColor" d="M4 25 10 5h5L9 25H4zm8 0 6-20h5l-6 20h-5zm8 0 4-13h4l-4 13h-4z"/></svg>TRIPOD</a>
         <p>Put three to five stock tokens in one fixed-weight basket and follow the whole thesis as a single number, priced live on Robinhood Chain.</p>
         <button class="pill" type="button" data-wallet>No wallet</button>
       </div>
       <nav aria-label="Product"><h4>Product</h4><a href="/">Markets</a><a href="/tokens">Tokens</a><a href="/create">Create a basket</a></nav>
-      <nav aria-label="Reference"><h4>Reference</h4><a href="/method">Method</a><a href="/method#risk">Risk</a><a href="/method#faq">Questions</a></nav>
+      <nav aria-label="Reference"><h4>Reference</h4><a href="/method">Method</a><a href="/method#risk">Risk</a><a href="/method#faq">Questions</a><a href="https://x.com/usetripod" target="_blank" rel="noopener">X · @usetripod</a></nav>
       <div class="chain"><h4>Data</h4><p>Robinhood stock-token API</p><p>DexScreener on-chain pools</p><p class="net">Robinhood Chain · 4663</p></div>
     </div>
-    <div class="fbase"><span>© 2026 Legwork</span><span>Not investment advice</span><span>Read-only · no contracts</span><span>Prices can lag</span></div>
+    <div class="fbase"><span>© 2026 Tripod</span><span>Not investment advice</span><span>Read-only · no contracts</span><span>Prices can lag</span></div>
   </div>
 </footer>
 <script src="/app.js"></script>
 <script src="/orb.js"></script>
 <script>
-Legwork.load().catch(() => Legwork.fail(null));
+Tripod.load().catch(() => Tripod.fail(null));
 </script>
 </body>
 </html>

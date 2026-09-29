@@ -3,9 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Tokens · Legwork</title>
+<title>Tokens · Tripod</title>
 <meta name="description" content="Every stock token on Robinhood Chain with its on-chain price, reference price, 24h move and pool depth.">
 <meta name="theme-color" content="#FFFFFF">
+<meta name="twitter:site" content="@usetripod">
+<meta property="og:title" content="Tokens · Tripod">
+<meta property="og:description" content="Every stock token on Robinhood Chain with its on-chain price, reference price, 24h move and pool depth.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Crect width='30' height='30' rx='7' fill='%231B2A12'/%3E%3Cpath fill='%23B5E878' d='M5 24 10 6h4L9 24H5zm7 0 5-18h4l-5 18h-4zm7 0 3-11h4l-3 11h-4z'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,7 +17,7 @@
 </head>
 <body>
 <header class="top pad">
-  <a class="logo" href="/" aria-label="Legwork home"><svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><path fill="currentColor" d="M4 25 10 5h5L9 25H4zm8 0 6-20h5l-6 20h-5zm8 0 4-13h4l-4 13h-4z"/></svg>LEGWORK</a>
+  <a class="logo" href="/" aria-label="Tripod home"><svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><path fill="currentColor" d="M4 25 10 5h5L9 25H4zm8 0 6-20h5l-6 20h-5zm8 0 4-13h4l-4 13h-4z"/></svg>TRIPOD</a>
   <nav class="links" aria-label="Main">
     <a href="/">Markets</a>
     <a href="/tokens" aria-current="page">Tokens</a>
@@ -68,15 +71,15 @@
   <div class="pad">
     <div class="fgrid">
       <div class="fbrand">
-        <a class="logo" href="/" aria-label="Legwork home"><svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><path fill="currentColor" d="M4 25 10 5h5L9 25H4zm8 0 6-20h5l-6 20h-5zm8 0 4-13h4l-4 13h-4z"/></svg>LEGWORK</a>
+        <a class="logo" href="/" aria-label="Tripod home"><svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><path fill="currentColor" d="M4 25 10 5h5L9 25H4zm8 0 6-20h5l-6 20h-5zm8 0 4-13h4l-4 13h-4z"/></svg>TRIPOD</a>
         <p>Put three to five stock tokens in one fixed-weight basket and follow the whole thesis as a single number, priced live on Robinhood Chain.</p>
         <button class="pill" type="button" data-wallet>No wallet</button>
       </div>
       <nav aria-label="Product"><h4>Product</h4><a href="/">Markets</a><a href="/tokens">Tokens</a><a href="/create">Create a basket</a></nav>
-      <nav aria-label="Reference"><h4>Reference</h4><a href="/method">Method</a><a href="/method#risk">Risk</a><a href="/method#faq">Questions</a></nav>
+      <nav aria-label="Reference"><h4>Reference</h4><a href="/method">Method</a><a href="/method#risk">Risk</a><a href="/method#faq">Questions</a><a href="https://x.com/usetripod" target="_blank" rel="noopener">X · @usetripod</a></nav>
       <div class="chain"><h4>Data</h4><p>Robinhood stock-token API</p><p>DexScreener on-chain pools</p><p class="net">Robinhood Chain · 4663</p></div>
     </div>
-    <div class="fbase"><span>© 2026 Legwork</span><span>Not investment advice</span><span>Read-only · no contracts</span><span>Prices can lag</span></div>
+    <div class="fbase"><span>© 2026 Tripod</span><span>Not investment advice</span><span>Read-only · no contracts</span><span>Prices can lag</span></div>
   </div>
 </footer>
 <script src="/app.js"></script>
@@ -84,7 +87,7 @@
 <script>
 (function(){
 "use strict";
-const L = Legwork, $ = L.$;
+const L = Tripod, $ = L.$;
 let sort = "liquidity";
 function render(){
   const q = $("q").value.trim().toLowerCase();
