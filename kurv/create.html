@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Create · Kurv</title>
+<meta name="description" content="Bundle three to five tokenized assets into one fixed-weight basket on Robinhood Chain.">
+<meta name="theme-color" content="#FFFFFF">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="top pad">
+  <a class="logo" href="./" aria-label="Kurv home">
+    <svg width="34" height="30" viewBox="0 0 34 30" aria-hidden="true"><path fill="currentColor" d="M3 4h28l-3.2 22H6.2L3 4zm5.2 5 1.6 12h3.4L12 9H8.2zm7.4 0 .4 12h3.4l.4-12h-4.2zm7.8 0-1.2 12h3.4L27.2 9h-3.8z"/></svg>
+    KURV
+  </a>
+  <nav class="links" aria-label="Main">
+    <a href="./#markets">Markets</a>
+    <a href="./#how">Discover</a>
+    <a href="create.html" aria-current="page">Create</a>
+    <a href="./#how">Pool</a>
+    <a href="./#how">Positions</a>
+  </nav>
+  <div class="acts">
+    <button class="pill" type="button" id="wallet">No wallet</button>
+    <a class="cta" href="./#markets">Open terminal</a>
+  </div>
+</header>
+
+<div class="strip">
+  <ul class="caps pad" aria-label="Network status">
+    <li><span class="live" aria-hidden="true"></span>Robinhood Chain · Block <span id="block">75.923.428</span></li>
+    <li>ETH <span id="eth">$2688.00</span></li>
+    <li>Pool <span id="poolTvl">10</span> USDG</li>
+    <li>Basket contract</li>
+    <li>Basket registry</li>
+  </ul>
+</div>
+
+<main class="pad">
+  <section class="hero create" aria-labelledby="h1">
+    <div class="ctext">
+      <p class="caps eyebrow">Create</p>
+      <h1 id="h1">List your own basket.</h1>
+      <p class="lead">Choose three to five tokenized assets, set their weights, give it a name and pick a leverage cap. The registry records the legs, sets the level to 100, and the basket can be traded long or short from that block on.</p>
+      <p class="lead">You're stored as its creator and earn <b>30% of the 6 bps</b> fee on every trade. That can't be changed later, not even by us.</p>
+    </div>
+    <div class="cside">
+      <div class="well" id="well">
+        <canvas id="orb" aria-hidden="true"></canvas>
+        <p class="caps" id="wellHint">The body appears<br>with the first leg</p>
+      </div>
+      <div class="bracket"><i></i><small>Your cut</small>30% of 6 bps<br>= 1.80 bps of volume</div>
+    </div>
+  </section>
+
+  <section class="builder" aria-labelledby="bH">
+    <div class="bcol">
+      <p class="caps step">01 · Legs</p>
+      <h2 id="bH">Pick three to five assets</h2>
+      <div class="chips" id="assets" role="group" aria-label="Assets"></div>
+    </div>
+    <div class="bcol">
+      <p class="caps step">02 · Weights</p>
+      <h2>Set the mix</h2>
+      <div class="comp big" id="preview" role="img" aria-label="Composition preview"></div>
+      <ul class="legs" id="legs"><li class="none">No legs yet.</li></ul>
+      <div class="sumrow caps"><span>Total</span><span id="sum" class="mono">0%</span></div>
+      <button class="pill" type="button" id="even">Split evenly</button>
+    </div>
+    <div class="bcol">
+      <p class="caps step">03 · Details</p>
+      <h2>Name and limits</h2>
+      <label class="fld"><span class="caps">Name</span><input id="name" type="text" maxlength="32" placeholder="e.g. Quiet Compounders"></label>
+      <label class="fld"><span class="caps">Leverage cap</span>
+        <select id="lev"><option>1×</option><option>2×</option><option selected>3×</option><option>4×</option><option>5×</option></select></label>
+      <ul class="checks" id="checks"></ul>
+      <button class="cta wide" type="button" id="list" disabled>List basket</button>
+      <p class="demo caps" id="listNote">Demo · nothing is sent on-chain</p>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="pad">
+    <div class="fgrid">
+      <div class="fbrand">
+        <a class="logo" href="./" aria-label="Kurv home">
+          <svg width="34" height="30" viewBox="0 0 34 30" aria-hidden="true"><path fill="currentColor" d="M3 4h28l-3.2 22H6.2L3 4zm5.2 5 1.6 12h3.4L12 9H8.2zm7.4 0 .4 12h3.4l.4-12h-4.2zm7.8 0-1.2 12h3.4L27.2 9h-3.8z"/></svg>
+          KURV
+        </a>
+        <p>Put three to five assets in one fixed-weight basket. Hold it, or go long or short with up to five times leverage.</p>
+        <button class="pill" type="button">No wallet</button>
+      </div>
+      <nav aria-label="Product"><h4>Product</h4><a href="./#markets">Markets</a><a href="./#how">Discover</a><a href="create.html">Create a basket</a><a href="./#how">Liquidity pool</a></nav>
+      <nav aria-label="Reference"><h4>Reference</h4><a href="./#how">Method</a><a href="./#how">Risk</a><a href="./#how">Questions</a></nav>
+      <div class="chain"><h4>Contracts</h4><p>Registry: not deployed yet</p><p>Perp engine: not deployed yet</p><p class="net">Robinhood Chain · 4663</p></div>
+    </div>
+    <div class="fbase"><span>© 2026 Kurv</span><span>Not investment advice</span><span>Leverage can take the whole position</span><span>Unaudited</span></div>
+  </div>
+</footer>
+
+<script src="orb.js"></script>
+<script>
+(function(){
+"use strict";
+const $ = id => document.getElementById(id);
+const ASSETS = ["AAPL","MSFT","NVDA","GOOGL","AMZN","META","TSLA","AMD","PLTR","COIN","HOOD","MSTR","SPY","QQQ","KO","JNJ"];
+const SEG = ["c1","h1","c2","h2","c3"];
+let legs = [];
+const orb = Kurv.orb($("orb"), {scale: 0, ripple: .4});
+let shown = 0, target = 0;
+
+function grow(){
+  shown += (target - shown) * .12;
+  if (Math.abs(target - shown) < .002) shown = target;
+  orb.set({scale: shown, ripple: .3 + legs.length * .12});
+  if (shown !== target) requestAnimationFrame(grow);
+}
+
+function even(){
+  const n = legs.length; if (!n) return;
+  const base = Math.floor(100 / n);
+  legs.forEach((l, i) => l.w = base + (i < 100 - base * n ? 1 : 0));
+}
+
+function render(){
+  $("assets").innerHTML = ASSETS.map(a => {
+    const on = legs.some(l => l.t === a), full = !on && legs.length >= 5;
+    return `<button class="pill" data-a="${a}" aria-pressed="${on}"${full ? " disabled" : ""}>${a}</button>`;
+  }).join("");
+  $("legs").innerHTML = legs.length ? legs.map((l, i) => `<li><span class="sw ${SEG[i]}"></span><b class="mono">${l.t}</b>
+    <input type="range" min="1" max="100" value="${l.w}" data-i="${i}" aria-label="${l.t} weight">
+    <span class="mono w">${l.w}%</span></li>`).join("") : '<li class="none">No legs yet.</li>';
+  const sum = legs.reduce((s, l) => s + l.w, 0);
+  $("preview").innerHTML = legs.map((l, i) => `<span class="${SEG[i]}" style="flex:${l.w}" title="${l.t} · ${l.w}%"></span>`).join("");
+  $("sum").textContent = sum + "%";
+  $("sum").classList.toggle("bad", legs.length > 0 && sum !== 100);
+  const name = $("name").value.trim();
+  const checks = [
+    [legs.length >= 3 && legs.length <= 5, `3 to 5 legs (${legs.length})`],
+    [sum === 100, `Weights add up to 100% (${sum}%)`],
+    [name.length >= 3, "A name of 3+ characters"],
+  ];
+  $("checks").innerHTML = checks.map(([ok, t]) => `<li class="${ok ? "ok" : ""}">${t}</li>`).join("");
+  $("list").disabled = !checks.every(c => c[0]);
+  $("wellHint").hidden = legs.length > 0;
+  $("well").classList.toggle("on", legs.length > 0);
+  target = legs.length ? .55 + legs.length * .09 : 0;
+  requestAnimationFrame(grow);
+}
+
+$("assets").addEventListener("click", e => {
+  const b = e.target.closest("[data-a]"); if (!b) return;
+  const t = b.dataset.a, i = legs.findIndex(l => l.t === t);
+  i >= 0 ? legs.splice(i, 1) : legs.length < 5 && legs.push({t, w: 0});
+  even(); render();
+  $("assets").querySelector(`[data-a="${t}"]`)?.focus();
+});
+$("legs").addEventListener("input", e => {
+  const i = +e.target.dataset.i; if (isNaN(i)) return;
+  legs[i].w = +e.target.value;
+  e.target.nextElementSibling.textContent = legs[i].w + "%";
+  const sum = legs.reduce((s, l) => s + l.w, 0);
+  $("sum").textContent = sum + "%";
+  $("sum").classList.toggle("bad", sum !== 100);
+  $("preview").children[i].style.flex = legs[i].w;
+});
+$("legs").addEventListener("change", render);
+$("even").addEventListener("click", () => { even(); render(); });
+$("name").addEventListener("input", render);
+$("list").addEventListener("click", () => {
+  $("listNote").textContent = `“${$("name").value.trim()}” would list at 100.00 · connect a wallet to go live`;
+});
+document.querySelectorAll("header .pill, footer .pill").forEach(b => b.addEventListener("click", () => {
+  b.textContent = "Coming soon"; setTimeout(() => b.textContent = "No wallet", 1600);
+}));
+render();
+})();
+</script>
+</body>
+</html>
