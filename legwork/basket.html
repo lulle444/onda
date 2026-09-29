@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Basket · Legwork</title>
+<meta name="description" content="A fixed-weight basket of Robinhood Chain stock tokens, priced live.">
+<meta name="theme-color" content="#FFFFFF">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Crect width='30' height='30' rx='7' fill='%231B2A12'/%3E%3Cpath fill='%23B5E878' d='M5 24 10 6h4L9 24H5zm7 0 5-18h4l-5 18h-4zm7 0 3-11h4l-3 11h-4z'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<header class="top pad">
+  <a class="logo" href="/" aria-label="Legwork home"><svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><path fill="currentColor" d="M4 25 10 5h5L9 25H4zm8 0 6-20h5l-6 20h-5zm8 0 4-13h4l-4 13h-4z"/></svg>LEGWORK</a>
+  <nav class="links" aria-label="Main">
+    <a href="/" aria-current="page">Markets</a>
+    <a href="/tokens">Tokens</a>
+    <a href="/create">Create</a>
+    <a href="/method">Method</a>
+  </nav>
+  <div class="acts">
+    <button class="pill" type="button" data-wallet>No wallet</button>
+    <a class="cta" href="/create">Build a basket</a>
+  </div>
+</header>
+<nav class="mnav pad" aria-label="Sections"><a href="/" aria-current="page">Markets</a><a href="/tokens">Tokens</a><a href="/create">Create</a><a href="/method">Method</a></nav>
+
+<div class="strip">
+  <ul class="caps pad" aria-label="Network status">
+    <li><span class="live" aria-hidden="true"></span><span id="stripState">Robinhood Chain</span> · Block <span id="block">–</span></li>
+    <li>ETH <span id="eth">–</span></li>
+    <li><span id="nTokens">–</span> stock tokens</li>
+    <li>24h volume <span id="vol">–</span></li>
+    <li id="mkt">–</li>
+    <li>Updated <span id="updated">–</span></li>
+  </ul>
+</div>
+
+<main class="pad">
+  <section class="hero create" aria-labelledby="h1">
+    <div class="ctext">
+      <p class="caps eyebrow"><a href="/">Markets</a> / <span id="cat">Basket</span></p>
+      <h1 id="h1">Loading…</h1>
+      <p class="lead" id="sub">&nbsp;</p>
+      <div class="bigstats">
+        <div><small class="caps">Level</small><strong class="mono" id="lvl">–</strong></div>
+        <div><small class="caps">24h</small><strong class="mono" id="chg">–</strong></div>
+        <div><small class="caps">Pool liquidity</small><strong class="mono" id="liq">–</strong></div>
+      </div>
+    </div>
+    <div class="cside">
+      <div class="well on"><canvas id="orb" aria-hidden="true"></canvas></div>
+      <div class="bracket"><i></i><small>Biggest mover</small><span id="mover">–</span><br><span id="moverChg">&nbsp;</span></div>
+    </div>
+  </section>
+
+  <section class="legsec" aria-labelledby="legsH">
+    <div class="bar"><h2 id="legsH" class="h2">Legs</h2><div class="chips"><button class="pill" type="button" id="share">Copy link</button><a class="pill" id="edit" href="/create">Edit a copy</a></div></div>
+    <div id="compBig"></div>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>Leg</th><th class="r">Weight</th><th class="r">Pool price</th><th class="r">24h</th><th class="r">Contribution</th><th class="r">Liquidity</th></tr></thead>
+        <tbody id="rows"><tr><td colspan="6" class="empty">Loading live prices…</td></tr></tbody>
+      </table>
+    </div>
+    <p class="demo caps" id="note">&nbsp;</p>
+  </section>
+</main>
+
+<footer>
+  <div class="pad">
+    <div class="fgrid">
+      <div class="fbrand">
+        <a class="logo" href="/" aria-label="Legwork home"><svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><path fill="currentColor" d="M4 25 10 5h5L9 25H4zm8 0 6-20h5l-6 20h-5zm8 0 4-13h4l-4 13h-4z"/></svg>LEGWORK</a>
+        <p>Put three to five stock tokens in one fixed-weight basket and follow the whole thesis as a single number, priced live on Robinhood Chain.</p>
+        <button class="pill" type="button" data-wallet>No wallet</button>
+      </div>
+      <nav aria-label="Product"><h4>Product</h4><a href="/">Markets</a><a href="/tokens">Tokens</a><a href="/create">Create a basket</a></nav>
+      <nav aria-label="Reference"><h4>Reference</h4><a href="/method">Method</a><a href="/method#risk">Risk</a><a href="/method#faq">Questions</a></nav>
+      <div class="chain"><h4>Data</h4><p>Robinhood stock-token API</p><p>DexScreener on-chain pools</p><p class="net">Robinhood Chain · 4663</p></div>
+    </div>
+    <div class="fbase"><span>© 2026 Legwork</span><span>Not investment advice</span><span>Read-only · no contracts</span><span>Prices can lag</span></div>
+  </div>
+</footer>
+<script src="/app.js"></script>
+<script src="/orb.js"></script>
+<script>
+(function(){
+"use strict";
+const L = Legwork, $ = L.$;
+const q = new URLSearchParams(location.search);
+const orb = Orb($("orb"), {ripple: .6});
+const CAT = {equity: "Equities", crypto: "Crypto proxies", index: "Index", auto: "Auto-built", custom: "Custom"};
+function render(){
+  const b = L.basketFromQuery(q);
+  if (!b || !b.live.length){
+    $("h1").textContent = "Basket not found";
+    $("sub").textContent = "This basket doesn't exist, or none of its legs are live on Robinhood Chain right now.";
+    $("rows").innerHTML = `<tr><td colspan="6" class="empty"><a href="/">Back to markets</a></td></tr>`;
+    return;
+  }
+  document.title = b.name + " · Legwork";
+  $("cat").textContent = CAT[b.cat] || "Basket";
+  $("h1").textContent = b.name; $("sub").textContent = b.sub;
+  $("lvl").textContent = b.level.toFixed(2);
+  $("chg").textContent = L.fmtChg(b.change); $("chg").className = "mono " + (b.change >= 0 ? "up" : "down");
+  $("liq").textContent = L.fmtUsd(b.liquidity, 0);
+  const mover = [...b.live].sort((x, y) => Math.abs(y.token.change24h) - Math.abs(x.token.change24h))[0];
+  $("mover").textContent = mover.token.symbol; $("moverChg").textContent = L.fmtChg(mover.token.change24h);
+  orb.set({ripple: .3 + Math.min(1.2, Math.abs(b.change) * .25)});
+  $("compBig").innerHTML = L.comp(b, true);
+  $("rows").innerHTML = b.live.map((l, i) => `<tr>
+    <td><div class="tk"><span class="sw ${L.SEG[i % 5]}"></span>${l.token.logo ? `<img src="${L.esc(l.token.logo)}" alt="" width="32" height="32" loading="lazy" onerror="this.remove()">` : ""}<span><b>${L.esc(l.token.symbol)}</b><span class="sub">${L.esc(l.token.name)}</span></span></div></td>
+    <td class="r mono">${(l.wn * 100).toFixed(1)}%</td>
+    <td class="r mono">${L.fmtPrice(l.token.onchain)}</td>
+    <td class="r mono ${l.token.change24h >= 0 ? "up" : "down"}">${L.fmtChg(l.token.change24h)}</td>
+    <td class="r mono ${l.contrib >= 0 ? "up" : "down"}">${(l.contrib >= 0 ? "+" : "−") + Math.abs(l.contrib).toFixed(2)} pts</td>
+    <td class="r mono">${L.fmtUsd(l.token.liquidity, 0)}</td>
+  </tr>`).join("");
+  $("note").textContent = b.missing.length ? `Not live on the chain yet, left out and re-weighted: ${b.missing.join(", ")}` : "All legs live · contribution = weight × 24h move";
+  const legs = b.live.map(l => `${l.token.symbol}:${+(l.wn * 100).toFixed(1)}`).join(",");
+  $("edit").href = `/create?legs=${encodeURIComponent(legs)}&name=${encodeURIComponent(b.name)}`;
+  $("share").onclick = () => {
+    const url = b.cat === "custom" ? location.href : `${location.origin}/basket?id=${b.id}`;
+    navigator.clipboard?.writeText(url).then(() => { $("share").textContent = "Copied"; setTimeout(() => $("share").textContent = "Copy link", 1500); });
+  };
+}
+L.load().then(render).catch(() => L.fail($("rows"), 6));
+L.every(render);
+})();
+</script>
+</body>
+</html>

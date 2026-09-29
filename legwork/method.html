@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Method · Legwork</title>
+<meta name="description" content="How Legwork prices baskets of Robinhood Chain stock tokens, where the data comes from, and what can go wrong.">
+<meta name="theme-color" content="#FFFFFF">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Crect width='30' height='30' rx='7' fill='%231B2A12'/%3E%3Cpath fill='%23B5E878' d='M5 24 10 6h4L9 24H5zm7 0 5-18h4l-5 18h-4zm7 0 3-11h4l-3 11h-4z'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<header class="top pad">
+  <a class="logo" href="/" aria-label="Legwork home"><svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><path fill="currentColor" d="M4 25 10 5h5L9 25H4zm8 0 6-20h5l-6 20h-5zm8 0 4-13h4l-4 13h-4z"/></svg>LEGWORK</a>
+  <nav class="links" aria-label="Main">
+    <a href="/">Markets</a>
+    <a href="/tokens">Tokens</a>
+    <a href="/create">Create</a>
+    <a href="/method" aria-current="page">Method</a>
+  </nav>
+  <div class="acts">
+    <button class="pill" type="button" data-wallet>No wallet</button>
+    <a class="cta" href="/create">Build a basket</a>
+  </div>
+</header>
+<nav class="mnav pad" aria-label="Sections"><a href="/">Markets</a><a href="/tokens">Tokens</a><a href="/create">Create</a><a href="/method" aria-current="page">Method</a></nav>
+
+<div class="strip">
+  <ul class="caps pad" aria-label="Network status">
+    <li><span class="live" aria-hidden="true"></span><span id="stripState">Robinhood Chain</span> · Block <span id="block">–</span></li>
+    <li>ETH <span id="eth">–</span></li>
+    <li><span id="nTokens">–</span> stock tokens</li>
+    <li>24h volume <span id="vol">–</span></li>
+    <li id="mkt">–</li>
+    <li>Updated <span id="updated">–</span></li>
+  </ul>
+</div>
+
+<main class="pad">
+  <section class="hero slim" aria-labelledby="h1">
+    <p class="caps eyebrow">Method</p>
+    <h1 id="h1">One number, <span>shown in full.</span></h1>
+    <p class="lead">How a basket's level is calculated, where every price comes from, and the ways it can mislead you.</p>
+  </section>
+
+  <section class="how method" aria-label="Calculation">
+    <div><span class="caps">01 · Price</span><h3>Each leg's price</h3><p>For every stock token we take the pool with the most liquidity on Robinhood Chain (via DexScreener) and use its USD price and its 24-hour change.</p></div>
+    <div><span class="caps">02 · Level</span><h3>The basket's level</h3><p>Level = 100 × Σ weight × (1 + 24h change). So 100 means flat against 24 hours ago, 103 means the basket is up 3%.</p></div>
+    <div><span class="caps">03 · Missing legs</span><h3>When a leg isn't live</h3><p>If a token isn't on the chain or has no priced pool, it's left out and the other legs are scaled up so the weights still add to 100%. The basket page says which.</p></div>
+  </section>
+
+  <section class="formula" aria-label="Formula">
+    <div class="bracket"><i></i><small>Level</small>100 × Σᵢ wᵢ × (1 + rᵢ)<br>wᵢ = weight, rᵢ = 24h change of leg i</div>
+    <div class="bracket"><i></i><small>Contribution</small>wᵢ × rᵢ × 100<br>points each leg adds or takes away</div>
+    <div class="bracket"><i></i><small>Gap</small>pool price ÷ reference − 1<br>reference = Robinhood bid/ask mid</div>
+  </section>
+
+  <section class="faq" id="risk" aria-labelledby="riskH">
+    <h2 class="h2" id="riskH">Risk and limits</h2>
+    <details open><summary>Thin pools move on small trades</summary><p>Some stock tokens have only a few thousand dollars of liquidity. One trade can swing their pool price, and with it the basket. The liquidity column tells you how much to trust a move.</p></details>
+    <details><summary>Outside US hours, the reference freezes</summary><p>Robinhood trades stock tokens Sunday 8 pm to Friday 8 pm New York time. Outside that, pool prices can drift from the frozen share price, which shows up as a gap on the Tokens page.</p></details>
+    <details><summary>It's a 24-hour view, not a history</summary><p>Levels are rebased every moment against 24 hours earlier. They don't track a basket from the day it was made.</p></details>
+    <details><summary>Nothing here is tradeable</summary><p>Legwork is read-only. There are no contracts, no positions and no leverage. To act on a basket you'd buy the legs yourself, on Robinhood or on-chain.</p></details>
+  </section>
+
+  <section class="faq" id="faq" aria-labelledby="faqH">
+    <h2 class="h2" id="faqH">Questions</h2>
+    <details><summary>Where does the data come from?</summary><p>Robinhood's public stock-token API (the token list, logos and bid/ask), DexScreener (pool prices, 24h change, liquidity and volume on Robinhood Chain), the public Robinhood Chain RPC (block height) and CoinGecko (ETH price). Our server fetches them together and caches the result for 60 seconds.</p></details>
+    <details><summary>How often does it update?</summary><p>Every minute while the page is open.</p></details>
+    <details><summary>Where is my custom basket stored?</summary><p>Only in its link. The legs, weights and name are in the URL, so nothing is saved on a server and anyone with the link sees the same basket.</p></details>
+    <details><summary>Is this investment advice?</summary><p>No. It's a way to look at prices. Do your own research.</p></details>
+  </section>
+</main>
+
+<footer>
+  <div class="pad">
+    <div class="fgrid">
+      <div class="fbrand">
+        <a class="logo" href="/" aria-label="Legwork home"><svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><path fill="currentColor" d="M4 25 10 5h5L9 25H4zm8 0 6-20h5l-6 20h-5zm8 0 4-13h4l-4 13h-4z"/></svg>LEGWORK</a>
+        <p>Put three to five stock tokens in one fixed-weight basket and follow the whole thesis as a single number, priced live on Robinhood Chain.</p>
+        <button class="pill" type="button" data-wallet>No wallet</button>
+      </div>
+      <nav aria-label="Product"><h4>Product</h4><a href="/">Markets</a><a href="/tokens">Tokens</a><a href="/create">Create a basket</a></nav>
+      <nav aria-label="Reference"><h4>Reference</h4><a href="/method">Method</a><a href="/method#risk">Risk</a><a href="/method#faq">Questions</a></nav>
+      <div class="chain"><h4>Data</h4><p>Robinhood stock-token API</p><p>DexScreener on-chain pools</p><p class="net">Robinhood Chain · 4663</p></div>
+    </div>
+    <div class="fbase"><span>© 2026 Legwork</span><span>Not investment advice</span><span>Read-only · no contracts</span><span>Prices can lag</span></div>
+  </div>
+</footer>
+<script src="/app.js"></script>
+<script src="/orb.js"></script>
+<script>
+Legwork.load().catch(() => Legwork.fail(null));
+</script>
+</body>
+</html>

@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Create · Legwork</title>
+<meta name="description" content="Build your own fixed-weight basket of Robinhood Chain stock tokens and share it with a link.">
+<meta name="theme-color" content="#FFFFFF">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Crect width='30' height='30' rx='7' fill='%231B2A12'/%3E%3Cpath fill='%23B5E878' d='M5 24 10 6h4L9 24H5zm7 0 5-18h4l-5 18h-4zm7 0 3-11h4l-3 11h-4z'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<header class="top pad">
+  <a class="logo" href="/" aria-label="Legwork home"><svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><path fill="currentColor" d="M4 25 10 5h5L9 25H4zm8 0 6-20h5l-6 20h-5zm8 0 4-13h4l-4 13h-4z"/></svg>LEGWORK</a>
+  <nav class="links" aria-label="Main">
+    <a href="/">Markets</a>
+    <a href="/tokens">Tokens</a>
+    <a href="/create" aria-current="page">Create</a>
+    <a href="/method">Method</a>
+  </nav>
+  <div class="acts">
+    <button class="pill" type="button" data-wallet>No wallet</button>
+    <a class="cta" href="/create">Build a basket</a>
+  </div>
+</header>
+<nav class="mnav pad" aria-label="Sections"><a href="/">Markets</a><a href="/tokens">Tokens</a><a href="/create" aria-current="page">Create</a><a href="/method">Method</a></nav>
+
+<div class="strip">
+  <ul class="caps pad" aria-label="Network status">
+    <li><span class="live" aria-hidden="true"></span><span id="stripState">Robinhood Chain</span> · Block <span id="block">–</span></li>
+    <li>ETH <span id="eth">–</span></li>
+    <li><span id="nTokens">–</span> stock tokens</li>
+    <li>24h volume <span id="vol">–</span></li>
+    <li id="mkt">–</li>
+    <li>Updated <span id="updated">–</span></li>
+  </ul>
+</div>
+
+<main class="pad">
+  <section class="hero create" aria-labelledby="h1">
+    <div class="ctext">
+      <p class="caps eyebrow">Create</p>
+      <h1 id="h1">Build your own basket.</h1>
+      <p class="lead">Pick three to five stock tokens, set their weights and give it a name. Legwork prices it live from the same on-chain pools as every other basket, starting at 100 against 24 hours ago.</p>
+      <p class="lead">Nothing is deployed and nothing touches your wallet: <b>your basket lives in its link</b>. Share it and anyone sees the same live level.</p>
+    </div>
+    <div class="cside">
+      <div class="well" id="well">
+        <canvas id="orb" aria-hidden="true"></canvas>
+        <p class="caps" id="wellHint">The body appears<br>with the first leg</p>
+      </div>
+      <div class="bracket"><i></i><small>Your level, live</small><span id="lvl">–</span><br><span id="chg">add a leg to start</span></div>
+    </div>
+  </section>
+
+  <section class="builder" aria-labelledby="bH">
+    <div class="bcol">
+      <p class="caps step">01 · Legs</p>
+      <h2 id="bH">Pick three to five tokens</h2>
+      <input class="search" id="q" type="search" placeholder="Search ticker" aria-label="Search tokens">
+      <div class="chips pick" id="assets" role="group" aria-label="Tokens"><span class="muted">Loading tokens…</span></div>
+    </div>
+    <div class="bcol">
+      <p class="caps step">02 · Weights</p>
+      <h2>Set the mix</h2>
+      <div class="comp big" id="preview" role="img" aria-label="Composition preview"></div>
+      <ul class="legs" id="legs"><li class="none">No legs yet.</li></ul>
+      <div class="sumrow caps"><span>Total</span><span id="sum" class="mono">0%</span></div>
+      <button class="pill" type="button" id="even">Split evenly</button>
+    </div>
+    <div class="bcol">
+      <p class="caps step">03 · Name</p>
+      <h2>Name and share</h2>
+      <label class="fld"><span class="caps">Name</span><input id="name" type="text" maxlength="40" placeholder="e.g. Quiet Compounders"></label>
+      <ul class="checks" id="checks"></ul>
+      <button class="cta wide" type="button" id="open" disabled>Open basket</button>
+      <p class="demo caps">Opens a live page with a link you can share</p>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="pad">
+    <div class="fgrid">
+      <div class="fbrand">
+        <a class="logo" href="/" aria-label="Legwork home"><svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><path fill="currentColor" d="M4 25 10 5h5L9 25H4zm8 0 6-20h5l-6 20h-5zm8 0 4-13h4l-4 13h-4z"/></svg>LEGWORK</a>
+        <p>Put three to five stock tokens in one fixed-weight basket and follow the whole thesis as a single number, priced live on Robinhood Chain.</p>
+        <button class="pill" type="button" data-wallet>No wallet</button>
+      </div>
+      <nav aria-label="Product"><h4>Product</h4><a href="/">Markets</a><a href="/tokens">Tokens</a><a href="/create">Create a basket</a></nav>
+      <nav aria-label="Reference"><h4>Reference</h4><a href="/method">Method</a><a href="/method#risk">Risk</a><a href="/method#faq">Questions</a></nav>
+      <div class="chain"><h4>Data</h4><p>Robinhood stock-token API</p><p>DexScreener on-chain pools</p><p class="net">Robinhood Chain · 4663</p></div>
+    </div>
+    <div class="fbase"><span>© 2026 Legwork</span><span>Not investment advice</span><span>Read-only · no contracts</span><span>Prices can lag</span></div>
+  </div>
+</footer>
+<script src="/app.js"></script>
+<script src="/orb.js"></script>
+<script>
+(function(){
+"use strict";
+const L = Legwork, $ = L.$;
+const q = new URLSearchParams(location.search);
+let legs = [];   // {t: symbol, w}
+const orb = Orb($("orb"), {scale: 0, ripple: .3});
+let shown = 0, target = 0;
+function grow(){
+  shown += (target - shown) * .12;
+  if (Math.abs(target - shown) < .002) shown = target;
+  orb.set({scale: shown, ripple: .3 + legs.length * .12});
+  if (shown !== target) requestAnimationFrame(grow);
+}
+function even(){
+  const n = legs.length; if (!n) return;
+  const base = Math.floor(100 / n);
+  legs.forEach((l, i) => l.w = base + (i < 100 - base * n ? 1 : 0));
+}
+const sumW = () => legs.reduce((s, l) => s + l.w, 0);
+function live(){
+  const b = legs.length ? L.resolve({legs: legs.map(l => [l.t, l.w])}) : null;
+  $("lvl").textContent = b && b.level != null ? b.level.toFixed(2) : "–";
+  $("chg").textContent = b && b.level != null ? L.fmtChg(b.change) + " over 24h" : "add a leg to start";
+}
+function renderAssets(){
+  const s = $("q").value.trim().toLowerCase();
+  const toks = L.market.tokens.filter(L.priced).sort((a, b) => (b.liquidity || 0) - (a.liquidity || 0))
+    .filter(t => !s || t.symbol.toLowerCase().includes(s) || t.name.toLowerCase().includes(s));
+  $("assets").innerHTML = toks.map(t => {
+    const on = legs.some(l => l.t === t.symbol), full = !on && legs.length >= 5;
+    return `<button class="pill" data-a="${L.esc(t.symbol)}" aria-pressed="${on}"${full ? " disabled" : ""} title="${L.esc(t.name)} · ${L.fmtPrice(t.onchain)}">${L.esc(t.symbol)}</button>`;
+  }).join("") || `<span class="muted">No tokens match.</span>`;
+}
+function render(){
+  renderAssets();
+  $("legs").innerHTML = legs.length ? legs.map((l, i) => `<li><span class="sw ${L.SEG[i]}"></span><b class="mono">${L.esc(l.t)}</b>
+    <input type="range" min="1" max="100" value="${l.w}" data-i="${i}" aria-label="${L.esc(l.t)} weight">
+    <span class="mono w">${l.w}%</span></li>`).join("") : '<li class="none">No legs yet.</li>';
+  $("preview").innerHTML = legs.map((l, i) => `<span class="${L.SEG[i]}" style="flex:${l.w}" title="${L.esc(l.t)} · ${l.w}%"></span>`).join("");
+  const sum = sumW();
+  $("sum").textContent = sum + "%"; $("sum").classList.toggle("bad", legs.length > 0 && sum !== 100);
+  const name = $("name").value.trim();
+  const checks = [
+    [legs.length >= 3 && legs.length <= 5, `3 to 5 legs (${legs.length})`],
+    [sum === 100, `Weights add up to 100% (${sum}%)`],
+    [name.length >= 3, "A name of 3+ characters"],
+  ];
+  $("checks").innerHTML = checks.map(([ok, t]) => `<li class="${ok ? "ok" : ""}">${t}</li>`).join("");
+  $("open").disabled = !checks.every(c => c[0]);
+  $("wellHint").hidden = legs.length > 0;
+  $("well").classList.toggle("on", legs.length > 0);
+  target = legs.length ? .55 + legs.length * .09 : 0;
+  requestAnimationFrame(grow);
+  live();
+}
+$("assets").addEventListener("click", e => {
+  const b = e.target.closest("[data-a]"); if (!b) return;
+  const t = b.dataset.a, i = legs.findIndex(l => l.t === t);
+  i >= 0 ? legs.splice(i, 1) : legs.length < 5 && legs.push({t, w: 0});
+  even(); render();
+  $("assets").querySelector(`[data-a="${CSS.escape(t)}"]`)?.focus();
+});
+$("legs").addEventListener("input", e => {
+  const i = +e.target.dataset.i; if (isNaN(i)) return;
+  legs[i].w = +e.target.value;
+  e.target.nextElementSibling.textContent = legs[i].w + "%";
+  $("sum").textContent = sumW() + "%"; $("sum").classList.toggle("bad", sumW() !== 100);
+  $("preview").children[i].style.flex = legs[i].w;
+  live();
+});
+$("legs").addEventListener("change", render);
+$("even").addEventListener("click", () => { even(); render(); });
+$("name").addEventListener("input", render);
+$("q").addEventListener("input", () => L.market && renderAssets());
+$("open").addEventListener("click", () => {
+  location.href = `/basket?legs=${encodeURIComponent(legs.map(l => l.t + ":" + l.w).join(","))}&name=${encodeURIComponent($("name").value.trim())}`;
+});
+L.load().then(() => {
+  const ok = s => L.priced(L.findToken(s));
+  if (q.get("legs")) q.get("legs").split(",").map(p => p.split(":")).forEach(([t, w]) => { const tok = L.findToken(t || ""); if (L.priced(tok) && legs.length < 5) legs.push({t: tok.symbol, w: Math.round(+w) || 0}); });
+  if (q.get("add")) { const tok = L.findToken(q.get("add")); if (L.priced(tok)) legs.push({t: tok.symbol, w: 0}); }
+  if (q.get("name")) $("name").value = q.get("name") + " (copy)";
+  if (legs.length && sumW() !== 100) even();
+  render();
+}).catch(() => L.fail($("assets")));
+})();
+</script>
+</body>
+</html>
