@@ -1,7 +1,7 @@
 /* Line orb: latitude contours on a slowly turning, rippling sphere.
-   Kurv.orb(canvas, {ripple, color}) returns {set(opts)} so a page can change it live. */
-window.Kurv = window.Kurv || {};
-Kurv.orb = function(c, opts){
+   Orb(canvas, {ripple, color}) returns {set(opts)} so a page can change it live. */
+
+window.Orb = function(c, opts){
   "use strict";
   const ctx = c.getContext("2d");
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;

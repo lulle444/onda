@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Legwork</title>
+<meta name="description" content="Fixed-weight baskets of Robinhood Chain stock tokens, priced live from on-chain pools.">
+<meta name="theme-color" content="#FFFFFF">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Crect width='30' height='30' rx='7' fill='%231B2A12'/%3E%3Cpath fill='%23B5E878' d='M5 24 10 6h4L9 24H5zm7 0 5-18h4l-5 18h-4zm7 0 3-11h4l-3 11h-4z'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<header class="top pad">
+  <a class="logo" href="/" aria-label="Legwork home"><svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><path fill="currentColor" d="M4 25 10 5h5L9 25H4zm8 0 6-20h5l-6 20h-5zm8 0 4-13h4l-4 13h-4z"/></svg>LEGWORK</a>
+  <nav class="links" aria-label="Main">
+    <a href="/" aria-current="page">Markets</a>
+    <a href="/tokens">Tokens</a>
+    <a href="/create">Create</a>
+    <a href="/method">Method</a>
+  </nav>
+  <div class="acts">
+    <button class="pill" type="button" data-wallet>No wallet</button>
+    <a class="cta" href="/create">Build a basket</a>
+  </div>
+</header>
+<nav class="mnav pad" aria-label="Sections"><a href="/" aria-current="page">Markets</a><a href="/tokens">Tokens</a><a href="/create">Create</a><a href="/method">Method</a></nav>
+
+<div class="strip">
+  <ul class="caps pad" aria-label="Network status">
+    <li><span class="live" aria-hidden="true"></span><span id="stripState">Robinhood Chain</span> · Block <span id="block">–</span></li>
+    <li>ETH <span id="eth">–</span></li>
+    <li><span id="nTokens">–</span> stock tokens</li>
+    <li>24h volume <span id="vol">–</span></li>
+    <li id="mkt">–</li>
+    <li>Updated <span id="updated">–</span></li>
+  </ul>
+</div>
+
+<main class="pad">
+  <section class="hero" aria-labelledby="h1">
+    <p class="badge caps">Stock-token baskets · Robinhood Chain</p>
+    <h1 id="h1">Track the idea, <span>not the ticker.</span></h1>
+    <div class="stage">
+      <canvas id="orb" aria-hidden="true"></canvas>
+      <div class="bracket left"><i></i><small>Basket</small><span id="heroName">–</span><br><span id="heroLegs">&nbsp;</span></div>
+      <div class="bracket right"><i></i><small>Level, live</small><span id="heroLvl">–</span><br>base 100 = 24h ago</div>
+    </div>
+    <div class="about">
+      <p>Each basket holds three to five tokenized stocks on Robinhood Chain at fixed weights. Its level is what 100 put in 24 hours ago is worth now, priced live from each token's deepest on-chain pool.</p>
+      <div class="bracket"><i></i><small>Furthest from base</small><span id="topName">–</span><br><span id="topChg">–</span></div>
+    </div>
+  </section>
+
+  <section id="markets" aria-label="Baskets">
+    <div class="bar">
+      <div class="chips" role="group" aria-label="Filter">
+        <button class="pill" data-f="all" aria-pressed="true">All</button>
+        <button class="pill" data-f="equity" aria-pressed="false">Equities</button>
+        <button class="pill" data-f="crypto" aria-pressed="false">Crypto proxies</button>
+        <button class="pill" data-f="index" aria-pressed="false">Index</button>
+        <button class="pill" data-f="auto" aria-pressed="false">Auto-built</button>
+      </div>
+      <div class="chips" role="group" aria-label="Sort">
+        <span class="caps">Sort</span>
+        <button class="pill" data-s="level" aria-pressed="true">Level</button>
+        <button class="pill" data-s="name" aria-pressed="false">A-Z</button>
+        <button class="pill" data-s="liquidity" aria-pressed="false">Liquidity</button>
+      </div>
+    </div>
+    <div class="tbl">
+      <table>
+        <thead><tr><th class="col-name">Basket</th><th class="col-comp">Composition</th><th class="r">Level</th><th class="r">24h</th><th class="r">Pool liquidity</th></tr></thead>
+        <tbody id="rows"><tr><td colspan="5" class="empty">Loading live prices…</td></tr></tbody>
+      </table>
+    </div>
+    <p class="demo caps">Live · Robinhood Chain pools via DexScreener · refreshes every minute</p>
+  </section>
+
+  <section class="dark" aria-labelledby="whyH">
+    <div class="bracket lime l1"><i></i><small>Leg</small><span id="leg1">–</span></div>
+    <div class="bracket lime l2"><i></i><small>Leg</small><span id="leg2">–</span></div>
+    <div class="bracket lime l3"><i></i><small>Reference</small>Robinhood bid/ask<br>next to the pool price</div>
+    <h2 id="whyH">You never had a one&#8209;stock idea. <span>So stop tracking one.</span></h2>
+    <p>A basket writes down what you were already thinking: a thesis with weights, priced as one number, with one level to follow instead of five charts.</p>
+    <a class="card" href="/create">
+      <span class="coin" aria-hidden="true">+</span>
+      <span><b>Build your own</b><small class="mono">3–5 legs, shareable link</small></span>
+      <strong class="mono">→</strong>
+    </a>
+  </section>
+
+  <section class="how" aria-label="How it works">
+    <div><span class="caps">01 · Pick</span><h3>Choose a thesis</h3><p>Start from a curated basket or one that builds itself from today's busiest tokens.</p></div>
+    <div><span class="caps">02 · Weigh</span><h3>Fix the weights</h3><p>Three to five legs, each with a set share. The level moves with their weighted return.</p></div>
+    <div><span class="caps">03 · Follow</span><h3>One number to watch</h3><p>Open any basket to see each leg's price, move and pool depth, and share it with a link.</p></div>
+  </section>
+</main>
+
+<footer>
+  <div class="pad">
+    <div class="fgrid">
+      <div class="fbrand">
+        <a class="logo" href="/" aria-label="Legwork home"><svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><path fill="currentColor" d="M4 25 10 5h5L9 25H4zm8 0 6-20h5l-6 20h-5zm8 0 4-13h4l-4 13h-4z"/></svg>LEGWORK</a>
+        <p>Put three to five stock tokens in one fixed-weight basket and follow the whole thesis as a single number, priced live on Robinhood Chain.</p>
+        <button class="pill" type="button" data-wallet>No wallet</button>
+      </div>
+      <nav aria-label="Product"><h4>Product</h4><a href="/">Markets</a><a href="/tokens">Tokens</a><a href="/create">Create a basket</a></nav>
+      <nav aria-label="Reference"><h4>Reference</h4><a href="/method">Method</a><a href="/method#risk">Risk</a><a href="/method#faq">Questions</a></nav>
+      <div class="chain"><h4>Data</h4><p>Robinhood stock-token API</p><p>DexScreener on-chain pools</p><p class="net">Robinhood Chain · 4663</p></div>
+    </div>
+    <div class="fbase"><span>© 2026 Legwork</span><span>Not investment advice</span><span>Read-only · no contracts</span><span>Prices can lag</span></div>
+  </div>
+</footer>
+<script src="/app.js"></script>
+<script src="/orb.js"></script>
+<script>
+(function(){
+"use strict";
+const L = Legwork, $ = L.$;
+let filter = "all", sort = "level";
+Orb($("orb"), {ripple: .6});
+
+function render(){
+  const all = L.allBaskets();
+  const list = all.filter(b => filter === "all" || b.cat === filter).sort((a, b) =>
+    sort === "name" ? a.name.localeCompare(b.name) : sort === "liquidity" ? b.liquidity - a.liquidity : (b.level ?? 0) - (a.level ?? 0));
+  $("rows").innerHTML = list.length ? list.map(b => `<tr class="link" data-href="/basket?id=${b.id}">
+      <td><a class="bname" href="/basket?id=${b.id}"><b>${L.esc(b.name)}</b></a><span class="sub">${L.esc(b.live.map(l => l.token.symbol).join(" · "))}${b.missing.length ? ` <em title="Not live on the chain yet">(${L.esc(b.missing.join(", "))} not live)</em>` : ""}</span></td>
+      <td>${L.comp(b)}</td>
+      <td class="r"><span class="lvl">${b.level.toFixed(2)}</span></td>
+      <td class="r"><span class="${b.change >= 0 ? "up" : "down"}">${L.fmtChg(b.change)}</span></td>
+      <td class="r"><span class="oi">${L.fmtUsd(b.liquidity, 0)}</span></td>
+    </tr>`).join("") : `<tr><td colspan="5" class="empty">No baskets in this group have enough live legs right now.</td></tr>`;
+  const hero = all[0];
+  if (hero){
+    $("heroName").textContent = hero.name;
+    $("heroLegs").textContent = hero.live.length + " legs · fixed weights";
+    $("heroLvl").textContent = hero.level.toFixed(2);
+    const top = [...all].sort((a, b) => Math.abs(b.change) - Math.abs(a.change))[0];
+    $("topName").textContent = top.name; $("topChg").textContent = L.fmtChg(top.change);
+  }
+  const legs = ["NVDA","SPY","AAPL","TSLA","QQQ"].map(L.findToken).filter(L.priced);
+  [0, 1].forEach(i => { const t = legs[i]; if (t) $("leg" + (i + 1)).innerHTML = `${L.esc(t.symbol)}<br>${L.fmtPrice(t.onchain)}`; });
+}
+
+function wire(attr, set){
+  document.querySelectorAll(`[data-${attr}]`).forEach(btn => btn.addEventListener("click", () => {
+    document.querySelectorAll(`[data-${attr}]`).forEach(o => o.setAttribute("aria-pressed", o === btn));
+    set(btn.dataset[attr]); if (L.market) render();
+  }));
+}
+wire("f", v => filter = v); wire("s", v => sort = v);
+$("rows").addEventListener("click", e => { const tr = e.target.closest("tr[data-href]"); if (tr && !e.target.closest("a")) location.href = tr.dataset.href; });
+L.load().then(render).catch(() => L.fail($("rows"), 5));
+L.every(render);
+})();
+</script>
+</body>
+</html>

@@ -37,7 +37,8 @@ a{color:inherit}
 .strip ul{list-style:none;margin:0;display:flex;gap:48px;height:62px;align-items:center;white-space:nowrap;color:var(--muted);overflow-x:auto;scrollbar-width:none}
 .strip ul::-webkit-scrollbar{display:none}
 .strip li{flex:none}
-.live{display:inline-block;width:8px;height:8px;border-radius:50%;background:#A8C99A;margin-right:14px;vertical-align:1px;animation:blink 2.4s ease-in-out infinite}
+.live{display:inline-block;width:8px;height:8px;border-radius:50%;background:#C9CFC4;margin-right:14px;vertical-align:1px}
+.live.on{background:#5FB84A;animation:blink 2.4s ease-in-out infinite}
 @keyframes blink{50%{opacity:.35}}
 @media (prefers-reduced-motion:reduce){.live{animation:none}}
 
@@ -198,3 +199,62 @@ input[type=range]{width:100%;accent-color:var(--green)}
   .bcol,.bcol+.bcol{padding:32px 0;border-left:0}
   .bcol+.bcol{border-top:1px solid var(--line)}
 }
+
+/* multi-page additions */
+.mnav{display:none}
+@media (max-width:900px){
+  .mnav{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-block:0 14px}
+  .mnav::-webkit-scrollbar{display:none}
+  .mnav a{flex:none;font:400 13px/1 var(--mono);letter-spacing:.06em;color:var(--muted);text-decoration:none;padding:10px 14px;border:1px solid var(--line);border-radius:999px}
+  .mnav a[aria-current]{background:var(--deep);border-color:var(--deep);color:var(--lime)}
+}
+.hero.slim{padding:88px clamp(20px,6vw,108px) 80px}
+.hero.slim h1{text-align:left;margin:0;max-width:12ch;font-size:clamp(44px,6.4vw,112px)}
+.hero.slim .lead{max-width:60ch}
+.eyebrow a{color:inherit}
+.h2{font:600 clamp(26px,2.4vw,34px)/1.2 var(--sans);letter-spacing:-.02em;margin:0}
+.search{font:400 15px var(--mono);color:var(--ink);background:#fff;border:1px solid var(--line);border-radius:999px;padding:11px 18px;width:min(100%,320px)}
+.search:focus{outline:2px solid var(--green);outline-offset:1px}
+.muted{color:var(--muted)}
+.empty{padding:48px 0;text-align:center;color:var(--muted)}
+.empty a{color:var(--green)}
+tr.link{cursor:pointer}
+a.bname{text-decoration:none}
+a.bname:hover b{text-decoration:underline;text-decoration-thickness:1.5px;text-underline-offset:4px}
+td .sub em{font-style:normal;color:var(--faint)}
+td.mono{font-size:17px}
+td.up,.up{color:var(--green)} td.down,.down{color:#B0482B}
+strong.up{color:var(--green)} strong.down{color:#B0482B}
+table.tok{min-width:1040px}
+table.tok td{padding:22px 0}
+.tk{display:flex;align-items:center;gap:14px;min-width:0}
+.tk img,.tkph{width:32px;height:32px;border-radius:50%;flex:none;background:var(--panel);object-fit:cover}
+.tk b{display:block;font:600 18px/1.2 var(--sans)}
+.tk .sub{margin-top:2px;font-size:14px}
+.tk .sw{flex:none}
+.rowacts{display:inline-flex;gap:8px;justify-content:flex-end}
+.mini{font:400 12px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:8px 12px;white-space:nowrap}
+.mini:hover{color:var(--ink);border-color:var(--ink)}
+.mini.add{color:var(--green);border-color:#CFE3BA}
+.bigstats{display:flex;flex-wrap:wrap;gap:16px 48px;margin-top:48px}
+.bigstats small{display:block;color:var(--muted);margin-bottom:10px}
+.bigstats strong{font-size:clamp(26px,2.6vw,38px);font-weight:400}
+.legsec .bar{margin-top:72px}
+.legsec .comp.big{margin-bottom:32px;height:52px}
+.pick{max-height:360px;overflow:auto;margin-top:16px;padding:2px}
+a.card{text-decoration:none;transition:transform .2s}
+a.card:hover{transform:translateY(-2px)}
+.formula{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:32px;margin-top:72px}
+.formula .bracket{max-width:none}
+.faq{margin-top:96px;max-width:900px}
+.faq .h2{margin-bottom:20px}
+.faq details{border-top:1px solid var(--line)}
+.faq details:last-child{border-bottom:1px solid var(--line)}
+.faq summary{cursor:pointer;list-style:none;padding:26px 40px 26px 0;font:500 20px/1.35 var(--sans);letter-spacing:-.01em;position:relative}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";position:absolute;right:4px;top:50%;transform:translateY(-50%);font:400 24px/1 var(--mono);color:var(--green);transition:transform .2s}
+.faq details[open] summary::after{transform:translateY(-50%) rotate(45deg)}
+.faq details p{margin:0 0 26px;color:var(--muted);font-size:17px;max-width:70ch}
+.how.method{margin-top:40px}
+@media (max-width:900px){.formula{grid-template-columns:1fr;gap:12px}.hero.slim{padding:56px 22px}}
+@media (prefers-reduced-motion:reduce){.faq summary::after{transition:none}}
