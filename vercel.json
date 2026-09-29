@@ -24,5 +24,17 @@
       "source": "/api/live-trades",
       "destination": "/api/leaderboard?live=1"
     }
+  ],
+  "redirects": [
+    {
+      "source": "/legwork",
+      "destination": "https://legwork-sage.vercel.app/",
+      "permanent": false
+    },
+    {
+      "source": "/legwork/:path*",
+      "destination": "https://legwork-sage.vercel.app/:path*",
+      "permanent": false
+    }
   ]
 }
