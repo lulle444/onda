@@ -1,4 +1,4 @@
-// Everything the pages need in one call, cached at Vercel's CDN for a minute: every Robinhood Chain stock token
+// Everything the pages need in one call, cached at the edge for a minute: every Robinhood Chain stock token
 // (Robinhood's reference price + the price in its deepest on-chain pool), the latest block and the ETH price.
 const {stockBoard, marketOpen, getJson} = require("../lib/stocks");
 const RPC = process.env.RPC_URL || "https://rpc.mainnet.chain.robinhood.com";

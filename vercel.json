@@ -28,22 +28,22 @@
   "redirects": [
     {
       "source": "/tripod",
-      "destination": "https://usetripod.vercel.app/",
+      "destination": "https://usetripod.org/",
       "permanent": false
     },
     {
       "source": "/tripod/:path*",
-      "destination": "https://usetripod.vercel.app/:path*",
+      "destination": "https://usetripod.org/:path*",
       "permanent": false
     },
     {
       "source": "/legwork",
-      "destination": "https://usetripod.vercel.app/",
+      "destination": "https://usetripod.org/",
       "permanent": false
     },
     {
       "source": "/legwork/:path*",
-      "destination": "https://usetripod.vercel.app/:path*",
+      "destination": "https://usetripod.org/:path*",
       "permanent": false
     }
   ]
