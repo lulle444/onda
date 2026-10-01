@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="da">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>$RUGBRØD</title>
+  <meta name="description" content="Rugbrød ($RUGBROD) – den eneste rug, der aldrig bliver pulled. Test-token på Base Sepolia.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8D%9E%3C/text%3E%3C/svg%3E">
+  <style>
+    :root {
+      --bg: #f6efe3;
+      --ink: #2b1d12;
+      --muted: #6b5644;
+      --crust: #4a2f1c;
+      --crumb: #8a5a36;
+      --seed: #d9b77e;
+      --card: #fffaf2;
+      --line: #e4d6c0;
+      --accent: #c8102e;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #1a120c;
+        --ink: #f3e7d6;
+        --muted: #bfa88f;
+        --card: #241911;
+        --line: #3a2a1d;
+      }
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font: 17px/1.55 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    }
+    main { max-width: 760px; margin: 0 auto; padding: 48px 16px 64px; }
+    .banner {
+      background: var(--accent); color: #fff; text-align: center;
+      font-size: 14px; padding: 8px 16px;
+    }
+    header { text-align: center; }
+    .logo { width: 180px; height: auto; display: block; margin: 0 auto 16px; }
+    h1 { font-size: clamp(44px, 10vw, 80px); line-height: 1; margin: 0; letter-spacing: -0.02em; }
+    .tag { font-size: clamp(18px, 4vw, 24px); color: var(--muted); margin: 12px 0 32px; }
+    .card {
+      background: var(--card); border: 1px solid var(--line); border-radius: 16px;
+      padding: 20px; margin: 16px 0;
+    }
+    .ca { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+    .ca code {
+      flex: 1 1 260px; min-width: 0; overflow-wrap: anywhere;
+      font: 14px ui-monospace, SFMono-Regular, Menlo, monospace;
+      background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px;
+    }
+    button, .btn {
+      font: inherit; font-weight: 600; cursor: pointer; border: 0; border-radius: 10px;
+      padding: 10px 16px; background: var(--crust); color: #fff; text-decoration: none;
+      display: inline-block;
+    }
+    button.secondary, .btn.secondary { background: transparent; color: var(--ink); border: 1px solid var(--line); }
+    button:disabled { opacity: .5; cursor: not-allowed; }
+    .actions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-top: 8px; }
+    h2 { font-size: 24px; margin: 40px 0 8px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
+    .grid .card { margin: 0; }
+    .stat { text-align: center; }
+    .stat b { display: block; font-size: 22px; }
+    .stat span { color: var(--muted); font-size: 14px; }
+    ul.checks { list-style: none; padding: 0; margin: 0; }
+    ul.checks li { padding: 6px 0 6px 30px; position: relative; }
+    ul.checks li::before { content: "✓"; position: absolute; left: 4px; color: #2e7d32; font-weight: 700; }
+    ol { padding-left: 22px; }
+    footer { color: var(--muted); font-size: 14px; text-align: center; margin-top: 48px; }
+    .toast { color: #2e7d32; font-size: 14px; min-height: 1em; }
+  </style>
+</head>
+<body>
+  <div class="banner">TESTNET: $RUGBRØD findes kun på Base Sepolia og har ingen værdi.</div>
+  <main>
+    <header>
+      <svg class="logo" viewBox="0 0 200 160" role="img" aria-label="Skive rugbrød">
+        <path d="M20 70 C20 25 60 10 100 10 C140 10 180 25 180 70 L180 145 C180 150 176 154 171 154 L29 154 C24 154 20 150 20 145 Z" fill="#4a2f1c"/>
+        <path d="M32 72 C32 36 66 22 100 22 C134 22 168 36 168 72 L168 140 C168 142 166 143 164 143 L36 143 C34 143 32 142 32 140 Z" fill="#8a5a36"/>
+        <g fill="#d9b77e">
+          <ellipse cx="62" cy="62" rx="5" ry="3" transform="rotate(-20 62 62)"/>
+          <ellipse cx="110" cy="48" rx="5" ry="3" transform="rotate(30 110 48)"/>
+          <ellipse cx="140" cy="82" rx="5" ry="3" transform="rotate(-40 140 82)"/>
+          <ellipse cx="80" cy="100" rx="5" ry="3" transform="rotate(15 80 100)"/>
+          <ellipse cx="128" cy="122" rx="5" ry="3" transform="rotate(-10 128 122)"/>
+          <ellipse cx="54" cy="126" rx="5" ry="3" transform="rotate(40 54 126)"/>
+          <ellipse cx="100" cy="76" rx="5" ry="3" transform="rotate(-60 100 76)"/>
+        </g>
+        <circle cx="78" cy="78" r="6" fill="#2b1d12"/>
+        <circle cx="122" cy="78" r="6" fill="#2b1d12"/>
+        <path d="M80 104 Q100 120 120 104" stroke="#2b1d12" stroke-width="5" fill="none" stroke-linecap="round"/>
+      </svg>
+      <h1>$RUGBRØD</h1>
+      <p class="tag">Den eneste rug, der aldrig bliver pulled.</p>
+    </header>
+
+    <section class="card">
+      <div class="ca">
+        <code id="ca">Ikke deployet endnu</code>
+        <button id="copy" class="secondary">Kopiér</button>
+      </div>
+      <div class="toast" id="toast" aria-live="polite"></div>
+      <div class="actions">
+        <button id="add">Tilføj til wallet</button>
+        <a id="explorer" class="btn secondary" href="#" target="_blank" rel="noopener">Se på BaseScan</a>
+      </div>
+    </section>
+
+    <h2>Tokenomics</h2>
+    <div class="grid">
+      <div class="card stat"><b>1.000.000.000</b><span>Total supply, fast</span></div>
+      <div class="card stat"><b>0 %</b><span>Skat på køb og salg</span></div>
+      <div class="card stat"><b>Ingen</b><span>Owner, mint eller pause</span></div>
+    </div>
+
+    <h2>Hvorfor stole på et stykke brød?</h2>
+    <div class="card">
+      <ul class="checks">
+        <li>Hele supply mintes én gang ved deploy. Der kan aldrig laves flere.</li>
+        <li>Kontrakten har ingen ejer, så ingen kan ændre regler, gebyrer eller blokere wallets.</li>
+        <li>Standard OpenZeppelin ERC-20 med åben kildekode, der kan verificeres på BaseScan.</li>
+        <li>Likviditeten låses eller brændes, når den tilføjes. Rugbrød bliver liggende.</li>
+      </ul>
+    </div>
+
+    <h2>Sådan får du fat i noget</h2>
+    <div class="card">
+      <ol>
+        <li>Tilføj Base Sepolia-netværket i MetaMask eller Coinbase Wallet.</li>
+        <li>Hent gratis test-ETH fra en Base Sepolia-faucet.</li>
+        <li>Tryk "Tilføj til wallet" ovenfor, så du kan se dine $RUGBRØD.</li>
+      </ol>
+    </div>
+
+    <footer>
+      $RUGBRØD er et testprojekt og et meme. Det er ikke en investering og har ingen værdi.
+    </footer>
+  </main>
+
+  <script>
+    // Paste the address printed by `npm run deploy:sepolia` here.
+    const CONTRACT_ADDRESS = "";
+    const CHAIN_ID_HEX = "0x14a34"; // Base Sepolia (84532)
+
+    const caEl = document.getElementById("ca");
+    const toast = document.getElementById("toast");
+    const copyBtn = document.getElementById("copy");
+    const addBtn = document.getElementById("add");
+    const explorer = document.getElementById("explorer");
+
+    function say(msg) {
+      toast.textContent = msg;
+      setTimeout(() => { if (toast.textContent === msg) toast.textContent = ""; }, 2500);
+    }
+
+    if (CONTRACT_ADDRESS) {
+      caEl.textContent = CONTRACT_ADDRESS;
+      explorer.href = "https://sepolia.basescan.org/token/" + CONTRACT_ADDRESS;
+    } else {
+      copyBtn.disabled = true;
+      addBtn.disabled = true;
+      explorer.style.display = "none";
+    }
+
+    copyBtn.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(CONTRACT_ADDRESS);
+        say("Adresse kopieret");
+      } catch {
+        say("Kunne ikke kopiere. Markér adressen manuelt.");
+      }
+    });
+
+    addBtn.addEventListener("click", async () => {
+      if (!window.ethereum) return say("Ingen wallet fundet i browseren");
+      try {
+        await window.ethereum.request({
+          method: "wallet_switchEthereumChain",
+          params: [{ chainId: CHAIN_ID_HEX }],
+        });
+        await window.ethereum.request({
+          method: "wallet_watchAsset",
+          params: {
+            type: "ERC20",
+            options: { address: CONTRACT_ADDRESS, symbol: "RUGBROD", decimals: 18 },
+          },
+        });
+        say("Tilføjet til din wallet");
+      } catch (err) {
+        say(err && err.code === 4902
+          ? "Tilføj Base Sepolia i din wallet først"
+          : "Annulleret");
+      }
+    });
+  </script>
+</body>
+</html>
