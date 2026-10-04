@@ -8,7 +8,7 @@ const fs = require("fs"), path = require("path");
 let logo;
 const logoUri = () => logo || (logo = "data:image/png;base64," + fs.readFileSync(path.join(__dirname, "..", "assets", "logo-mark.png")).toString("base64"));
 
-const C = {ink: "#0A2340", muted: "#5A6E84", accent: "#1A4FD6", up: "#1F7A4B", down: "#B03A26", card: "rgba(255,255,255,0.78)", edge: "rgba(10,35,64,0.08)"};
+const C = {ink: "#F2F6FF", muted: "#9DAED6", accent: "#3D86FF", up: "#3DDC97", down: "#FF6B5E", card: "rgba(20,50,130,0.45)", edge: "rgba(120,160,255,0.18)"};
 
 const usd = v => {
   const a = Math.abs(v), s = v < 0 ? "−" : "";
@@ -75,7 +75,7 @@ function card(c, logo){
     h({fontFamily: "Montserrat", fontWeight: 700, fontSize: 40, color: C.ink}, v),
     h({fontFamily: "IBM Plex Sans", fontSize: 22, color: C.muted, marginTop: 4}, cap));
   return h({width: 1200, height: 630, flexDirection: "column", padding: "56px 64px", fontFamily: "IBM Plex Sans", color: C.ink,
-      backgroundImage: "radial-gradient(900px 500px at 90% -10%, #CDE9F1 0%, rgba(205,233,241,0) 60%), linear-gradient(180deg, #F6F9FC 0%, #EDF3F8 55%, #E2ECF4 100%)"},
+      backgroundImage: "radial-gradient(900px 500px at 90% -10%, rgba(31,91,255,0.45) 0%, rgba(31,91,255,0) 60%), linear-gradient(180deg, #021033 0%, #020F2E 55%, #03153D 100%)"},
     h({alignItems: "center", justifyContent: "space-between"},
       h({alignItems: "center"},
         {type: "img", props: {src: logo, width: 52, height: 52, style: {marginRight: 16}}},

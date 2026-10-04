@@ -11,8 +11,8 @@ const ptr = {x: -1e4, y: -1e4, sx: -1e4, sy: -1e4, on: 0, s: 0};
 
 const SWELLS = [
   {y: .80, amp: 22, len: 900, sp: .30, top: "rgba(76,141,255,.10)", bot: "rgba(26,79,214,.16)"},
-  {y: .86, amp: 18, len: 650, sp: -.42, top: "rgba(58,141,222,.10)", bot: "rgba(13,92,115,.18)"},
-  {y: .92, amp: 14, len: 480, sp: .55, top: "rgba(76,141,255,.12)", bot: "rgba(13,92,115,.15)"},
+  {y: .86, amp: 18, len: 650, sp: -.42, top: "rgba(58,141,222,.10)", bot: "rgba(24,70,190,.22)"},
+  {y: .92, amp: 14, len: 480, sp: .55, top: "rgba(76,141,255,.12)", bot: "rgba(24,70,190,.2)"},
 ];
 let glints = [];
 
