@@ -10,9 +10,9 @@ let w = 0, h = 0, t = 0, last = 0, raf = 0, scroll = 0, sScroll = 0;
 const ptr = {x: -1e4, y: -1e4, sx: -1e4, sy: -1e4, on: 0, s: 0};
 
 const SWELLS = [
-  {y: .80, amp: 22, len: 900, sp: .30, top: "rgba(43,181,176,.10)", bot: "rgba(13,116,128,.16)"},
+  {y: .80, amp: 22, len: 900, sp: .30, top: "rgba(76,141,255,.10)", bot: "rgba(26,79,214,.16)"},
   {y: .86, amp: 18, len: 650, sp: -.42, top: "rgba(58,141,222,.10)", bot: "rgba(13,92,115,.18)"},
-  {y: .92, amp: 14, len: 480, sp: .55, top: "rgba(43,181,176,.12)", bot: "rgba(13,92,115,.15)"},
+  {y: .92, amp: 14, len: 480, sp: .55, top: "rgba(76,141,255,.12)", bot: "rgba(13,92,115,.15)"},
 ];
 let glints = [];
 
@@ -47,9 +47,9 @@ function lines(){
     }
     const g = ctx.createLinearGradient(0, 0, w, 0);
     const a = .30 - i * .012, s = (Math.sin(t * .5 + i * .6) + 1) / 2;
-    g.addColorStop(0, `rgba(13,116,128,${a * .5})`);
-    g.addColorStop(.15 + .7 * s, `rgba(43,181,176,${a * 1.25})`);
-    g.addColorStop(1, `rgba(13,116,128,${a * .5})`);
+    g.addColorStop(0, `rgba(26,79,214,${a * .5})`);
+    g.addColorStop(.15 + .7 * s, `rgba(76,141,255,${a * 1.25})`);
+    g.addColorStop(1, `rgba(26,79,214,${a * .5})`);
     ctx.strokeStyle = g; ctx.stroke();
   }
 }

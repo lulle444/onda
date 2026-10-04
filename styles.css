@@ -5,7 +5,7 @@
   --glass:rgba(255,255,255,.64); --glass-strong:rgba(255,255,255,.86); --glass-edge:rgba(255,255,255,.9);
   --surface:#FFFFFF; --surface-2:#F1F6FA;
   --ink:#0A2340; --muted:#5A6E84; --line:rgba(10,35,64,.10);
-  --accent:#0D7480; --accent-2:#2BB5B0; --chart-1:#0A8FA0; --chart-2:#C2762B; --accent-soft:#DDF1F0; --accent-ink:#FFFFFF;
+  --accent:#1A4FD6; --accent-2:#4C8DFF; --chart-1:#2F6BFF; --chart-2:#C2762B; --accent-soft:#E1EAFE; --accent-ink:#FFFFFF;
   --low:#1F7A4B; --low-soft:#DCF0E4; --mid:#9A6200; --mid-soft:#F6EACB; --high:#B03A26; --high-soft:#F7E0DA;
   --shadow:0 24px 60px -28px rgba(10,35,64,.35), 0 2px 6px -2px rgba(10,35,64,.08);
   --display:"Montserrat", "Avenir Next", "Segoe UI", sans-serif;
@@ -16,7 +16,7 @@
 html{scroll-behavior:smooth}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 body{margin:0;color:var(--ink);font:15px/1.6 var(--body);
-  background:radial-gradient(1200px 600px at 85% -10%, #D4ECF3 0%, transparent 60%),
+  background:radial-gradient(1200px 600px at 85% -10%, #D6E2FA 0%, transparent 60%),
              radial-gradient(900px 500px at -10% 30%, #E4EEF8 0%, transparent 60%),
              linear-gradient(180deg, #F6F9FC 0%, var(--ground) 40%, var(--ground-2) 100%);
   background-attachment:fixed}
@@ -39,7 +39,7 @@ section{scroll-margin-top:90px}
 .logo{display:inline-flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink)}
 .logo img{width:36px;height:36px;flex:none}
 .logo .word{font:600 16px/1 var(--display);letter-spacing:.2em}
-.logo .word b{font-weight:600;color:#1F5BEF}
+.logo .word b{font-weight:600;color:var(--accent)}
 .navlinks{display:flex;align-items:center;gap:4px}
 .navlinks a{white-space:nowrap;font:500 13px/1 var(--body);color:var(--muted);text-decoration:none;padding:9px 12px;border-radius:999px}
 .navlinks a:hover{color:var(--ink);background:rgba(255,255,255,.7)}
@@ -242,8 +242,8 @@ a.feature:hover{transform:translateY(-3px)}
 
 /* drifting light behind the tide canvas; transform-only animation stays on the compositor */
 body::before,body::after{content:"";position:fixed;inset:-25%;z-index:0;pointer-events:none;will-change:transform}
-body::before{background:radial-gradient(38% 34% at 22% 28%, rgba(43,181,176,.22), transparent 70%),
-                        radial-gradient(34% 30% at 70% 78%, rgba(13,116,128,.14), transparent 70%);
+body::before{background:radial-gradient(38% 34% at 22% 28%, rgba(76,141,255,.22), transparent 70%),
+                        radial-gradient(34% 30% at 70% 78%, rgba(26,79,214,.14), transparent 70%);
   animation:drift-a 26s ease-in-out infinite alternate}
 body::after{background:radial-gradient(40% 36% at 78% 30%, rgba(58,141,222,.17), transparent 70%),
                        radial-gradient(30% 28% at 38% 66%, rgba(150,220,235,.26), transparent 70%);

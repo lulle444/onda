@@ -8,7 +8,7 @@ const fs = require("fs"), path = require("path");
 let logo;
 const logoUri = () => logo || (logo = "data:image/png;base64," + fs.readFileSync(path.join(__dirname, "..", "assets", "logo-mark.png")).toString("base64"));
 
-const C = {ink: "#0A2340", muted: "#5A6E84", accent: "#0D7480", up: "#1F7A4B", down: "#B03A26", card: "rgba(255,255,255,0.78)", edge: "rgba(10,35,64,0.08)"};
+const C = {ink: "#0A2340", muted: "#5A6E84", accent: "#1A4FD6", up: "#1F7A4B", down: "#B03A26", card: "rgba(255,255,255,0.78)", edge: "rgba(10,35,64,0.08)"};
 
 const usd = v => {
   const a = Math.abs(v), s = v < 0 ? "−" : "";
@@ -79,7 +79,7 @@ function card(c, logo){
     h({alignItems: "center", justifyContent: "space-between"},
       h({alignItems: "center"},
         {type: "img", props: {src: logo, width: 52, height: 52, style: {marginRight: 16}}},
-        h({fontFamily: "Montserrat", fontWeight: 600, fontSize: 28, letterSpacing: 6, color: C.ink}, "BASE", h({color: "#1F5BEF"}, "WATCH"))),
+        h({fontFamily: "Montserrat", fontWeight: 600, fontSize: 28, letterSpacing: 6, color: C.ink}, "BASE", h({color: C.accent}, "WATCH"))),
       h({fontFamily: "Montserrat", fontWeight: 600, fontSize: 20, letterSpacing: 5, color: C.accent, textTransform: "uppercase"}, c.eyebrow)),
     h({flexDirection: "column", marginTop: 46, flex: 1},
       h({fontFamily: "Montserrat", fontWeight: 700, fontSize: 132, lineHeight: 1, color: c.bigColor, letterSpacing: -3}, c.big),
