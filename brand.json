@@ -1,10 +1,10 @@
 {
   "_note": "Everything that names the site. Change it, then run: python3 rebrand.py",
-  "name": "Onda",
-  "slug": "onda",
+  "name": "Basewatch",
+  "slug": "basewatch",
   "wordmark": [
-    "ON",
-    "DA"
+    "BASE",
+    "WATCH"
   ],
   "host": "onda-plum.vercel.app",
   "apex": "onda-plum.vercel.app",

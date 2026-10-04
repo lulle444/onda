@@ -17,9 +17,9 @@ module.exports = async function handler(req, res){
       {command: "new", description: "Get told about new pools"},
       {command: "weekly", description: "Monday recap of the week, ready to share"},
       {command: "stop", description: "Remove all alerts"},
-      {command: "start", description: "How Onda alerts work"},
+      {command: "start", description: "How Basewatch alerts work"},
     ]});
-    await tg("setMyDescription", {description: "Alerts for yields on Base: get a message when a pool's APY crosses your level or when a new pool appears. From Onda."}).catch(() => {});
+    await tg("setMyDescription", {description: "Alerts for yields on Base: get a message when a pool's APY crosses your level or when a new pool appears. From Basewatch."}).catch(() => {});
     const me = await tg("getMe", {});
     res.status(200).json({ok: true, bot: "@" + me.username, webhook: SITE + "/api/telegram"});
   } catch (e) {

@@ -79,7 +79,7 @@ function card(c, logo){
     h({alignItems: "center", justifyContent: "space-between"},
       h({alignItems: "center"},
         {type: "img", props: {src: logo, width: 52, height: 52, style: {marginRight: 16}}},
-        h({fontFamily: "Montserrat", fontWeight: 600, fontSize: 28, letterSpacing: 6, color: C.ink}, "ON", h({color: C.accent}, "DA"))),
+        h({fontFamily: "Montserrat", fontWeight: 600, fontSize: 28, letterSpacing: 6, color: C.ink}, "BASE", h({color: C.accent}, "WATCH"))),
       h({fontFamily: "Montserrat", fontWeight: 600, fontSize: 20, letterSpacing: 5, color: C.accent, textTransform: "uppercase"}, c.eyebrow)),
     h({flexDirection: "column", marginTop: 46, flex: 1},
       h({fontFamily: "Montserrat", fontWeight: 700, fontSize: 132, lineHeight: 1, color: c.bigColor, letterSpacing: -3}, c.big),

@@ -1,4 +1,4 @@
-// Telegram webhook for the Onda alerts bot.
+// Telegram webhook for the Basewatch alerts bot.
 const {send, tg, esc, webhookSecret} = require("../lib/telegram");
 const {redis} = require("../lib/store");
 const {currentPools} = require("../lib/llama");
@@ -22,7 +22,7 @@ async function poolCard(chat, id){
   await redis("SET", ctxKey(chat), id, "EX", 86400);
   const rows = [[{text: `🔔 Above ${up}%`, callback_data: `s|a|${id}|${up}`}]];
   if (down > 0) rows[0].push({text: `🔔 Below ${down}%`, callback_data: `s|b|${id}|${down}`});
-  rows.push([{text: "Open Onda", url: A.SITE + "/yields"}]);
+  rows.push([{text: "Open Basewatch", url: A.SITE + "/yields"}]);
   return send(chat,
     `<b>${esc(p.symbol)} · ${esc(name)}</b>\nAPY now <b>${A.pct(apy)}</b> (30-day avg ${A.pct(p.apyMean30d)})\nTVL ${A.usd(p.tvlUsd)}\n\n` +
     `When should I ping you? Tap a level, or send <code>/above 9</code> or <code>/below 5</code> for your own.`,
@@ -58,7 +58,7 @@ async function list(chat){
     `\n\nNew-pool alerts: <b>${np ? "on" : "off"}</b> · Weekly recap: <b>${wk ? "on" : "off"}</b>`, {reply_markup: {inline_keyboard: rows}});
 }
 
-const WELCOME = `<b>Onda alerts</b> for yields on Base.\n\n` +
+const WELCOME = `<b>Basewatch alerts</b> for yields on Base.\n\n` +
   `• Tap 🔔 next to a pool on ${A.SITE}/yields to get pinged when its APY crosses a level.\n` +
   `• /new to hear about new pools on Base.\n• /weekly for a Monday recap you can share on X.\n• /list to see or remove your alerts.\n• /stop to remove everything.\n\n` +
   `Checked every 15 minutes. Not financial advice.`;
@@ -69,7 +69,7 @@ async function onMessage(m){
   if (c === "/start"){
     const pl = args[0] || "";
     if (pl.startsWith("p_") && UUID.test(pl.slice(2))) return poolCard(chat, pl.slice(2));
-    return send(chat, WELCOME, {reply_markup: {inline_keyboard: [[{text: "🆕 Alert me about new pools", callback_data: "n|on"}], [{text: "Open Onda", url: A.SITE + "/yields"}]]}});
+    return send(chat, WELCOME, {reply_markup: {inline_keyboard: [[{text: "🆕 Alert me about new pools", callback_data: "n|on"}], [{text: "Open Basewatch", url: A.SITE + "/yields"}]]}});
   }
   if (c === "/above" || c === "/below"){
     const id = await redis("GET", ctxKey(chat));

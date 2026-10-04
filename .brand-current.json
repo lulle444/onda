@@ -1,9 +1,9 @@
 {
-  "name": "Onda",
-  "slug": "onda",
+  "name": "Basewatch",
+  "slug": "basewatch",
   "wordmark": [
-    "ON",
-    "DA"
+    "BASE",
+    "WATCH"
   ],
   "host": "onda-plum.vercel.app",
   "apex": "onda-plum.vercel.app",

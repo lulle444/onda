@@ -19,7 +19,7 @@ module.exports = async function handler(req, res){
       return res.status(200).json({skipped: "already sent this week", week: r.week});
     await redis("SET", A.K.weeklyTvl, String(Math.round(r.tvl)));
     const subs = await redis("SMEMBERS", A.K.weekly) || [];
-    const markup = {inline_keyboard: [[{text: "Post on X", url: shareUrl(r.text)}], [{text: "Open Onda", url: A.SITE}]]};
+    const markup = {inline_keyboard: [[{text: "Post on X", url: shareUrl(r.text)}], [{text: "Open Basewatch", url: A.SITE}]]};
     const results = await Promise.allSettled(subs.map(c => send(c, esc(r.text), {reply_markup: markup})));
     const failed = results.filter(x => x.status === "rejected");
     failed.forEach(x => console.error("weekly send failed:", x.reason && x.reason.message));

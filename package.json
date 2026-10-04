@@ -1,5 +1,5 @@
 {
-  "name": "onda",
+  "name": "basewatch",
   "private": true,
   "description": "Yield tracker for Base. Static pages plus Vercel functions in /api.",
   "dependencies": {
