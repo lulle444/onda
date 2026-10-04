@@ -39,7 +39,7 @@ section{scroll-margin-top:90px}
 .logo{display:inline-flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink)}
 .logo img{width:36px;height:36px;flex:none}
 .logo .word{font:600 16px/1 var(--display);letter-spacing:.2em}
-.logo .word b{font-weight:600;color:var(--accent)}
+.logo .word b{font-weight:600;color:#1F5BEF}
 .navlinks{display:flex;align-items:center;gap:4px}
 .navlinks a{white-space:nowrap;font:500 13px/1 var(--body);color:var(--muted);text-decoration:none;padding:9px 12px;border-radius:999px}
 .navlinks a:hover{color:var(--ink);background:rgba(255,255,255,.7)}
