@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Base pulse · Onda</title>
+<meta name="description" content="Base at a glance: daily DEX volume, fees and TVL, the busiest DEXs this week, and what a swap costs next to Ethereum.">
+<link rel="canonical" href="https://onda-plum.vercel.app/pulse">
+<link rel="icon" type="image/png" href="/assets/favicon.png">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<meta property="og:title" content="Base pulse · Onda">
+<meta property="og:description" content="Base at a glance: daily DEX volume, fees and TVL, the busiest DEXs this week, and what a swap costs next to Ethereum.">
+<meta property="og:url" content="https://onda-plum.vercel.app/pulse">
+<meta property="og:image" content="https://onda-plum.vercel.app/assets/og.jpg">
+<meta name="twitter:image" content="https://onda-plum.vercel.app/assets/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@useonda">
+<meta name="theme-color" content="#EDF3F8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Montserrat:wght@500;600;700&display=swap">
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<canvas id="tide" aria-hidden="true"></canvas>
+<div class="wrap">
+  <nav class="nav glass" aria-label="Main">
+    <a class="logo" href="/" aria-label="Onda home"><img src="/assets/logo-mark.png" alt="" width="36" height="36"><span class="word">ON<b>DA</b></span></a>
+    <div class="navlinks">
+      <a href="/yields">Yields</a>
+      <a href="/calculator">Calculator</a>
+      <a href="/new">New</a>
+    <a href="/pulse" aria-current="page">Pulse</a>
+      <a href="/risk">Risk score</a>
+      <a href="/learn">Learn</a>
+    </div>
+    <div class="source" id="source"><span class="dot" id="dot"></span><span id="sourceText">Loading data…</span></div>
+  </nav>
+  <div class="mobilenav" aria-label="Sections">
+    <a href="/yields">Yields</a>
+    <a href="/calculator">Calculator</a>
+    <a href="/new">New</a>
+    <a href="/pulse" aria-current="page">Pulse</a>
+    <a href="/risk">Risk score</a>
+    <a href="/learn">Learn</a>
+  </div>
+
+  <header class="pagehead">
+    <div>
+      <p class="eyebrow">Base pulse</p>
+      <h1>How Base is doing</h1>
+      <p class="lede">Daily trading, fees and deposits on Base, the DEXs doing the most business this week, and what a swap costs right now. Updated every 10 minutes.</p>
+      <p class="verdict" id="verdict">Loading the latest numbers…</p>
+    </div>
+  </header>
+
+  <section class="gauge glass" aria-label="Key figures">
+    <div><small>DEX volume / day</small><strong id="gVol">–</strong><span id="gVolSub">&nbsp;</span></div>
+    <div><small>Fees / day</small><strong id="gFees">–</strong><span id="gFeesSub">&nbsp;</span></div>
+    <div><small>TVL</small><strong id="gTvl">–</strong><span id="gTvlSub">&nbsp;</span></div>
+    <div><small>Swap cost now</small><strong id="gSwap">–</strong><span id="gSwapSub">&nbsp;</span></div>
+  </section>
+
+  <section class="tablepanel glass pulsechart" aria-labelledby="chartTitle">
+    <div class="gchead">
+      <div><h2 id="chartTitle">DEX volume per day</h2><p>Daily totals from DefiLlama.</p></div>
+      <div class="gctools">
+        <div class="chips" role="group" aria-label="Metric">
+          <button class="chip" data-metric="volume" aria-pressed="true">Volume</button>
+          <button class="chip" data-metric="fees" aria-pressed="false">Fees</button>
+          <button class="chip" data-metric="tvl" aria-pressed="false">TVL</button>
+        </div>
+        <div class="chips" role="group" aria-label="Time range">
+          <button class="chip" data-range="30" aria-pressed="false">30d</button>
+          <button class="chip" data-range="90" aria-pressed="true">90d</button>
+          <button class="chip" data-range="365" aria-pressed="false">1y</button>
+        </div>
+      </div>
+    </div>
+    <div class="gcplot" id="gcplot"><p class="muted">Loading…</p></div>
+    <p class="gcnote" id="gcnote"></p>
+  </section>
+
+  <div class="twocol block-sm">
+    <section class="scard glass" aria-labelledby="mixH">
+      <header><h2 id="mixH">Who gets the trades</h2></header>
+      <p>Each DEX’s share of Base’s volume over the last 7 days.</p>
+      <div class="bars" id="mixBars"><p class="muted">Loading…</p></div>
+      <p id="mixNote"></p>
+    </section>
+    <section class="scard glass" aria-labelledby="gasH">
+      <header><h2 id="gasH">What a swap costs now</h2></header>
+      <div class="tablebox">
+        <table>
+          <thead><tr><th>Chain</th><th class="r">Gas (gwei)</th><th class="r">Swap</th></tr></thead>
+          <tbody id="gasRows"><tr><td colspan="3" class="empty">Loading…</td></tr></tbody>
+        </table>
+      </div>
+      <p id="gasNote"></p>
+    </section>
+  </div>
+
+  <section class="tablepanel glass block-sm" aria-labelledby="protoH">
+    <div class="sectionhead"><div><h2 id="protoH">Busiest DEXs this week</h2><p class="sub">Trading volume per protocol on Base, this week against the week before.</p></div></div>
+    <div class="tablebox">
+      <table>
+        <thead><tr>
+          <th>Protocol</th><th>Type</th>
+          <th class="r">Volume 24h</th><th class="r">Volume 7d</th>
+          <th class="r">vs week before</th><th class="r">Fees 24h</th>
+        </tr></thead>
+        <tbody id="rows"><tr><td colspan="6" class="empty">Loading protocols…</td></tr></tbody>
+      </table>
+    </div>
+  </section>
+
+  <div class="nextsteps">
+    <a class="glass" href="/yields"><p class="eyebrow">Earn on Base</p><h3>Live yields →</h3><p>Every yield pool on Base, ranked by return and weighed by a transparent risk score.</p></a>
+    <a class="glass" href="/new"><p class="eyebrow">What’s new</p><h3>Fresh on Base →</h3><p>Pools and protocols that arrived in the last weeks, scored from day one.</p></a>
+  </div>
+
+  <footer class="sitefoot">
+    <div class="footgrid">
+      <div class="footbrand">
+        <a class="logo" href="/" aria-label="Onda home"><img src="/assets/logo-mark.png" alt="" width="26" height="26"><span class="word">ON<b>DA</b></span></a>
+        <p>Independent yield comparison for Base. Live on-chain data, a transparent risk score and no paid placements.</p>
+        <a class="social" href="https://x.com/useonda" target="_blank" rel="noopener me" aria-label="Onda on X"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>@useonda</a>
+      </div>
+      <nav aria-label="Product"><h4>Product</h4><a href="/yields">Yields</a><a href="/calculator">Calculator</a><a href="/new">New on Base</a><a href="/pulse">Base pulse</a><a href="/risk">Risk score</a><a href="https://t.me/ondaalert_bot" target="_blank" rel="noopener">Telegram alerts</a></nav>
+      <nav aria-label="Learn"><h4>Learn</h4><a href="/learn">Yield guide</a><a href="/learn#checklist">Before you deposit</a><a href="/#faq">FAQ</a></nav>
+      <nav aria-label="Company"><h4>Company</h4><a href="/about">About</a><a href="/about#disclaimer">Disclaimer</a><a href="https://x.com/useonda" target="_blank" rel="noopener">X / Twitter</a></nav>
+    </div>
+    <div class="footbase">
+      <span>© 2026 Onda. Not financial advice. Yields are variable and can turn negative.</span>
+      <span id="updated"></span>
+    </div>
+  </footer>
+</div>
+<script src="/chart.js"></script>
+<script src="/pulse.js"></script>
+<script src="/tide.js"></script>
+<script>window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };</script>
+<script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>

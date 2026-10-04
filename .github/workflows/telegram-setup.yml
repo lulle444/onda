@@ -15,4 +15,5 @@ jobs:
           curl -sS -m 60 "$S/api/pools" | python3 -c 'import json,sys; d=json.load(sys.stdin); p=d if isinstance(d,list) else d.get("pools",d.get("data",[])); print("pools:", len(p), "| not outliers:", sum(1 for x in p if not x.get("outlier")))'
           curl -sS -m 60 "$S/api/pools" | python3 -c 'import json,sys,collections; d=json.load(sys.stdin)["data"]; print("chains:", collections.Counter(x["chain"] for x in d)); print("tvl:", round(sum(x["tvlUsd"] for x in d)/1e9,2), "B"); [print(x["symbol"], x["project"], round(x.get("apyMean30d") or 0,2), round(x["tvlUsd"]/1e6,1)) for x in sorted([x for x in d if x["tvlUsd"]>=1e6 and not x.get("outlier")], key=lambda x: -(x.get("apyMean30d") or 0))[:8]]'
           echo; curl -sS -m 90 "$S/api/weekly" | head -c 1200; echo
+          echo; curl -sS -m 90 "$S/api/pulse" | python3 -c 'import json,sys; d=json.load(sys.stdin); s=d.get("series",{}); print("pulse:", {k: (len(v), v[-1] if v else None) for k,v in s.items()}); print("top dexs:", [(p["name"], round((p.get("vol7d") or 0)/1e6)) for p in d.get("protocols",[])[:5]]); print("gas:", d.get("gas")); print("error:", d.get("error"))'
 
