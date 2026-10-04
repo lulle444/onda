@@ -227,16 +227,16 @@ function best(kind){
 }
 const bestSub = p => `${p.symbol} on ${p.name}` + (p.tvlUsd < 1e6 || p.band === "high" ? ` · ${BAND_LABEL[p.band]} risk, ${fmtUsd(p.tvlUsd)} TVL` : "");
 
-// Front-page card: the three best 30-day APYs among pools big enough to matter.
+// Front-page card: the three best 30-day APYs among pools big enough to matter ($5M+ on Base).
 function renderTopNow(){
   const el = $("topNow"); if (!el) return;
-  const top = state.pools.filter(p => !p.outlier && p.apyMean30d > 0 && p.tvlUsd >= 1e6)
+  const top = state.pools.filter(p => !p.outlier && p.apyMean30d > 0 && p.tvlUsd >= 5e6)
     .sort((a,b) => b.apyMean30d - a.apyMean30d).slice(0, 3);
   el.innerHTML = top.length ? top.map((p,i) => `<li>
       <span class="tn-n">0${i+1}</span>
       <span class="tn-a"><b>${esc(p.symbol)}</b><small>${esc(p.name)} · ${fmtUsd(p.tvlUsd)} TVL</small></span>
       <span class="tn-y">${fmtPct(p.apyMean30d)}<br><span class="risk ${p.band}">${BAND_LABEL[p.band]} ${p.score}</span></span>
-    </li>`).join("") : `<li class="tn-empty">No pools above $1M TVL yet.</li>`;
+    </li>`).join("") : `<li class="tn-empty">No pools above $5M TVL yet.</li>`;
 }
 
 function renderGauge(){
