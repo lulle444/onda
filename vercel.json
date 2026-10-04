@@ -18,6 +18,17 @@
   },
   "redirects": [
     {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "onda-plum.vercel.app"
+        }
+      ],
+      "destination": "https://usebasewatch.vercel.app/:path*",
+      "permanent": true
+    },
+    {
       "source": "/tripod",
       "destination": "https://usetripod.org/",
       "permanent": false
