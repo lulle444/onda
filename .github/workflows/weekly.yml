@@ -11,5 +11,5 @@ jobs:
     timeout-minutes: 3
     steps:
       - run: |
-          curl -sf -o /dev/null --max-time 20 https://onda-plum.vercel.app/ || { echo "site not live yet"; exit 0; }
-          curl -fsS --max-time 90 "https://onda-plum.vercel.app/api/weekly?send=1"
+          curl -sf -o /dev/null --max-time 20 https://usebasewatch.vercel.app/ || { echo "site not live yet"; exit 0; }
+          curl -fsS --max-time 90 "https://usebasewatch.vercel.app/api/weekly?send=1"

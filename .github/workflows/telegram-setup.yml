@@ -8,10 +8,10 @@ jobs:
     steps:
       - run: |
           set +e
-          for U in https://onda-plum.vercel.app/ https://onda-plum.vercel.app/yields https://onda-plum.vercel.app/api/pools https://onda-plum.vercel.app/api/og?p=home; do
+          for U in https://onda-plum.vercel.app/ https://usebasewatch.vercel.app/ https://usebasewatch.vercel.app/yields https://usebasewatch.vercel.app/api/pools https://usebasewatch.vercel.app/api/og?p=home; do
             curl -sS -m 30 -o /dev/null "$U" -w "$U -> %{http_code} %{content_type} %{size_download}B %{redirect_url}\n"; done
-          echo; curl -sS -m 60 https://onda-plum.vercel.app/api/telegram-setup; echo
-          S=https://onda-plum.vercel.app
+          echo; curl -sS -m 60 https://usebasewatch.vercel.app/api/telegram-setup; echo
+          S=https://usebasewatch.vercel.app
           curl -sS -m 60 "$S/api/pools" | python3 -c 'import json,sys; d=json.load(sys.stdin); p=d if isinstance(d,list) else d.get("pools",d.get("data",[])); print("pools:", len(p), "| not outliers:", sum(1 for x in p if not x.get("outlier")))'
           curl -sS -m 60 "$S/api/pools" | python3 -c 'import json,sys,collections; d=json.load(sys.stdin)["data"]; print("chains:", collections.Counter(x["chain"] for x in d)); print("tvl:", round(sum(x["tvlUsd"] for x in d)/1e9,2), "B"); [print(x["symbol"], x["project"], round(x.get("apyMean30d") or 0,2), round(x["tvlUsd"]/1e6,1)) for x in sorted([x for x in d if x["tvlUsd"]>=1e6 and not x.get("outlier")], key=lambda x: -(x.get("apyMean30d") or 0))[:8]]'
           echo; curl -sS -m 90 "$S/api/weekly" | head -c 1200; echo

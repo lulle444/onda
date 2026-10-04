@@ -1,6 +1,6 @@
 # Basewatch
 
-Live at https://onda-plum.vercel.app (Telegram alerts: @ondaalert_bot).
+Live at https://usebasewatch.vercel.app (Telegram alerts: @ondaalert_bot).
 
 Yield comparison for stablecoins, ETH and everything else on Base.
 
