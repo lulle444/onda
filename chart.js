@@ -15,7 +15,8 @@ const fmtWhen = (t, daily) => new Date(t).toLocaleString("en-US", daily ? {weekd
 /* opts: series [{name, cls, pts:[[t, v], ...]}] (all series share the first one's timestamps),
    fmt(v) for axis and tooltip values, t0/t1 (x domain), include [values the y-axis must show],
    band {lo, hi, label}, zero (draw a stronger 0 line), breakMs (gap that splits the line),
-   daily (tooltip dates without times), extra(i) -> extra tooltip line, label (for screen readers). */
+   daily (tooltip dates without times), extra(i) -> extra tooltip line, label (for screen readers),
+   marks [{t, label}] (dashed vertical lines at moments worth pointing out). */
 function draw(box, o){
   const main = o.series[0].pts;
   if (!main.length){ box.innerHTML = `<p class="muted">No readings in this range yet.</p>`; return; }
@@ -39,6 +40,7 @@ function draw(box, o){
   box.innerHTML = `<svg class="gcsvg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img" tabindex="0" aria-label="${esc(o.label)} Latest ${esc(o.fmt(last[1]))}. Use the arrow keys to read values.">
       ${o.band ? `<rect class="fairband" x="${L}" y="${y(o.band.hi)}" width="${W - L - R}" height="${y(o.band.lo) - y(o.band.hi)}"/><text class="fairlbl" x="${W - R - 6}" y="${y(o.band.hi) + 12}" text-anchor="end">${esc(o.band.label)}</text>` : ""}
       ${ticks.map(v => `<line class="${o.zero && Math.abs(v) < step / 1e6 ? "zero" : "grid"}" x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}"/><text class="ylbl" x="${L - 8}" y="${y(v) + 4}" text-anchor="end">${esc(o.axisFmt ? o.axisFmt(v) : o.fmt(v))}</text>`).join("")}
+      ${(o.marks || []).filter(m => m.t >= t0 && m.t <= t1).map(m => `<line class="mark" x1="${x(m.t)}" x2="${x(m.t)}" y1="${T}" y2="${H - B}"/><text class="marklbl" x="${x(m.t) + (x(m.t) > W - 140 ? -6 : 6)}" y="${T + 12}" text-anchor="${x(m.t) > W - 140 ? "end" : "start"}">${esc(m.label)}</text>`).join("")}
       ${xt.map(t => `<text class="xlbl" x="${x(t)}" y="${H - 6}" text-anchor="middle">${esc(fmtAxisTime(t, t1 - t0))}</text>`).join("")}
       ${lines.slice().reverse().map(l => `<path class="gline ${l.s.cls || ""}" d="${l.d}"/>${l.lone.map(p => `<circle class="gdot ${l.s.cls || ""}" cx="${x(p[0])}" cy="${y(p[1])}" r="4"/>`).join("")}`).join("")}
       <circle class="gdot end" cx="${x(last[0])}" cy="${y(last[1])}" r="4"/>

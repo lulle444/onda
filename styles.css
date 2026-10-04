@@ -173,7 +173,7 @@ tbody tr:hover{background:#F5FAFC}
 .bars{display:flex;flex-direction:column;gap:9px}
 .bar{display:grid;grid-template-columns:78px minmax(0,1fr) 62px;gap:8px;align-items:center;font-size:12.5px}
 .bar .track{height:10px;background:rgba(10,35,64,.07);border-radius:99px;overflow:hidden}
-.bar .fill{height:100%;background:#9AAAB9;border-radius:99px}
+.bar .fill{display:block;height:100%;background:#9AAAB9;border-radius:99px}
 .bar.defi .fill{background:linear-gradient(90deg,var(--accent),var(--accent-2))}
 .bar .v{text-align:right;font-family:var(--mono)}
 .scard p{margin:0;font-size:13px;color:var(--muted)}
@@ -385,6 +385,8 @@ tr.detail:hover{background:transparent}
 .gclegend .key{transform:none}
 .gcsvg .gline.base{stroke:var(--chart-2);stroke-width:1.5;stroke-dasharray:5 4}
 .gcsvg .gdot.base{fill:var(--chart-2)}
+.gcsvg .mark{stroke:var(--chart-2);stroke-width:1.5;stroke-dasharray:4 4}
+.gcsvg .marklbl{font:500 11px var(--body);fill:var(--chart-2)}
 .gcnote{margin:8px 0 0;font-size:12.5px;color:var(--muted)}
 .gcnote:empty{display:none}
 @media (prefers-reduced-motion:reduce){.chev{transition:none}}
@@ -440,3 +442,12 @@ button.wallet .tag{margin-left:8px}
 .livetrade.buy b{color:var(--low)} .livetrade.sell b{color:var(--high)}
 .lt-main small{font-size:12px;color:var(--muted)}
 .liveempty{color:var(--muted);font-size:13.5px;padding:6px 0}
+
+/* after free gas */
+.verdict{font:600 18px/1.45 var(--display);color:var(--ink);max-width:56ch;margin:0 0 8px;padding-left:14px;border-left:3px solid var(--chart-2)}
+.scard h2{font-size:20px;margin:0}
+.scard .tablebox table{min-width:0}
+.scard .bar{grid-template-columns:96px minmax(0,1fr) 70px}
+tr.here td{font-weight:600;background:var(--accent-soft)}
+.tag.meme{background:var(--mid-soft);color:var(--mid)}
+@media (max-width:760px){.scard .tablebox th,.scard .tablebox td{padding:10px}}

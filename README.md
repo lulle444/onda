@@ -4,7 +4,7 @@ Live at https://onda-plum.vercel.app (Telegram alerts: @ondaalert_bot).
 
 Yield comparison for stock tokens and stablecoins on Robinhood Chain.
 
-- Static pages, no build step: `index.html` (home), `yields.html`, `calculator.html`, `stock-yield.html`, `stocks.html`, `new.html`, `risk.html`, `learn.html`, `about.html`, sharing `styles.css`, `app.js`, `chart.js` (the SVG line chart) and `tide.js`. `vercel.json` turns on clean URLs (`/yields`, `/calculator`, ...).
+- Static pages, no build step: `index.html` (home), `yields.html`, `calculator.html`, `stock-yield.html`, `stocks.html`, `new.html`, `chain.html`, `risk.html`, `learn.html`, `about.html`, sharing `styles.css`, `app.js`, `chart.js` (the SVG line chart) and `tide.js`. `vercel.json` turns on clean URLs (`/yields`, `/calculator`, ...).
 - Data is fetched live in the browser from DefiLlama: `yields.llama.fi/pools` (filtered to `chain == "Robinhood Chain"`) and `api.llama.fi/protocols` (audits, protocol age).
 - If data can't be loaded, clearly labelled sample data is shown instead.
 
@@ -13,6 +13,8 @@ Data: `api/pools.js` is a Vercel function that fetches DefiLlama, keeps only Rob
 Pool history: tapping a pool's asset opens its APY chart. `api/pool-history.js` proxies DefiLlama's daily `yields.llama.fi/chart/<pool>` (cached for an hour); the page falls back to DefiLlama directly.
 
 New on the chain: `new.html` (rendered by `app.js` when `<body data-page="new">`) lists pools first seen in the last 7/30/90 days and the protocols they belong to. `api/new.js` returns each pool's first-seen date: the first day in DefiLlama's history for that pool, looked up once and kept in Redis (`tw:firstseen`).
+
+After free gas: `chain.html` + `chain.js` show how Robinhood Chain changed after the 90-day gas subsidy ended on 29 September 2026. `/api/chain` (rewritten in `vercel.json` to `api/pools.js?view=chain`, since the Hobby plan allows 12 functions; built in `lib/pulse.js`) returns DefiLlama's daily DEX volume, fees and TVL for the chain, each protocol's average daily volume the week before against the days since, the share of volume on memecoin launchpads (DefiLlama category `Launchpad`, plus Pons/hood.fun by name), today's stock-token DEX volume (saved per day in Redis, `on:pulse:stockvol`) and what a ~150k-gas swap costs on Robinhood Chain, Base and Arbitrum from each chain's `eth_gasPrice`. Cached at the CDN for 10 minutes.
 
 Stock tracker: `api/stocks.js` (via `lib/stocks.js`) merges Robinhood's public stock-token API (`api.robinhood.com/rhj/assets` and `/prices`, the reference price per token) with DexScreener's Robinhood Chain pools (the on-chain price in each token's deepest pool), cached at the CDN for 60 seconds. `stocks.html` renders it with `stocks.js` instead of `app.js`.
 

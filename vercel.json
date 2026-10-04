@@ -23,6 +23,10 @@
     {
       "source": "/api/live-trades",
       "destination": "/api/leaderboard?live=1"
+    },
+    {
+      "source": "/api/chain",
+      "destination": "/api/pools?view=chain"
     }
   ],
   "redirects": [

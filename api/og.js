@@ -5,6 +5,7 @@ const {currentPools} = require("../lib/llama");
 const {currentStocks, usable} = require("../lib/stocks");
 const A = require("../lib/alerts");
 const lb = require("../lib/leaderboard");
+const {currentPulse, compare} = require("../lib/pulse");
 const fs = require("fs"), path = require("path");
 
 let logo;
@@ -95,6 +96,18 @@ const CARDS = {
       label: `new yield pool${fresh.length === 1 ? "" : "s"} on Robinhood Chain in the last 30 days`,
       stats: [(n => [fmtN(n), n === 1 ? "protocol behind them" : "protocols behind them"])(new Set(fresh.map(p => p.project)).size), [usd(fresh.reduce((s, p) => s + (p.tvlUsd || 0), 0)), "deposited in them"], [fmtN(data.length), "pools in total"]],
       path: "/new",
+    };
+  },
+  async chain(){
+    const d = await currentPulse(A.SITE);
+    const vol = compare(d.series.volume), fees = compare(d.series.fees), tvl = compare(d.series.tvl);
+    const rh = d.gas && d.gas.chains.find(c => c.chain === "Robinhood Chain");
+    const ch = c => c == null ? "–" : (c > 0 ? "+" : c < 0 ? "−" : "") + Math.abs(Math.round(c * 100)) + "%";
+    return {
+      eyebrow: "After free gas", big: ch(vol.change), bigColor: vol.change < 0 ? C.down : C.up,
+      label: `Robinhood Chain DEX volume ${vol.days ? "since" : "on the first day after"} the gas subsidy ended, against the week before`,
+      stats: [[usd(vol.now || 0), "DEX volume a day"], [ch(tvl.change), "TVL, same comparison"], [fees.now != null ? usd(fees.now) : rh && rh.swapUsd != null ? "$" + rh.swapUsd.toFixed(3) : "–", fees.now != null ? "fees a day" : "for a swap now"]],
+      path: "/chain",
     };
   },
 };
