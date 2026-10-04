@@ -451,3 +451,25 @@ button.wallet .tag{margin-left:8px}
 tr.here td{font-weight:600;background:var(--accent-soft)}
 .tag.meme{background:var(--mid-soft);color:var(--mid)}
 @media (max-width:760px){.scard .tablebox th,.scard .tablebox td{padding:10px}}
+/* pool tables on phones: each pool becomes a compact card so APY and risk stay visible without side-scrolling */
+@media (max-width:700px){
+  .pooltable{min-width:0}
+  .pooltable thead{display:none}
+  .pooltable tbody tr:not(.detail){display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:14px;row-gap:4px;align-items:center;padding:14px 14px;border-bottom:1px solid var(--line)}
+  .pooltable tbody tr:last-child{border-bottom:0}
+  .pooltable tbody tr:not(.detail) td{border:0;padding:0;min-width:0}
+  .pooltable td[colspan]{grid-column:1/-1}
+  .pooltable tbody tr:not(.detail) td:nth-last-child(6){grid-column:1;grid-row:1}
+  .pooltable tbody tr:not(.detail) td:nth-last-child(5){grid-column:1;grid-row:2}
+  .pooltable tbody tr:not(.detail) td:nth-last-child(4){grid-column:2;grid-row:1;text-align:right}
+  .pooltable tbody tr:not(.detail) td:nth-last-child(1){grid-column:2;grid-row:2;justify-self:end}
+  .pooltable tbody tr:not(.detail) td:nth-last-child(3){grid-column:1;grid-row:3;text-align:left;font-size:12.5px;color:var(--muted)}
+  .pooltable tbody tr:not(.detail) td:nth-last-child(2){grid-column:2;grid-row:3;text-align:right;font-size:12.5px;color:var(--muted)}
+  .pooltable tbody tr:not(.detail) td:nth-last-child(3)::before{content:"30d avg. "}
+  .pooltable tbody tr:not(.detail) td:nth-last-child(2)::before{content:"TVL "}
+  .pooltable tbody tr:not(.detail) td:nth-last-child(7){grid-column:1/-1;grid-row:4;text-align:left;font-size:12.5px}
+  .pooltable tbody tr:not(.detail) td:nth-last-child(7)::before{content:"First seen "}
+  .pooltable tbody tr:not(.detail) td:nth-last-child(2),.pooltable tbody tr:not(.detail) td:nth-last-child(3){white-space:nowrap}
+  .pooltable .apy{font-size:17px}
+  .pooltable .riskcell{justify-content:flex-end}
+}
