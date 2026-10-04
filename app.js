@@ -8,6 +8,8 @@ const TG_BOT = "ondaalert_bot";   // Telegram alerts bot username, without @. Em
 
 const STABLES = /^(USD|USDC|USDT|USDG|USDE|SUSDE|DAI|SDAI|USDS|SUSDS|PYUSD|FRAX|GHO|USD0|RLUSD|USDX|EURC|STEAKUSDG|STEAKUSDC)/;
 // ETH and its liquid-staking / restaking wrappers (wstETH, cbETH, weETH, superOETHb, ...).
+// Bitcoin wrappers on Base (Coinbase cbBTC, tBTC, LBTC, ...).
+const BTCS = /^(CB|T|L|W|E|F|SOLV|UNI|U)?BTC(B|\.B)?$|^SOLVBTC/;
 const ETHS = /^(W|WST|ST|CB|R|WE|EZ|RS|WRS|SUPERO|O|PUF|M|BSD|YO|S|EETH|AA)?ETH(X|B)?$/;
 
 const PAGE_LIMIT = +document.body.dataset.limit || 25;
@@ -38,6 +40,7 @@ function classify(sym, stableFlag){
   const parts = String(sym).toUpperCase().split(/[-\/ ]+/).filter(Boolean);
   if (stableFlag || parts.every(p => STABLES.test(p))) return "stable";
   if (parts.length && parts.every(p => ETHS.test(p))) return "eth";
+  if (parts.length && parts.every(p => BTCS.test(p))) return "btc";
   return "crypto";
 }
 
@@ -191,7 +194,7 @@ function renderTable(){
     const split = (p.apyReward > 0) ? `<span class="apy-split">${fmtPct(p.apyBase || 0)} + ${fmtPct(p.apyReward)} rewards</span>` : "";
     const d = p.d7;
     const delta = (d != null && isFinite(d) && Math.abs(d) >= 0.01) ? `<span class="apy-split delta ${d>0?"up":"down"}">${d>0?"+":""}${d.toFixed(2)} pp 7d</span>` : "";
-    const tag = p.kind === "eth" ? '<span class="tag stock">ETH</span>' : p.kind === "stable" ? '<span class="tag">Stable</span>' : "";
+    const tag = p.kind === "eth" ? '<span class="tag stock">ETH</span>' : p.kind === "btc" ? '<span class="tag stock">BTC</span>' : p.kind === "stable" ? '<span class="tag">Stable</span>' : "";
     const why = `Audit: ${p.audited ? "yes" : "no"} · Age: ${p.ageDays ? Math.round(p.ageDays) + " days" : "unknown"} · IL: ${p.ilRisk === "yes" ? "yes" : "no"}`;
     const canOpen = !state.sample && UUID_RE.test(p.id || ""), open = canOpen && state.open === p.id;
     const asset = `<span class="asset">${esc(p.symbol)}</span>${tag}`;
@@ -241,12 +244,12 @@ function renderTopNow(){
 
 function renderGauge(){
   const tvl = state.pools.reduce((s,p) => s + p.tvlUsd, 0);
-  const s = best("stable"), k = best("eth");
+  const s = best("stable"), k = best("eth"), b = best("btc");
   const sv = s ? fmtPct(s.apyMean30d) : "–", ss = s ? bestSub(s) : "No pools yet";
-  set("gPools", state.pools.length);
-  set("gPoolsSub", new Set(state.pools.map(p => p.project)).size + " protocols");
+  set("gBtc", b ? fmtPct(b.apyMean30d) : "–");
+  set("gBtcSub", b ? bestSub(b) : "No pools yet");
   set("gTvl", fmtUsd(tvl));
-  set("gTvlSub", state.pools.filter(p => p.kind === "eth").length + " ETH and LST pools");
+  set("gTvlSub", state.pools.length.toLocaleString("en-US") + " pools · " + new Set(state.pools.map(p => p.project)).size + " protocols");
   set("gStable", sv); set("gStableSub", ss); set("hStable", sv); set("hStableSub", ss);
   set("gStock", k ? fmtPct(k.apyMean30d) : "–");
   set("gStockSub", k ? bestSub(k) : "No pools yet");
