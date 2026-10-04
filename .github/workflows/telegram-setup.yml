@@ -13,5 +13,6 @@ jobs:
           echo; curl -sS -m 60 https://onda-plum.vercel.app/api/telegram-setup; echo
           S=https://onda-plum.vercel.app
           curl -sS -m 60 "$S/api/pools" | python3 -c 'import json,sys; d=json.load(sys.stdin); p=d if isinstance(d,list) else d.get("pools",d.get("data",[])); print("pools:", len(p), "| not outliers:", sum(1 for x in p if not x.get("outlier")))'
-          curl -sS -m 60 "$S/api/leaderboard" | python3 -c 'import json,sys; d=json.load(sys.stdin); [print("leaderboard", w, {k: v[k] for k in ("hours","wallets","ranked","volume","trades") if k in v}) for w, v in d.get("windows",{}).items()]; print("updated", d.get("updatedAt"), "lastRun", str(d.get("lastRun"))[:200])'
+          curl -sS -m 60 "$S/api/pools" | python3 -c 'import json,sys,collections; d=json.load(sys.stdin)["data"]; print("chains:", collections.Counter(x["chain"] for x in d)); print("tvl:", round(sum(x["tvlUsd"] for x in d)/1e9,2), "B"); [print(x["symbol"], x["project"], round(x.get("apyMean30d") or 0,2), round(x["tvlUsd"]/1e6,1)) for x in sorted([x for x in d if x["tvlUsd"]>=1e6 and not x.get("outlier")], key=lambda x: -(x.get("apyMean30d") or 0))[:8]]'
+          echo; curl -sS -m 90 "$S/api/weekly" | head -c 1200; echo
 

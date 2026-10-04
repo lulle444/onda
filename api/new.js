@@ -1,4 +1,4 @@
-// When each Robinhood Chain pool first appeared, for the "New on the chain" page. The date is the first
+// When each Base pool first appeared, for the "New on the chain" page. The date is the first
 // day DefiLlama tracked the pool; it's looked up once per pool and kept in Redis, then cached at the CDN.
 const {currentPools} = require("../lib/llama");
 const {redis} = require("../lib/store");

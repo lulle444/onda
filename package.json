@@ -1,7 +1,7 @@
 {
   "name": "onda",
   "private": true,
-  "description": "Yield and stock-token tracker for Robinhood Chain. Static pages plus Vercel functions in /api.",
+  "description": "Yield tracker for Base. Static pages plus Vercel functions in /api.",
   "dependencies": {
     "@vercel/og": "0.8.6"
   }

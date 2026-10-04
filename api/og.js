@@ -1,18 +1,14 @@
-// Share-preview images (1200×630 PNG) with today's numbers, one per page: /api/og?p=leaderboard.
+// Share-preview images (1200×630 PNG) with today's numbers, one per page: /api/og?p=new.
 // Pages point their og:image here; X and others fetch it when a link is shared.
 const {redis} = require("../lib/store");
 const {currentPools} = require("../lib/llama");
-const {currentStocks, usable} = require("../lib/stocks");
 const A = require("../lib/alerts");
-const lb = require("../lib/leaderboard");
-const {currentPulse, compare} = require("../lib/pulse");
 const fs = require("fs"), path = require("path");
 
 let logo;
 const logoUri = () => logo || (logo = "data:image/png;base64," + fs.readFileSync(path.join(__dirname, "..", "assets", "logo-mark.png")).toString("base64"));
 
 const C = {ink: "#0A2340", muted: "#5A6E84", accent: "#0D7480", up: "#1F7A4B", down: "#B03A26", card: "rgba(255,255,255,0.78)", edge: "rgba(10,35,64,0.08)"};
-const FAIR = 0.005;
 
 const usd = v => {
   const a = Math.abs(v), s = v < 0 ? "−" : "";
@@ -21,7 +17,6 @@ const usd = v => {
   if (a >= 1e3) return s + "$" + (a / 1e3).toFixed(a >= 1e5 ? 0 : 1) + "k";
   return s + "$" + a.toFixed(0);
 };
-const short = a => a.slice(0, 6) + "…" + a.slice(-4);
 const fmtN = n => n.toLocaleString("en-US");
 
 // tiny element builder for @vercel/og (it takes React-shaped objects)
@@ -53,38 +48,13 @@ const CARDS = {
     const best = pools.filter(p => p.stablecoin && p.tvlUsd >= 1e7).sort((a, b) => A.apyOf(b) - A.apyOf(a))[0];
     const tvl = data.reduce((s, p) => s + (p.tvlUsd || 0), 0);
     return {
-      eyebrow: "Robinhood Chain yields", big: best ? A.pct(A.apyOf(best)) : "–", bigColor: C.accent,
-      label: best ? `Top stablecoin yield today: ${best.symbol} on ${A.nameOf(best, protocols)}` : "Live yields on Robinhood Chain",
+      eyebrow: "Base yields", big: best ? A.pct(A.apyOf(best)) : "–", bigColor: C.accent,
+      label: best ? `Top stablecoin yield today: ${best.symbol} on ${A.nameOf(best, protocols)}` : "Live yields on Base",
       stats: [[fmtN(data.length), "yield pools tracked"], [usd(tvl), "in yield pools"], [fmtN(new Set(data.map(p => p.project)).size), "protocols"]],
       path: "",
     };
   },
   async yields(){ return {...await CARDS.home(), eyebrow: "Every yield pool, ranked", path: "/yields"}; },
-  async stocks(){
-    const all = await currentStocks(A.SITE);
-    const deep = all.filter(s => usable(s) && s.liquidity >= 1e5);
-    const fair = deep.filter(s => Math.abs(s.gap) <= FAIR).length;
-    const vol = all.reduce((s, x) => s + (x.volume24h || 0), 0), tok = all.reduce((s, x) => s + (x.tokenized || 0), 0);
-    return {
-      eyebrow: "Stock tracker", big: deep.length ? Math.round(fair / deep.length * 100) + "%" : fmtN(all.length), bigColor: C.accent,
-      label: deep.length ? "of deep stock-token pools priced within ±0.5% of the share" : "stock tokens on Robinhood Chain, priced against the real share",
-      stats: [[fmtN(all.length), "stock tokens"], [usd(vol), "traded on chain, 24h"], [usd(tok), "tokenized value"]],
-      path: "/stocks",
-    };
-  },
-  async leaderboard(){
-    const top = JSON.parse(await redis("GET", lb.K.top) || "null");
-    const w = top && (top.windows["7d"] && top.windows["7d"].full ? top.windows["7d"] : top.windows["24h"]);
-    if (!w) return null;
-    const best = w.rows.filter(r => !r.bot).sort((a, b) => b.pnl - a.pnl)[0];
-    const span = w === top.windows["7d"] ? "this week" : w.full ? "in the last 24 hours" : `in the last ${w.hours} hours`;
-    return {
-      eyebrow: "Stock-token leaderboard", big: best ? "+" + usd(best.pnl) : "–", bigColor: C.up,
-      label: best ? `Top trader ${span}: ${short(best.a)}, mostly ${best.syms[0][0]}` : "Top stock-token traders",
-      stats: [[fmtN(w.wallets), "wallets trading"], [usd(w.volume), "volume"], [fmtN(w.trades), "trades"]],
-      path: "/leaderboard",
-    };
-  },
   async new(){
     const [{data}, seenRaw] = await Promise.all([currentPools(A.SITE), redis("HGETALL", "on:firstseen")]);
     const seen = {};
@@ -92,22 +62,10 @@ const CARDS = {
     const since = Date.now() - 30 * 864e5;
     const fresh = data.filter(p => seen[p.pool] >= since);
     return {
-      eyebrow: "New on the chain", big: fmtN(fresh.length), bigColor: C.accent,
-      label: `new yield pool${fresh.length === 1 ? "" : "s"} on Robinhood Chain in the last 30 days`,
+      eyebrow: "New on Base", big: fmtN(fresh.length), bigColor: C.accent,
+      label: `new yield pool${fresh.length === 1 ? "" : "s"} on Base in the last 30 days`,
       stats: [(n => [fmtN(n), n === 1 ? "protocol behind them" : "protocols behind them"])(new Set(fresh.map(p => p.project)).size), [usd(fresh.reduce((s, p) => s + (p.tvlUsd || 0), 0)), "deposited in them"], [fmtN(data.length), "pools in total"]],
       path: "/new",
-    };
-  },
-  async chain(){
-    const d = await currentPulse(A.SITE);
-    const vol = compare(d.series.volume), fees = compare(d.series.fees), tvl = compare(d.series.tvl);
-    const rh = d.gas && d.gas.chains.find(c => c.chain === "Robinhood Chain");
-    const ch = c => c == null ? "–" : (c > 0 ? "+" : c < 0 ? "−" : "") + Math.abs(Math.round(c * 100)) + "%";
-    return {
-      eyebrow: "After free gas", big: ch(vol.change), bigColor: vol.change < 0 ? C.down : C.up,
-      label: `Robinhood Chain DEX volume ${vol.days ? "since" : "on the first day after"} the gas subsidy ended, against the week before`,
-      stats: [[usd(vol.now || 0), "DEX volume a day"], [ch(tvl.change), "TVL, same comparison"], [fees.now != null ? usd(fees.now) : rh && rh.swapUsd != null ? "$" + rh.swapUsd.toFixed(3) : "–", fees.now != null ? "fees a day" : "for a swap now"]],
-      path: "/chain",
     };
   },
 };

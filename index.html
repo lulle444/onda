@@ -4,12 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Onda</title>
-<meta name="description" content="Live yield comparison for stock tokens and stablecoins on Robinhood Chain.">
+<meta name="description" content="Live yield comparison for stablecoins, ETH and more on Base.">
 <link rel="canonical" href="https://onda-plum.vercel.app">
 <link rel="icon" type="image/png" href="/assets/favicon.png">
 <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
 <meta property="og:title" content="Onda">
-<meta property="og:description" content="Live yield comparison for stock tokens and stablecoins on Robinhood Chain.">
+<meta property="og:description" content="Live yield comparison for stablecoins, ETH and more on Base.">
 <meta property="og:url" content="https://onda-plum.vercel.app">
 <meta property="og:image" content="https://onda-plum.vercel.app/api/og?p=home">
 <meta name="twitter:image" content="https://onda-plum.vercel.app/api/og?p=home">
@@ -32,11 +32,7 @@
     <div class="navlinks">
       <a href="/yields">Yields</a>
       <a href="/calculator">Calculator</a>
-      <a href="/stock-yield">Stock yield</a>
-      <a href="/stocks">Stock tracker</a>
-      <a href="/leaderboard">Leaderboard</a>
       <a href="/new">New</a>
-      <a href="/chain">Chain</a>
       <a href="/risk">Risk score</a>
       <a href="/learn">Learn</a>
     </div>
@@ -45,11 +41,7 @@
   <div class="mobilenav" aria-label="Sections">
     <a href="/yields">Yields</a>
     <a href="/calculator">Calculator</a>
-    <a href="/stock-yield">Stock yield</a>
-    <a href="/stocks">Stock tracker</a>
-    <a href="/leaderboard">Leaderboard</a>
     <a href="/new">New</a>
-    <a href="/chain">Chain</a>
     <a href="/risk">Risk score</a>
     <a href="/learn">Learn</a>
   </div>
@@ -58,9 +50,9 @@
 
   <header class="hero" id="top">
     <div>
-      <p class="eyebrow">Robinhood Chain · All yields in one place</p>
+      <p class="eyebrow">Base · All yields in one place</p>
       <h1>Ride the <em>yield</em>, not the hype.</h1>
-      <p class="lede">Every yield pool for stock tokens and stablecoins on Robinhood Chain, ranked by return and weighed by a transparent risk score.</p>
+      <p class="lede">Every yield pool on Base, from stablecoins to ETH, ranked by return and weighed by a transparent risk score.</p>
       <div class="ctas">
         <a class="btn primary" href="/yields">Explore live yields</a>
         <a class="btn ghost" href="/risk">How we score risk</a>
@@ -78,21 +70,21 @@
     <div><small>Pools</small><strong id="gPools">–</strong><span id="gPoolsSub">&nbsp;</span></div>
     <div><small>TVL in pools</small><strong id="gTvl">–</strong><span id="gTvlSub">&nbsp;</span></div>
     <div><small>Best stablecoin</small><strong id="gStable">–</strong><span id="gStableSub">&nbsp;</span></div>
-    <div><small>Best stock token</small><strong id="gStock">–</strong><span id="gStockSub">&nbsp;</span></div>
+    <div><small>Best ETH yield</small><strong id="gStock">–</strong><span id="gStockSub">&nbsp;</span></div>
   </section>
 
   <section class="features" aria-label="Explore Onda">
     <a class="feature glass" href="/yields">
       <img src="/assets/brand/globe-yields.webp" alt="" width="1400" height="788" loading="lazy">
-      <div><p class="eyebrow">All yields in one place</p><h3>Every pool on the chain</h3><p>Lending, liquidity and vaults across Robinhood Chain, refreshed every time you open the page.</p><span class="more-link">Open the yield table →</span></div>
+      <div><p class="eyebrow">All yields in one place</p><h3>Every pool on the chain</h3><p>Lending, liquidity and vaults across Base, refreshed every time you open the page.</p><span class="more-link">Open the yield table →</span></div>
     </a>
     <a class="feature glass" href="/risk">
       <img src="/assets/brand/shield.webp" alt="" width="499" height="314" loading="lazy">
       <div><p class="eyebrow">Data-driven decisions</p><h3>Risk-scored, not just ranked</h3><p>Audits, TVL, protocol age and liquidity combine into one score, so a big APY never stands alone.</p><span class="more-link">See how we score →</span></div>
     </a>
-    <a class="feature glass" href="/stock-yield">
+    <a class="feature glass" href="/calculator">
       <img src="/assets/brand/compare-track.webp" alt="" width="501" height="322" loading="lazy">
-      <div><p class="eyebrow">Compare · Track · Earn</p><h3>Stock tokens that work for you</h3><p>See what tokenized shares earn in DeFi compared with just holding them at a broker.</p><span class="more-link">Compare stock yield →</span></div>
+      <div><p class="eyebrow">Compare · Track · Earn</p><h3>See what your money could earn</h3><p>Pick an amount, a time frame and a risk level, and compare the best pools on Base after fees.</p><span class="more-link">Open the calculator →</span></div>
     </a>
   </section>
 
@@ -119,7 +111,7 @@
   <section class="block" aria-labelledby="howH">
     <div class="sectionhead"><div><p class="eyebrow">How it works</p><h2 id="howH">From raw on-chain data to a clear choice</h2></div></div>
     <ol class="steps">
-      <li class="glass"><span class="stepnum">01</span><h3>We collect</h3><p>Every Robinhood Chain pool listed on DefiLlama, which reads APY and TVL straight from the contracts. Refreshed every 10 minutes.</p></li>
+      <li class="glass"><span class="stepnum">01</span><h3>We collect</h3><p>Every Base pool listed on DefiLlama, which reads APY and TVL straight from the contracts. Refreshed every 10 minutes.</p></li>
       <li class="glass"><span class="stepnum">02</span><h3>We score</h3><p>Each pool gets a 0 to 100 risk score from audits, TVL, protocol age, liquidity and how much of the yield is real interest.</p></li>
       <li class="glass"><span class="stepnum">03</span><h3>You compare</h3><p>Sort, filter and project returns after fees, then deposit on the protocol itself. Onda never touches your funds.</p></li>
     </ol>
@@ -128,15 +120,15 @@
   <section class="block chainfacts glass" aria-labelledby="chainH">
     <div>
       <p class="eyebrow">The chain</p>
-      <h2 id="chainH">Robinhood Chain in brief</h2>
-      <p class="sub">A new home for tokenized stocks and on-chain finance. Here is what matters when you look for yield on it.</p>
-      <a class="btn ghost small" href="https://robinhoodchain.blockscout.com" target="_blank" rel="noopener">Open the block explorer ↗</a>
+      <h2 id="chainH">Base in brief</h2>
+      <p class="sub">Coinbase’s Ethereum Layer 2 and one of the busiest chains in DeFi. Here is what matters when you look for yield on it.</p>
+      <a class="btn ghost small" href="https://basescan.org" target="_blank" rel="noopener">Open the block explorer ↗</a>
     </div>
     <dl class="facts">
-      <div><dt>Built on</dt><dd>Arbitrum, as a Layer 2 settling to Ethereum</dd></div>
-      <div><dt>Mainnet</dt><dd>Live since July 2026</dd></div>
-      <div><dt>Stock tokens</dt><dd>ERC-20 tokens tracking real shares, priced by Chainlink feeds</dd></div>
-      <div><dt>Chain ID</dt><dd class="num">4663</dd></div>
+      <div><dt>Built on</dt><dd>The OP Stack, as a Layer 2 settling to Ethereum</dd></div>
+      <div><dt>Mainnet</dt><dd>Live since August 2023</dd></div>
+      <div><dt>Gas</dt><dd>Paid in ETH, usually a cent or less per swap</dd></div>
+      <div><dt>Chain ID</dt><dd class="num">8453</dd></div>
     </dl>
   </section>
 
@@ -148,7 +140,7 @@
       <details><summary>Does Onda ever hold my funds?</summary><p>No. Onda is read-only. We never ask you to connect a wallet or sign anything.</p></details>
       <details><summary>What does “Low risk” actually mean?</summary><p>It means the pool scores at least 75 out of 100 and the protocol has a public audit. It lowers the odds of a bad outcome, it doesn’t remove them. <a href="/risk">See the full method</a>.</p></details>
       <details><summary>Why does the APY differ from what the protocol shows?</summary><p>APY moves constantly, and protocols value reward tokens in different ways. We show DefiLlama’s latest reading next to the 30-day average, which is a steadier guide.</p></details>
-      <details><summary>How do alerts work?</summary><p>Tap 🔔 next to any pool in the table. It opens our Telegram bot with that pool picked, and you choose the APY level to watch. We check every 15 minutes and message you when it crosses. On the <a href="/stocks">stock tracker</a>, 🔔 alerts you when a token drifts from its share price. Send /list in the bot to see or remove alerts.</p></details>
+      <details><summary>How do alerts work?</summary><p>Tap 🔔 next to any pool in the table. It opens our Telegram bot with that pool picked, and you choose the APY level to watch. We check every 15 minutes and message you when it crosses. Send /list in the bot to see or remove alerts.</p></details>
       <details><summary>Do protocols pay to be listed or ranked?</summary><p>No. Every pool on the chain is included, and the order is set only by the column you sort by. If we ever add sponsored spots, they’ll be clearly marked and kept outside the table.</p></details>
     </div>
   </section>
@@ -169,10 +161,10 @@
     <div class="footgrid">
       <div class="footbrand">
         <a class="logo" href="/" aria-label="Onda home"><img src="/assets/logo-mark.png" alt="" width="26" height="26"><span class="word">ON<b>DA</b></span></a>
-        <p>Independent yield comparison for Robinhood Chain. Live on-chain data, a transparent risk score and no paid placements.</p>
+        <p>Independent yield comparison for Base. Live on-chain data, a transparent risk score and no paid placements.</p>
         <a class="social" href="https://x.com/useonda" target="_blank" rel="noopener me" aria-label="Onda on X"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>@useonda</a>
       </div>
-      <nav aria-label="Product"><h4>Product</h4><a href="/yields">Yields</a><a href="/calculator">Calculator</a><a href="/stock-yield">Stock yield</a><a href="/stocks">Stock tracker</a><a href="/leaderboard">Leaderboard</a><a href="/new">New on the chain</a><a href="/chain">After free gas</a><a href="/risk">Risk score</a><a href="https://t.me/ondaalert_bot" target="_blank" rel="noopener">Telegram alerts</a></nav>
+      <nav aria-label="Product"><h4>Product</h4><a href="/yields">Yields</a><a href="/calculator">Calculator</a><a href="/new">New on Base</a><a href="/risk">Risk score</a><a href="https://t.me/ondaalert_bot" target="_blank" rel="noopener">Telegram alerts</a></nav>
       <nav aria-label="Learn"><h4>Learn</h4><a href="/learn">Yield guide</a><a href="/learn#checklist">Before you deposit</a><a href="/#faq">FAQ</a></nav>
       <nav aria-label="Company"><h4>Company</h4><a href="/about">About</a><a href="/about#disclaimer">Disclaimer</a><a href="https://x.com/useonda" target="_blank" rel="noopener">X / Twitter</a></nav>
     </div>

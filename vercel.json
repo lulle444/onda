@@ -12,23 +12,10 @@
     }
   ],
   "functions": {
-    "api/lb-index.js": {
-      "maxDuration": 300
-    },
     "api/og.js": {
       "includeFiles": "assets/logo-mark.png"
     }
   },
-  "rewrites": [
-    {
-      "source": "/api/live-trades",
-      "destination": "/api/leaderboard?live=1"
-    },
-    {
-      "source": "/api/chain",
-      "destination": "/api/pools?view=chain"
-    }
-  ],
   "redirects": [
     {
       "source": "/tripod",
@@ -48,6 +35,26 @@
     {
       "source": "/legwork/:path*",
       "destination": "https://usetripod.org/:path*",
+      "permanent": false
+    },
+    {
+      "source": "/stocks",
+      "destination": "/yields",
+      "permanent": false
+    },
+    {
+      "source": "/stock-yield",
+      "destination": "/yields",
+      "permanent": false
+    },
+    {
+      "source": "/leaderboard",
+      "destination": "/yields",
+      "permanent": false
+    },
+    {
+      "source": "/chain",
+      "destination": "/yields",
       "permanent": false
     }
   ]

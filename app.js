@@ -1,15 +1,14 @@
 (function(){
 "use strict";
-const CHAIN = "Robinhood Chain";
+const CHAIN = "Base";
 const POOLS_URL = "https://yields.llama.fi/pools";
 const PROTOCOLS_URL = "https://api.llama.fi/protocols";
 const API_URL = "/api/pools";
 const TG_BOT = "ondaalert_bot";   // Telegram alerts bot username, without @. Empty hides the alert buttons.
 
 const STABLES = /^(USD|USDC|USDT|USDG|USDE|SUSDE|DAI|SDAI|USDS|SUSDS|PYUSD|FRAX|GHO|USD0|RLUSD|USDX|EURC|STEAKUSDG|STEAKUSDC)/;
-const TICKERS = new Set(("AAPL MSFT NVDA AMZN GOOGL GOOG META TSLA AVGO BRK.B BRKB JPM V MA LLY UNH XOM WMT JNJ PG HD COST ORCL NFLX AMD CRM ADBE PEP KO " +
-  "MCD INTC CSCO QCOM TXN IBM BA DIS NKE PYPL SQ XYZ SHOP UBER ABNB COIN MSTR PLTR SNOW HOOD RIVN LCID GME AMC SOFI RBLX SPOT BABA NIO " +
-  "ARM SMCI MU ASML TSM CRWD PANW NET DDOG ZM SNAP PINS DKNG CVX GS MS BAC WFC C SCHW BLK SPY QQQ VOO VTI IWM DIA GLD SLV TLT ARKK RDDT SNDK USO SGOV USAR").split(" "));
+// ETH and its liquid-staking / restaking wrappers (wstETH, cbETH, weETH, superOETHb, ...).
+const ETHS = /^(W|WST|ST|CB|R|WE|EZ|RS|WRS|SUPERO|O|PUF|M|BSD|YO|S|EETH|AA)?ETH(X|B)?$/;
 
 const PAGE_LIMIT = +document.body.dataset.limit || 25;
 const HIST_API = "/api/pool-history?pool=", HIST_LLAMA = "https://yields.llama.fi/chart/";
@@ -37,9 +36,8 @@ const titleCase = slug => slug.split("-").map(w => w.charAt(0).toUpperCase() + w
 
 function classify(sym, stableFlag){
   const parts = String(sym).toUpperCase().split(/[-\/ ]+/).filter(Boolean);
-  const isStock = parts.some(p => TICKERS.has(p) || TICKERS.has(p.replace(/X$|ON$|\.RH$/, "")));
-  if (isStock) return "stock";
   if (stableFlag || parts.every(p => STABLES.test(p))) return "stable";
+  if (parts.length && parts.every(p => ETHS.test(p))) return "eth";
   return "crypto";
 }
 
@@ -89,34 +87,34 @@ function build(poolsRaw, protocolsRaw){
 
 /* Clearly-labelled fallback, shown only when live fetch fails. Illustrative values, not current. */
 const SAMPLE_PROTOCOLS = [
+  {slug:"aave-v3",name:"Aave V3",category:"Lending",url:"https://aave.com",audit_links:["x"],listedAt:1647000000},
   {slug:"morpho-blue",name:"Morpho Blue",category:"Lending",url:"https://morpho.org",audit_links:["x"],listedAt:1704067200},
-  {slug:"spark",name:"Spark",category:"Lending",url:"https://spark.fi",audit_links:["x"],listedAt:1683000000},
-  {slug:"uniswap-v3",name:"Uniswap V3",category:"Dexs",url:"https://uniswap.org",audit_links:["x"],listedAt:1620000000},
-  {slug:"lighter",name:"Lighter",category:"Derivatives",url:"https://lighter.xyz",audit_links:["x"],listedAt:1735000000},
-  {slug:"longbow",name:"Longbow",category:"Lending",url:"https://defillama.com",audit_links:[],listedAt:1752000000},
-  {slug:"beefy",name:"Beefy",category:"Yield Aggregator",url:"https://beefy.com",audit_links:["x"],listedAt:1600000000},
-  {slug:"ramsesx",name:"RamsesX",category:"Dexs",url:"https://defillama.com",audit_links:[],listedAt:1753000000}
+  {slug:"moonwell-lending",name:"Moonwell",category:"Lending",url:"https://moonwell.fi",audit_links:["x"],listedAt:1655000000},
+  {slug:"aerodrome-slipstream",name:"Aerodrome Slipstream",category:"Dexs",url:"https://aerodrome.finance",audit_links:["x"],listedAt:1714000000},
+  {slug:"fluid-lending",name:"Fluid Lending",category:"Lending",url:"https://fluid.io",audit_links:["x"],listedAt:1708000000},
+  {slug:"compound-v3",name:"Compound V3",category:"Lending",url:"https://compound.finance",audit_links:["x"],listedAt:1661000000},
+  {slug:"extra-finance",name:"Extra Finance",category:"Leveraged Farming",url:"https://extrafi.io",audit_links:[],listedAt:1690000000}
 ];
 const SAMPLE_POOLS = [
-  ["morpho-blue","STEAKUSDG",497e6,4.0,3.07,6.9,true,"no","single"],
-  ["morpho-blue","USDE",342e6,0,4.75,4.6,true,"no","single"],
-  ["spark","USDC",14e6,4.6,0,4.5,true,"no","single"],
-  ["lighter","USDC",99e6,11.2,0,13.4,true,"no","single","LLP vault"],
-  ["morpho-blue","TSLA",18e6,2.1,0,1.9,false,"no","single"],
-  ["morpho-blue","NVDA",22e6,1.6,0,1.7,false,"no","single"],
-  ["morpho-blue","AAPL",9e6,0.9,0,1.0,false,"no","single"],
-  ["uniswap-v3","TSLA-USDG",6.2e6,14.8,0,11.9,false,"yes","multi","0.3%"],
-  ["uniswap-v3","NVDA-USDG",4.8e6,12.1,0,10.6,false,"yes","multi","0.3%"],
-  ["uniswap-v3","WETH-USDG",31e6,18.4,0,16.2,false,"yes","multi","0.05%"],
-  ["longbow","USDG",2.4e6,9.5,6.0,17.0,true,"no","single"],
-  ["beefy","TSLA-USDG",1.1e6,19.3,0,17.5,false,"yes","multi"],
-  ["ramsesx","HOOD-WETH",0.8e6,24.0,41.0,58.0,false,"yes","multi"],
-  ["morpho-blue","WETH",26e6,2.2,0,2.1,false,"no","single"],
-  ["spark","WETH",5e6,1.8,0.4,2.2,false,"no","single"]
+  ["aave-v3","USDC",410e6,4.6,0,4.8,true,"no","single"],
+  ["morpho-blue","STEAKUSDC",380e6,5.1,0.6,5.9,true,"no","single"],
+  ["moonwell-lending","USDC",95e6,4.9,1.4,6.2,true,"no","single"],
+  ["fluid-lending","USDC",60e6,6.1,0.8,7.0,true,"no","single"],
+  ["compound-v3","USDC",48e6,4.4,0.5,4.7,true,"no","single"],
+  ["extra-finance","USDC",4.2e6,8.9,2.1,10.4,true,"no","single"],
+  ["aave-v3","WETH",520e6,1.9,0,2.0,false,"no","single"],
+  ["aave-v3","CBETH",110e6,0.1,0,0.1,false,"no","single"],
+  ["morpho-blue","WSTETH",72e6,0.4,0.9,1.2,false,"no","single"],
+  ["moonwell-lending","WEETH",31e6,0.3,1.6,1.8,false,"no","single"],
+  ["aerodrome-slipstream","WETH-USDC",88e6,22.0,0,24.5,false,"yes","multi","0.05%"],
+  ["aerodrome-slipstream","CBBTC-WETH",41e6,14.2,0,15.1,false,"yes","multi","0.05%"],
+  ["aerodrome-slipstream","WETH-AERO",12e6,38.0,0,41.0,false,"yes","multi","0.3%"],
+  ["aave-v3","CBBTC",260e6,0.4,0,0.5,false,"no","single"],
+  ["moonwell-lending","CBBTC",44e6,0.2,0.7,0.9,false,"no","single"]
 ].map((r,i) => ({chain:CHAIN,project:r[0],symbol:r[1],tvlUsd:r[2],apyBase:r[3],apyReward:r[4],apy:r[3]+r[4],apyMean30d:r[5],
   stablecoin:r[6],ilRisk:r[7],exposure:r[8],poolMeta:r[9]||null,pool:"sample-"+i,apyPct7D:null}));
 
-const CACHE_KEY = "tw-pools-v1", CACHE_MS = 10 * 60 * 1000;
+const CACHE_KEY = "on-base-pools-v1", CACHE_MS = 10 * 60 * 1000;
 function readCache(){
   try { const c = JSON.parse(sessionStorage.getItem(CACHE_KEY)); if (c && Date.now() - c.t < CACHE_MS && c.pools.length) return c; } catch (e) {}
   return null;
@@ -193,7 +191,7 @@ function renderTable(){
     const split = (p.apyReward > 0) ? `<span class="apy-split">${fmtPct(p.apyBase || 0)} + ${fmtPct(p.apyReward)} rewards</span>` : "";
     const d = p.d7;
     const delta = (d != null && isFinite(d) && Math.abs(d) >= 0.01) ? `<span class="apy-split delta ${d>0?"up":"down"}">${d>0?"+":""}${d.toFixed(2)} pp 7d</span>` : "";
-    const tag = p.kind === "stock" ? '<span class="tag stock">Stock</span>' : p.kind === "stable" ? '<span class="tag">Stable</span>' : "";
+    const tag = p.kind === "eth" ? '<span class="tag stock">ETH</span>' : p.kind === "stable" ? '<span class="tag">Stable</span>' : "";
     const why = `Audit: ${p.audited ? "yes" : "no"} · Age: ${p.ageDays ? Math.round(p.ageDays) + " days" : "unknown"} · IL: ${p.ilRisk === "yes" ? "yes" : "no"}`;
     const canOpen = !state.sample && UUID_RE.test(p.id || ""), open = canOpen && state.open === p.id;
     const asset = `<span class="asset">${esc(p.symbol)}</span>${tag}`;
@@ -217,7 +215,7 @@ function renderTable(){
   });
 }
 
-// Best 30-day APY for a kind. Prefer bigger, safer pools; stock-token pools on the chain are still
+// Best 30-day APY for a kind. Prefer bigger, safer pools; if none qualify
 // small, so relax step by step rather than show nothing. DefiLlama's outliers are never picked.
 const BEST_STEPS = [{tvl: 1e6, high: false}, {tvl: 1e5, high: false}, {tvl: 1e5, high: true}];
 function best(kind){
@@ -243,16 +241,15 @@ function renderTopNow(){
 
 function renderGauge(){
   const tvl = state.pools.reduce((s,p) => s + p.tvlUsd, 0);
-  const s = best("stable"), k = best("stock");
+  const s = best("stable"), k = best("eth");
   const sv = s ? fmtPct(s.apyMean30d) : "–", ss = s ? bestSub(s) : "No pools yet";
   set("gPools", state.pools.length);
   set("gPoolsSub", new Set(state.pools.map(p => p.project)).size + " protocols");
   set("gTvl", fmtUsd(tvl));
-  set("gTvlSub", state.pools.filter(p => p.kind === "stock").length + " pools with stock tokens");
+  set("gTvlSub", state.pools.filter(p => p.kind === "eth").length + " ETH and LST pools");
   set("gStable", sv); set("gStableSub", ss); set("hStable", sv); set("hStableSub", ss);
-  const nStock = state.pools.filter(p => p.kind === "stock").length;
-  set("gStock", k ? fmtPct(k.apyMean30d) : nStock ? "Early days" : "–");
-  set("gStockSub", k ? bestSub(k) : nStock ? `${nStock} small pools, none steady yet` : "No pools yet");
+  set("gStock", k ? fmtPct(k.apyMean30d) : "–");
+  set("gStockSub", k ? bestSub(k) : "No pools yet");
 }
 
 function renderCalc(){
@@ -270,42 +267,6 @@ function renderCalc(){
     </div>`).join("")
     : `<p class="note">No pools above $1M TVL at that risk level. Choose "All" under max risk.</p>`;
 }
-
-function renderStock(){
-  const all = state.pools.filter(p => p.kind === "stock");
-  const stock = all.filter(p => p.tvlUsd >= 1e5 && !p.outlier);
-  const byTicker = new Map();
-  stock.forEach(p => {
-    const t = p.symbol.toUpperCase().split(/[-\/ ]+/).find(x => TICKERS.has(x) || TICKERS.has(x.replace(/X$|ON$|\.RH$/, ""))) || p.symbol;
-    const cur = byTicker.get(t);
-    if (!cur || p.apyMean30d > cur.apyMean30d) byTicker.set(t, {...p, ticker:t, n:(cur ? cur.n : 0) + 1});
-    else cur.n++;
-  });
-  const cards = [...byTicker.values()].sort((a,b) => b.tvlUsd - a.tvlUsd).slice(0, 6);
-  if (!cards.length){
-    const top = all.reduce((m, p) => Math.max(m, p.tvlUsd), 0);
-    $("stockGrid").innerHTML = `<article class="scard glass empty-card"><header><b>Early days</b></header>
-      <p>${all.length ? `There are ${all.length} stock-token pools on the chain, but the largest holds just ${fmtUsd(top)}, and DefiLlama flags their yields as unusual: mostly short-lived reward tokens in thin liquidity pools.` : "There are no stock-token pools on the chain yet."}
-      We’ll compare stock yields here once a pool is big and steady enough to be meaningful.</p>
-      ${all.length ? `<p><a href="/yields?kind=stock&tvl=0&odd=1">See all stock-token pools in the table →</a></p>` : ""}</article>`;
-    return;
-  }
-  const max = Math.max(...cards.map(c => c.apyMean30d), 1);
-  $("stockGrid").innerHTML = cards.map(c => {
-    const on10k = 10000 * (c.apyMean30d/100);
-    return `<article class="scard glass">
-      <header><b>${esc(c.ticker)}</b><span>${c.n} pool${c.n > 1 ? "s" : ""} · best on ${esc(c.name)}</span></header>
-      <div class="bars">
-        <div class="bar"><span>At broker</span><span class="track"><span class="fill" style="width:0%"></span></span><span class="v">0.00%</span></div>
-        <div class="bar defi"><span>In DeFi</span><span class="track"><span class="fill" style="width:${(c.apyMean30d/max*100).toFixed(1)}%"></span></span><span class="v">${fmtPct(c.apyMean30d)}</span></div>
-      </div>
-      <p>About ${fmtUsdFull(on10k)} extra per year on $10,000 of ${esc(c.ticker)}${c.ilRisk === "yes" ? ", but as liquidity you risk impermanent loss if the price moves a lot" : ", from lending with no impermanent loss"}.</p>
-    </article>`;
-  }).join("");
-}
-
-/* ---------- APY history chart (daily readings from DefiLlama) ---------- */
-const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 function detailRow(p){
   const chips = Object.keys(RANGES).map(k => `<button class="chip" type="button" data-range="${k}" aria-pressed="${k === state.range}">${k}</button>`).join("");
@@ -402,7 +363,6 @@ function renderAll(){
   renderGauge(); renderTopNow();
   if ($("rows")) renderTable();
   if ($("calcOut")) renderCalc();
-  if ($("stockGrid")) renderStock();
 }
 
 /* ---------- events ---------- */
@@ -482,7 +442,7 @@ document.querySelectorAll("th button").forEach(b => b.addEventListener("click", 
 $("calc")?.addEventListener("input", renderCalc);
 $("calc")?.addEventListener("submit", e => e.preventDefault());
 
-// Deep links into the table, e.g. /yields?kind=stock&tvl=0&odd=1
+// Deep links into the table, e.g. /yields?kind=eth&tvl=0&odd=1
 (function(){
   const q = new URLSearchParams(location.search), chip = document.querySelector(`.chip[data-kind="${q.get("kind")}"]`);
   if (chip){ state.kind = chip.dataset.kind; document.querySelectorAll(".chip[data-kind]").forEach(x => x.setAttribute("aria-pressed", x === chip ? "true" : "false")); }

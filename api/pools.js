@@ -1,13 +1,10 @@
-// Robinhood Chain pools from DefiLlama, fetched and filtered once on the server and cached at
+// Base pools from DefiLlama, fetched and filtered once on the server and cached at
 // Vercel's CDN, so visitors download a few KB instead of DefiLlama's full multi-chain list.
-// /api/chain (rewritten to ?view=chain) serves the chain pulse from here too, keeping the Hobby plan's 12-function limit.
 const {chainPools} = require("../lib/llama");
-const {pulse} = require("../lib/pulse");
-const A = require("../lib/alerts");
 
 module.exports = async function handler(req, res){
   try {
-    const body = (req.query || {}).view === "chain" ? await pulse(A.SITE) : await chainPools();
+    const body = await chainPools();
     res.setHeader("Cache-Control", "public, s-maxage=600, stale-while-revalidate=3600");
     res.status(200).json({updatedAt: new Date().toISOString(), ...body});
   } catch (e) {
