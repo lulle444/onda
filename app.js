@@ -4,7 +4,7 @@ const CHAIN = "Base";
 const POOLS_URL = "https://yields.llama.fi/pools";
 const PROTOCOLS_URL = "https://api.llama.fi/protocols";
 const API_URL = "/api/pools";
-const TG_BOT = "ondaalert_bot";   // Telegram alerts bot username, without @. Empty hides the alert buttons.
+const TG_BOT = "useBasewatchBot";   // Telegram alerts bot username, without @. Empty hides the alert buttons.
 
 const STABLES = /^(USD|USDC|USDT|USDG|USDE|SUSDE|DAI|SDAI|USDS|SUSDS|PYUSD|FRAX|GHO|USD0|RLUSD|USDX|EURC|STEAKUSDG|STEAKUSDC)/;
 // ETH and its liquid-staking / restaking wrappers (wstETH, cbETH, weETH, superOETHb, ...).
