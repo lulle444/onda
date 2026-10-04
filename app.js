@@ -58,6 +58,9 @@ function score(p, meta){
   return {s, band: (s >= 75 && audited) ? "low" : s >= 50 ? "mid" : "high", audited, ageDays};
 }
 const BAND_LABEL = {low:"Low", mid:"Medium", high:"High"};
+// Share of the APY paid in reward tokens (e.g. AERO emissions on Aerodrome), which can drop or lose value fast.
+const rewardShare = p => { const t = (p.apyBase || 0) + (p.apyReward || 0); return t > 0 ? (p.apyReward || 0) / t : 0; };
+const mostlyRewards = p => rewardShare(p) > 0.5 && (p.apy || 0) >= 5;
 const BAND_RANK = {low:0, mid:1, high:2};
 
 /* ---------- data ---------- */
@@ -111,7 +114,7 @@ const SAMPLE_POOLS = [
   ["moonwell-lending","WEETH",31e6,0.3,1.6,1.8,false,"no","single"],
   ["aerodrome-slipstream","WETH-USDC",88e6,22.0,0,24.5,false,"yes","multi","0.05%"],
   ["aerodrome-slipstream","CBBTC-WETH",41e6,14.2,0,15.1,false,"yes","multi","0.05%"],
-  ["aerodrome-slipstream","WETH-AERO",12e6,38.0,0,41.0,false,"yes","multi","0.3%"],
+  ["aerodrome-slipstream","WETH-AERO",12e6,3.0,35.0,41.0,false,"yes","multi","0.3%"],
   ["aave-v3","CBBTC",260e6,0.4,0,0.5,false,"no","single"],
   ["moonwell-lending","CBBTC",44e6,0.2,0.7,0.9,false,"no","single"]
 ].map((r,i) => ({chain:CHAIN,project:r[0],symbol:r[1],tvlUsd:r[2],apyBase:r[3],apyReward:r[4],apy:r[3]+r[4],apyMean30d:r[5],
@@ -197,7 +200,8 @@ function renderTable(){
     const tag = p.kind === "eth" ? '<span class="tag stock">ETH</span>' : p.kind === "btc" ? '<span class="tag stock">BTC</span>' : p.kind === "stable" ? '<span class="tag">Stable</span>' : "";
     const why = `Audit: ${p.audited ? "yes" : "no"} · Age: ${p.ageDays ? Math.round(p.ageDays) + " days" : "unknown"} · IL: ${p.ilRisk === "yes" ? "yes" : "no"}`;
     const canOpen = !state.sample && UUID_RE.test(p.id || ""), open = canOpen && state.open === p.id;
-    const asset = `<span class="asset">${esc(p.symbol)}</span>${tag}`;
+    const rew = mostlyRewards(p) ? ` <span class="tag odd" title="${Math.round(rewardShare(p) * 100)}% of this APY is paid in reward tokens, which can drop quickly or lose value. Fees and interest pay the rest.">Mostly rewards</span>` : "";
+    const asset = `<span class="asset">${esc(p.symbol)}</span>${tag}${rew}`;
     return `<tr${canOpen ? ` class="srow${open ? " is-open" : ""}" data-id="${esc(p.id)}"` : ""}>${NEW_PAGE ? `
       <td class="num seen">${p.firstSeen ? `${fmtDay(p.firstSeen)}<small class="sub2">${ago(p.firstSeen)}</small>` : "–"}</td>` : ""}
       <td><div class="proto"><a href="${esc(p.url)}" target="_blank" rel="noopener">${esc(p.name)}</a><span>${esc(p.category || "")}${p.meta ? " · " + esc(p.meta) : ""}</span></div></td>
@@ -230,16 +234,17 @@ function best(kind){
 }
 const bestSub = p => `${p.symbol} on ${p.name}` + (p.tvlUsd < 1e6 || p.band === "high" ? ` · ${BAND_LABEL[p.band]} risk, ${fmtUsd(p.tvlUsd)} TVL` : "");
 
-// Front-page card: the three best 30-day APYs among pools big enough to matter ($5M+ on Base).
+// Front-page card: the three best 30-day APYs among pools big enough to matter ($5M+ on Base), skipping
+// high-risk pools and those paid mostly in reward tokens, so the top isn't all short-lived emissions.
 function renderTopNow(){
   const el = $("topNow"); if (!el) return;
-  const top = state.pools.filter(p => !p.outlier && p.apyMean30d > 0 && p.tvlUsd >= 5e6)
+  const top = state.pools.filter(p => !p.outlier && p.apyMean30d > 0 && p.tvlUsd >= 5e6 && p.band !== "high" && !mostlyRewards(p))
     .sort((a,b) => b.apyMean30d - a.apyMean30d).slice(0, 3);
   el.innerHTML = top.length ? top.map((p,i) => `<li>
       <span class="tn-n">0${i+1}</span>
       <span class="tn-a"><b>${esc(p.symbol)}</b><small>${esc(p.name)} · ${fmtUsd(p.tvlUsd)} TVL</small></span>
       <span class="tn-y">${fmtPct(p.apyMean30d)}<br><span class="risk ${p.band}">${BAND_LABEL[p.band]} ${p.score}</span></span>
-    </li>`).join("") : `<li class="tn-empty">No pools above $5M TVL yet.</li>`;
+    </li>`).join("") : `<li class="tn-empty">No steady pools above $5M TVL yet.</li>`;
 }
 
 function renderGauge(){
