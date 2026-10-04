@@ -10,6 +10,7 @@ jobs:
           set +e
           for U in https://onda-plum.vercel.app/ https://usebasewatch.vercel.app/ https://usebasewatch.vercel.app/yields https://usebasewatch.vercel.app/api/pools https://usebasewatch.vercel.app/api/og?p=home; do
             curl -sS -m 30 -o /dev/null "$U" -w "$U -> %{http_code} %{content_type} %{size_download}B %{redirect_url}\n"; done
+          curl -sSI -m 30 https://onda-plum.vercel.app/ | grep -iE "^(HTTP|location|x-vercel-cache|age|x-vercel-id)"; curl -sS -m 30 https://onda-plum.vercel.app/ | grep -o 'canonical" href="[^"]*'
           echo; curl -sS -m 60 https://usebasewatch.vercel.app/api/telegram-setup; echo
           S=https://usebasewatch.vercel.app
           curl -sS -m 60 "$S/api/pools" | python3 -c 'import json,sys; d=json.load(sys.stdin); p=d if isinstance(d,list) else d.get("pools",d.get("data",[])); print("pools:", len(p), "| not outliers:", sum(1 for x in p if not x.get("outlier")))'
