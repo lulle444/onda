@@ -1,6 +1,6 @@
 # Basewatch
 
-Live at https://usebasewatch.vercel.app (Telegram alerts: @useBasewatchBot).
+Live at https://usebasewatch.vercel.app (Telegram alerts: @useBasewatchBot). The old address onda-plum.vercel.app still serves the same site.
 
 Yield comparison for stablecoins, ETH and everything else on Base.
 
