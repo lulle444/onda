@@ -54,6 +54,21 @@ const CARDS = {
       path: "",
     };
   },
+  async pool(q){
+    const id = String((q || {}).id || "");
+    if (!/^[0-9a-f-]{36}$/i.test(id)) return null;
+    const {data, protocols} = await currentPools(A.SITE);
+    const p = data.find(x => x.pool === id);
+    if (!p) return null;
+    const total = (p.apyBase || 0) + (p.apyReward || 0), base = total > 0 ? Math.round((p.apyBase || 0) / total * 100) : 100;
+    const slug = String(p.symbol + "-" + p.project).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+    return {
+      eyebrow: "Yield pool on Base", big: A.pct(A.apyOf(p)), bigColor: C.accent,
+      label: `APY on ${p.symbol} at ${A.nameOf(p, protocols)}`,
+      stats: [[A.pct(p.apyMean30d), "30-day average"], [usd(p.tvlUsd), "TVL"], [base + "%", "from fees and interest"]],
+      path: `/pool/${slug}-${id.slice(0, 8)}`,
+    };
+  },
   async yields(){ return {...await CARDS.home(), eyebrow: "Every yield pool, ranked", path: "/yields"}; },
   async new(){
     const [{data}, seenRaw] = await Promise.all([currentPools(A.SITE), redis("HGETALL", "on:firstseen")]);
@@ -94,7 +109,7 @@ module.exports = async function handler(req, res){
   const fallback = () => { res.setHeader("Cache-Control", "public, s-maxage=600"); res.redirect(302, "/assets/og.jpg"); };
   if (!CARDS[p]) return fallback();
   try {
-    const [c, f, {ImageResponse}] = await Promise.all([CARDS[p](), loadFonts(), import("@vercel/og")]);
+    const [c, f, {ImageResponse}] = await Promise.all([CARDS[p](req.query || {}), loadFonts(), import("@vercel/og")]);
     if (!c) return fallback();
     const img = new ImageResponse(card(c, logoUri()), {width: 1200, height: 630, fonts: f.length ? f : undefined});
     const buf = Buffer.from(await img.arrayBuffer());

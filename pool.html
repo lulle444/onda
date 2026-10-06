@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Yields · Basewatch</title>
-<meta name="description" content="Every yield pool on Base, sortable by APY, TVL and risk.">
+<title>Pool · Basewatch</title>
+<meta name="description" content="APY history, TVL and a transparent risk score for one yield pool on Base.">
 <link rel="canonical" href="https://usebasewatch.vercel.app/yields">
 <link rel="icon" type="image/png" href="/assets/favicon.png">
 <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
-<meta property="og:title" content="Yields · Basewatch">
-<meta property="og:description" content="Every yield pool on Base, sortable by APY, TVL and risk.">
+<meta property="og:title" content="Pool · Basewatch">
+<meta property="og:description" content="APY history, TVL and a transparent risk score for one yield pool on Base.">
 <meta property="og:url" content="https://usebasewatch.vercel.app/yields">
 <meta property="og:image" content="https://usebasewatch.vercel.app/api/og?p=yields">
 <meta name="twitter:image" content="https://usebasewatch.vercel.app/api/og?p=yields">
@@ -23,13 +23,13 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Montserrat:wght@500;600;700&display=swap">
 <link rel="stylesheet" href="/styles.css">
 </head>
-<body>
+<body data-page="pool" data-min-tvl="0">
 <canvas id="tide" aria-hidden="true"></canvas>
 <div class="wrap">
   <nav class="nav glass" aria-label="Main">
     <a class="logo" href="/" aria-label="Basewatch home"><img src="/assets/logo-mark.png" alt="" width="36" height="36"><span class="word">BASE<b>WATCH</b></span></a>
     <div class="navlinks">
-      <a href="/yields" aria-current="page">Yields</a>
+      <a href="/yields">Yields</a>
       <a href="/calculator">Calculator</a>
       <a href="/new">New</a>
     <a href="/pulse">Pulse</a>
@@ -39,7 +39,7 @@
     <div class="source" id="source"><span class="dot" id="dot"></span><span id="sourceText">Loading data…</span></div>
   </nav>
   <div class="mobilenav" aria-label="Sections">
-    <a href="/yields" aria-current="page">Yields</a>
+    <a href="/yields">Yields</a>
     <a href="/calculator">Calculator</a>
     <a href="/new">New</a>
     <a href="/pulse">Pulse</a>
@@ -49,69 +49,10 @@
 
   <div class="banner" id="sampleBanner" hidden><b>Sample data.</b><span>Live data couldn’t be loaded in this view, so the figures below are illustrative, not current. Reload the page to try DefiLlama again.</span></div>
 
-  <header class="pagehead has-pic">
-    <div>
-      <p class="eyebrow">Live yield table</p>
-      <h1>Where your capital earns the most</h1>
-      <p class="lede">Every pool on Base above $25k TVL. Click a column to sort. APY is the total annual return, split into base (interest and fees) and rewards (tokens that can lose value). Tap ☆ to add a pool to your watchlist, the risk badge to see how its score adds up, or 🔔 for a Telegram alert.</p>
-    </div>
-    <figure class="headpic"><img src="/assets/brand/pools-table.webp" alt="A glass Basewatch table of pools with APY, TVL and risk, standing on a rock by the sea" width="1479" height="823" fetchpriority="high"><figcaption>Illustration</figcaption></figure>
-  </header>
-
-  <section class="gauge glass" aria-label="Key figures">
-    <div><small>TVL in pools</small><strong id="gTvl">–</strong><span id="gTvlSub">&nbsp;</span></div>
-    <div><small>Best stablecoin</small><strong id="gStable">–</strong><span id="gStableSub">&nbsp;</span></div>
-    <div><small>Best ETH yield</small><strong id="gStock">–</strong><span id="gStockSub">&nbsp;</span></div>
-    <div><small>Best BTC yield</small><strong id="gBtc">–</strong><span id="gBtcSub">&nbsp;</span></div>
-  </section>
-
-  <main class="tablepanel glass">
-      <div class="controls">
-        <div class="chips" role="group" aria-label="Asset type">
-          <button class="chip" data-kind="all" aria-pressed="true">All</button>
-          <button class="chip" data-kind="stable" aria-pressed="false">Stablecoins</button>
-          <button class="chip" data-kind="eth" aria-pressed="false">ETH &amp; LSTs</button>
-          <button class="chip" data-kind="btc" aria-pressed="false">BTC</button>
-          <button class="chip" data-kind="crypto" aria-pressed="false">Crypto</button>
-          <button class="chip watchchip" data-kind="watch" aria-pressed="false">★ Watchlist<span data-watch-count></span></button>
-        </div>
-        <label class="field" for="minTvl">Min. TVL
-          <select id="minTvl">
-            <option value="0">All</option>
-            <option value="100000" selected>$100k</option>
-            <option value="1000000">$1M</option>
-            <option value="10000000">$10M</option>
-          </select>
-        </label>
-        <label class="field" for="maxRisk">Risk
-          <select id="maxRisk">
-            <option value="high" selected>All</option>
-            <option value="mid">Low + medium</option>
-            <option value="low">Low only</option>
-          </select>
-        </label>
-        <label class="field check" for="hideOdd" title="DefiLlama flags these APYs as unusual compared with their own history"><input type="checkbox" id="hideOdd" checked> Hide unusual APYs</label>
-        <span class="grow"></span>
-        <input type="search" id="q" placeholder="Search asset or protocol" aria-label="Search asset or protocol">
-      </div>
-      <div class="tablebox">
-        <table class="pooltable">
-          <thead><tr>
-            <th><button data-sort="name">Protocol</button></th>
-            <th><button data-sort="symbol">Asset</button></th>
-            <th class="r"><button data-sort="apy">APY</button></th>
-            <th class="r"><button data-sort="apyMean30d">30d avg.</button></th>
-            <th class="r"><button data-sort="tvlUsd">TVL</button></th>
-            <th><button data-sort="score">Risk</button></th>
-          </tr></thead>
-          <tbody id="rows"><tr><td colspan="6" class="empty">Loading pools…</td></tr></tbody>
-        </table>
-      </div>
-      <div class="more"><span id="count"></span><button class="btn ghost small" id="showMore" hidden>Show more</button></div>
-  </main>
+  <main id="poolMain" class="poolmain"><header class="pagehead"><p class="eyebrow">Pool</p><h1>Loading pool…</h1></header></main>
 
   <section class="nextsteps" aria-label="Next steps">
-    <a class="glass" href="/calculator"><p class="eyebrow">Calculator</p><h3>Project your return →</h3><p>See what an amount could earn over a few months, after fees.</p></a>
+    <a class="glass" href="/yields?kind=watch"><p class="eyebrow">Watchlist</p><h3>Your starred pools<span data-watch-count></span> →</h3><p>Every pool you’ve starred, in one table. Saved in this browser only.</p></a>
     <a class="glass" href="/risk"><p class="eyebrow">Risk score</p><h3>Understand the score →</h3><p>What goes into Low, Medium and High, and what it can’t tell you.</p></a>
   </section>
 
