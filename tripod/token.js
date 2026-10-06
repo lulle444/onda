@@ -1,8 +1,9 @@
-/* Tripod's token page. Everything about a token lives in TRIPOD_TOKEN below: leave `address` empty until a
-   token really exists, and the page says there is none (so look-alikes can't borrow the name). At launch, fill
+/* Tripod's token page. Everything about a token lives in TRIPOD_TOKEN below: leave `address` empty until the
+   token is live, and the page says it's coming and that only this page carries the address (so look-alikes
+   can't borrow the name). At launch, fill
    in the fields and commit; nothing else needs to change. Works for EVM chains (0x… addresses) and Solana. */
 window.TRIPOD_TOKEN = {
-  address: "",          // contract / mint address. Empty = no official token.
+  address: "",          // contract / mint address. Empty = not launched yet.
   chain: "",            // e.g. "Robinhood Chain", "Base" or "Solana"
   explorer: "",         // explorer link for the token, e.g. "https://solscan.io/token/<address>"
   ticker: "",           // e.g. "TRIPOD", without $
@@ -24,9 +25,9 @@ const box = $("tokenStatus");
 if (!box) return;
 if (!live){
   box.className = "tokenbox is-none";
-  box.innerHTML = `<p class="caps">Status</p><h2>There is no Tripod token</h2>
-    <p>Tripod has not launched a token. Any token using our name or logo is not ours, whatever it claims.</p>
-    <p>If we ever launch one, its address will be posted on this page and pinned on <a href="https://x.com/usetripod" target="_blank" rel="noopener">@usetripod</a>, and nowhere else. We will never DM you about a token.</p>`;
+  box.innerHTML = `<p class="caps">Status</p><h2>Coming soon</h2>
+    <p>The Tripod token hasn't launched yet. Until it does, any token using our name or logo is not ours, whatever it claims.</p>
+    <p>At launch, the address will be posted on this page and pinned on <a href="https://x.com/usetripod" target="_blank" rel="noopener">@usetripod</a>, and nowhere else. We will never DM you about the token.</p>`;
   return;
 }
 const short = a => `${String(a).slice(0, 6)}…${String(a).slice(-4)}`;
