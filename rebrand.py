@@ -48,7 +48,7 @@ for d, dirs, files in os.walk(ROOT):
 if c["name"] != n["name"]:
     try:
         import brandimages
-        brandimages.run(n["name"]); print("wrote the name into assets/brand/hero-logo.webp and pools-table.webp")
+        brandimages.run(n["name"]); print("wrote the name into assets/brand/hero-logo.webp (pools-table.webp has the name drawn in: replace it by hand)")
     except ImportError:
         print("Pillow is missing (pip install pillow): the two pictures still show the old name")
 json.dump({k: n[k] for k in FIELDS}, open(CUR_F, "w", encoding="utf-8"), indent=2, ensure_ascii=False)
