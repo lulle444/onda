@@ -9,4 +9,5 @@
   <url><loc>https://usebasewatch.vercel.app/risk</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
   <url><loc>https://usebasewatch.vercel.app/learn</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
   <url><loc>https://usebasewatch.vercel.app/about</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://usebasewatch.vercel.app/token</loc><changefreq>monthly</changefreq><priority>0.3</priority></url>
 </urlset>
