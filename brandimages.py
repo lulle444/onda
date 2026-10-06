@@ -1,6 +1,8 @@
-"""Writes the site's name into the two pictures that show it: the emblem on the home page and the pools table on /yields.
+"""Writes the site's name into the emblem picture (hero-logo.webp).
 
-rebrand.py runs this. The *-base.webp files are the same pictures with the name taken out.
+rebrand.py runs this. hero-base.webp is the same picture with the name taken out.
+The pools table on /yields (pools-table.webp) is finished artwork with the name already in it,
+so after a rename it needs a new picture rather than this script.
 """
 import os, sys
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
@@ -45,20 +47,9 @@ def hero(name):
     Image.alpha_composite(im, ref).convert("RGB").save(os.path.join(B, "hero-logo.webp"), quality=90)
 
 
-def pools(name):
-    # the name in the header of the glass pools table, tilted like the table
-    im = Image.open(os.path.join(B, "pools-base.webp")).convert("RGBA")
-    f, track, w = fit(name, 18, 124, 0)
-    pad = 20; box = Image.new("RGBA", (int(w) + 2 * pad, 60), (0, 0, 0, 0))
-    ImageDraw.Draw(box).text((pad, 30 - f.getbbox("H")[3]), name, font=f, fill=(8, 45, 85, 240))
-    box = box.rotate(5, resample=Image.BICUBIC, expand=True, center=(pad, 30)).filter(ImageFilter.GaussianBlur(.3))
-    # left end of the baseline sits where the old name's did (x 504, y 191)
-    im.alpha_composite(box, (504 - pad, 191 - 30 - (box.height - 60) // 2 - 4))
-    im.convert("RGB").save(os.path.join(B, "pools-table.webp"), quality=90)
-
 
 def run(name):
-    hero(name); pools(name)
+    hero(name)
 
 
 if __name__ == "__main__":
