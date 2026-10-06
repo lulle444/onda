@@ -3,16 +3,16 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>About · Basewatch</title>
-<meta name="description" content="Why Basewatch exists, where its data comes from, and the disclaimer.">
-<link rel="canonical" href="https://usebasewatch.vercel.app/about">
+<title>Compare pools · Basewatch</title>
+<meta name="description" content="Compare up to three yield pools on Base side by side: APY, 30-day average, TVL, rewards and risk score.">
+<link rel="canonical" href="https://usebasewatch.vercel.app/compare">
 <link rel="icon" type="image/png" href="/assets/favicon.png">
 <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
-<meta property="og:title" content="About · Basewatch">
-<meta property="og:description" content="Why Basewatch exists, where its data comes from, and the disclaimer.">
-<meta property="og:url" content="https://usebasewatch.vercel.app/about">
-<meta property="og:image" content="https://usebasewatch.vercel.app/assets/og.jpg">
-<meta name="twitter:image" content="https://usebasewatch.vercel.app/assets/og.jpg">
+<meta property="og:title" content="Compare pools · Basewatch">
+<meta property="og:description" content="Compare up to three yield pools on Base side by side: APY, 30-day average, TVL, rewards and risk score.">
+<meta property="og:url" content="https://usebasewatch.vercel.app/compare">
+<meta property="og:image" content="https://usebasewatch.vercel.app/api/og?p=yields">
+<meta name="twitter:image" content="https://usebasewatch.vercel.app/api/og?p=yields">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
@@ -23,14 +23,14 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Montserrat:wght@500;600;700&display=swap">
 <link rel="stylesheet" href="/styles.css">
 </head>
-<body>
+<body data-page="compare" data-min-tvl="0">
 <canvas id="tide" aria-hidden="true"></canvas>
 <div class="wrap">
   <nav class="nav glass" aria-label="Main">
     <a class="logo" href="/" aria-label="Basewatch home"><img src="/assets/logo-mark.png" alt="" width="36" height="36"><span class="word">BASE<b>WATCH</b></span></a>
     <div class="navlinks">
       <a href="/yields">Yields</a>
-      <a href="/compare">Compare</a>
+      <a href="/compare" aria-current="page">Compare</a>
       <a href="/calculator">Calculator</a>
       <a href="/new">New</a>
     <a href="/pulse">Pulse</a>
@@ -41,7 +41,7 @@
   </nav>
   <div class="mobilenav" aria-label="Sections">
     <a href="/yields">Yields</a>
-    <a href="/compare">Compare</a>
+    <a href="/compare" aria-current="page">Compare</a>
     <a href="/calculator">Calculator</a>
     <a href="/new">New</a>
     <a href="/pulse">Pulse</a>
@@ -51,45 +51,22 @@
 
   <div class="banner" id="sampleBanner" hidden><b>Sample data.</b><span>Live data couldn’t be loaded in this view, so the figures below are illustrative, not current. Reload the page to try DefiLlama again.</span></div>
 
-  <header class="pagehead">
-    <div>
-      <p class="eyebrow">About Basewatch</p>
-      <h1>One chain. Every yield, in plain sight.</h1>
-      <p class="lede">Basewatch makes on-chain yield on Base easy to compare, so you can see what your capital could earn and what risk comes with it, in one place.</p>
+  <main id="cmpPage" class="cmppage">
+    <header class="pagehead">
+      <p class="eyebrow">Compare</p>
+      <h1>Compare pools side by side</h1>
+      <p class="lede">Pick up to three pools on Base and see APY, the 30-day average, TVL, how much is paid in reward tokens and every part of the risk score next to each other, plus their APY history in one chart.</p>
+    </header>
+    <div class="cmppick">
+      <input type="search" id="cmpQ" placeholder="Search a pool to add, e.g. USDC or Aave" aria-label="Search a pool to add" autocomplete="off" aria-controls="cmpRes">
+      <ul class="cmpres glass" id="cmpRes" hidden></ul>
     </div>
-  </header>
+    <div id="cmpMain"><p class="muted">Loading pools…</p></div>
+  </main>
 
-  <figure class="headpic widepic"><img src="/assets/brand/banner.webp" alt="Basewatch banner: every yield on Base, one risk score, with many pools flowing into one risk gauge" width="2000" height="667" loading="lazy"></figure>
-
-  <section class="block" aria-labelledby="princH">
-    <div class="sectionhead"><div><p class="eyebrow">What we stand for</p><h2 id="princH">Three principles</h2></div></div>
-    <div class="steps">
-      <article class="glass"><span class="stepnum">01</span><h3>Independent</h3><p>No protocol pays for a place in the table. Rankings follow the column you sort by, nothing else.</p></article>
-      <article class="glass"><span class="stepnum">02</span><h3>Transparent</h3><p>The risk score is fully documented, and every number links back to public on-chain data.</p></article>
-      <article class="glass"><span class="stepnum">03</span><h3>Non-custodial</h3><p>Basewatch is read-only. No wallet connection, no deposits, no sign-up.</p></article>
-    </div>
-  </section>
-
-  <div class="twocol block">
-    <div class="glass note-card">
-      <p class="eyebrow">Data</p>
-      <h3>Where the numbers come from</h3>
-      <p>Pools, APY and TVL come from <a href="https://defillama.com/yields?chain=Base" target="_blank" rel="noopener">DefiLlama Yields</a>, which reads them on-chain. Audit links and launch dates come from DefiLlama’s protocol list. You can check any transaction on the <a href="https://basescan.org" target="_blank" rel="noopener">Base explorer</a>.</p>
-    </div>
-    <div class="glass note-card">
-      <p class="eyebrow">Business model</p>
-      <h3>How Basewatch stays free</h3>
-      <p>Basewatch is free today and has no paid placements. If we add sponsored spots later, they’ll be clearly labelled and kept outside the ranking table.</p>
-      <p>Questions or a pool we’re missing? Reach us on <a href="https://x.com/usebasewatch" target="_blank" rel="noopener">X @usebasewatch</a>.</p>
-    </div>
-  </div>
-
-  <section class="block glass note-card" id="disclaimer" aria-labelledby="discH">
-    <p class="eyebrow">Disclaimer</p>
-    <h2 id="discH" style="font-size:22px">Not financial advice</h2>
-    <p>Basewatch provides information for general educational purposes only. Nothing on this site is financial, investment, tax or legal advice, or a recommendation to buy, sell or deposit any asset.</p>
-    <p>Yields are variable, can turn negative and are shown as reported by third-party sources that may be delayed or wrong. Decentralized finance carries risks including smart contract bugs, hacks, stablecoin de-pegs, oracle failures, impermanent loss and total loss of funds. The risk score is a simplified rule of thumb and does not guarantee safety.</p>
-    <p>Basewatch is independent and is not affiliated with Base, Coinbase, DefiLlama or any protocol listed. Always do your own research before you deposit.</p>
+  <section class="nextsteps" aria-label="Next steps">
+    <a class="glass" href="/yields?kind=watch"><p class="eyebrow">Watchlist</p><h3>Your starred pools<span data-watch-count></span> →</h3><p>Every pool you’ve starred, in one table. Saved in this browser only.</p></a>
+    <a class="glass" href="/risk"><p class="eyebrow">Risk score</p><h3>Understand the score →</h3><p>What goes into Low, Medium and High, and what it can’t tell you.</p></a>
   </section>
 
   <footer class="sitefoot">

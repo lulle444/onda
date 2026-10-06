@@ -18,6 +18,8 @@ const RANGES = {"30d": 30 * 864e5, "90d": 90 * 864e5, "All": Infinity};
 const poolHistory = new Map();   // pool id -> [[time ms, APY, base APY, reward APY, TVL], ...]
 const NEW_PAGE = document.body.dataset.page === "new";
 const POOL_PAGE = document.body.dataset.page === "pool";   // /pool/<slug>: one pool in full
+const COMPARE_PAGE = document.body.dataset.page === "compare";   // /compare?p=<id8>,<id8>: up to three pools side by side
+const CMP_MAX = 3;
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;   // "New on the chain": only pools first seen recently
 const COLS = NEW_PAGE ? 7 : 6;
 const state = {open:null, range:"30d", newDays:30, newComplete:true, pools:[], kind:"all", minTvl: +(document.body.dataset.minTvl ?? 100000), maxRisk: document.body.dataset.maxRisk || "high", q:"", hideOdd:true, sort: document.body.dataset.sort || "apy", dir:-1, limit:PAGE_LIMIT, sample:false};
@@ -261,6 +263,12 @@ function renderTable(){
     </tr>${open ? detailRow(p) : ""}`;
   }).join("") : `<tr><td colspan="${COLS}" class="empty">${state.kind === "watch" ? (watch.size ? "None of your starred pools are listed right now." : "Your watchlist is empty. Tap ☆ next to any pool to add it.") : NEW_PAGE && state.sample ? "New pools need live data. Reload the page to try again." : NEW_PAGE ? "No new pools match these filters. Try a longer time window or untick “Hide unusual APYs”." : "No pools match these filters. Try a lower min. TVL or more risk levels."}</td></tr>`;
   set("count", `Showing ${shown.length} of ${rows.length} pools`);
+  const cw = $("cmpWatch");
+  if (cw){
+    const ids = rows.filter(canStar).slice(0, CMP_MAX).map(p => String(p.id).slice(0, 8));
+    cw.hidden = !(state.kind === "watch" && ids.length >= 2);
+    cw.href = "/compare?p=" + ids.join(",");
+  }
   if (state.open && shown.some(p => p.id === state.open)) drawPoolChart();
   if ($("showMore")) $("showMore").hidden = rows.length <= state.limit;
   document.querySelectorAll("th button").forEach(b => {
@@ -443,7 +451,7 @@ function renderPool(){
       <div class="ph-row">
         <div><h1>${esc(p.symbol)} <span>on ${esc(p.name)}</span></h1>
           <p class="lede">${esc(p.category || "Yield pool")}${p.meta ? " · " + esc(p.meta) : ""} on Base. ${mostlyRewards(p) ? `${Math.round(rewardShare(p) * 100)}% of this APY is paid in reward tokens, which can drop quickly or lose value.` : ""}</p></div>
-        <div class="ph-acts">${star(p).replace('class="star"', 'class="star big"')}${bell(p).replace('class="bell"', 'class="btn ghost small bellbtn"').replace("</svg></a>", "</svg> Alert me</a>")}<button class="btn ghost small" type="button" id="shareBtn">Copy link</button><a class="btn primary small" href="${esc(p.url)}" target="_blank" rel="noopener">Open ${esc(p.name)} ↗</a></div>
+        <div class="ph-acts">${star(p).replace('class="star"', 'class="star big"')}${bell(p).replace('class="bell"', 'class="btn ghost small bellbtn"').replace("</svg></a>", "</svg> Alert me</a>")}<button class="btn ghost small" type="button" id="shareBtn">Copy link</button><a class="btn ghost small" href="/compare?p=${String(p.id).slice(0, 8)}">Compare</a><a class="btn primary small" href="${esc(p.url)}" target="_blank" rel="noopener">Open ${esc(p.name)} ↗</a></div>
       </div>
     </header>
     <section class="gauge glass" aria-label="Key figures">
@@ -480,8 +488,112 @@ function riskDialog(p){
   d.showModal();
 }
 
+/* ---------- compare ---------- */
+let cmp = null;   // selected pool ids, in order
+const CMP_CLS = ["", "c1", "c2"];
+function cmpInit(){
+  if (cmp) return;
+  const want = (new URLSearchParams(location.search).get("p") || "").split(",").map(x => x.trim().toLowerCase()).filter(Boolean);
+  cmp = [];
+  want.forEach(w => { const p = state.pools.find(x => String(x.id).toLowerCase().startsWith(w)); if (p && !cmp.includes(p.id) && cmp.length < CMP_MAX) cmp.push(p.id); });
+}
+function cmpSync(){
+  const ids = cmp.map(id => String(id).slice(0, 8)).join(",");
+  history.replaceState(null, "", ids ? `/compare?p=${ids}` : "/compare");
+  const picked = cmp.map(id => state.pools.find(p => p.id === id)).filter(Boolean);
+  document.title = picked.length ? `Compare ${picked.map(p => p.symbol).join(" vs ")} · Basewatch` : "Compare pools · Basewatch";
+}
+function cmpResults(){
+  const q = ($("cmpQ")?.value || "").trim().toLowerCase(), box = $("cmpRes");
+  if (!box) return;
+  if (!q){ box.hidden = true; box.innerHTML = ""; return; }
+  const hits = state.pools.filter(p => !cmp.includes(p.id) && (p.symbol.toLowerCase().includes(q) || p.name.toLowerCase().includes(q)))
+    .sort((a, b) => b.tvlUsd - a.tvlUsd).slice(0, 8);
+  box.hidden = false;
+  box.innerHTML = hits.length ? hits.map((p, i) => `<li><button type="button" data-add="${esc(p.id)}"${i ? "" : ' class="first"'}>
+      <span><b>${esc(p.symbol)}</b> <small>${esc(p.name)}${p.meta ? " · " + esc(p.meta) : ""}</small></span>
+      <span class="num">${fmtPct(p.apy)} · ${fmtUsd(p.tvlUsd)}</span></button></li>`).join("")
+    : `<li class="none">No pools match “${esc(q)}”.</li>`;
+}
+function renderCompare(){
+  cmpInit();
+  const picked = cmp.map(id => state.pools.find(p => p.id === id)).filter(Boolean);
+  const full = picked.length >= CMP_MAX;
+  $("cmpQ").disabled = full;
+  $("cmpQ").placeholder = full ? `Up to ${CMP_MAX} pools: remove one to add another` : "Search a pool to add, e.g. USDC or Aave";
+  const box = $("cmpMain");
+  if (!picked.length){
+    const sug = (kind) => state.pools.filter(p => p.kind === kind && !p.outlier && p.tvlUsd >= 1e6).sort((a, b) => b.tvlUsd - a.tvlUsd).slice(0, 3);
+    const sets = [["stable", "The three biggest stablecoin pools"], ["eth", "The three biggest ETH pools"], ["btc", "The three biggest BTC pools"]]
+      .map(([k, label]) => [label, sug(k)]).filter(([, l]) => l.length >= 2);
+    box.innerHTML = `<div class="cmpempty glass"><h2>Pick two or three pools</h2><p class="sub">Search above, use “Compare” on any pool page, or start from one of these:</p>
+      <div class="cmpsugs">${sets.map(([label, l]) => `<button class="btn ghost small" type="button" data-set="${l.map(p => esc(p.id)).join(",")}">${label}</button>`).join("")}</div></div>`;
+    cmpSync(); return;
+  }
+  const max = f => Math.max(...picked.map(f)), min = f => Math.min(...picked.map(f));
+  const part = (p, label) => (p.parts.find(x => x.label === label) || {pts: 0}).pts;
+  const kindName = k => ({stable: "Stablecoin", eth: "ETH", btc: "BTC", crypto: "Crypto"}[k] || "Crypto");
+  // [label, html(p), number(p) for highlighting, "high" | "low" = which end is better]
+  const ROWS = [
+    ["APY now", p => `<b class="num">${fmtPct(p.apy)}</b>`, p => p.apy, "high"],
+    ["30-day average", p => `<b class="num">${fmtPct(p.apyMean30d)}</b>`, p => p.apyMean30d, "high"],
+    ["Change over 7 days", p => p.d7 != null && isFinite(p.d7) ? `<span class="num ${p.d7 > 0 ? "up" : p.d7 < 0 ? "down" : ""}">${p.d7 > 0 ? "+" : ""}${p.d7.toFixed(2)} pp</span>` : "–"],
+    ["Paid in reward tokens", p => `<span class="num">${Math.round(rewardShare(p) * 100)}%</span>${mostlyRewards(p) ? ' <span class="tag odd">Mostly rewards</span>' : ""}`, p => rewardShare(p), "low"],
+    ["TVL", p => `<span class="num">${fmtUsd(p.tvlUsd)}</span>`, p => p.tvlUsd, "high"],
+    ["Asset type", p => kindName(p.kind)],
+    ["Impermanent loss", p => p.ilRisk === "yes" ? "Possible" : "No"],
+    ["Risk score", p => `<button class="risk ${p.band}" type="button" data-risk="${esc(p.id)}">${BAND_LABEL[p.band]} <span class="num">${p.score}</span></button>`, p => p.score, "high"],
+    ...["Audit", "Pool size (TVL)", "Protocol age", "Liquidity", "Real interest"].map(l => [`<span class="indent">${l}</span>`, p => { const x = p.parts.find(y => y.label === l); return x ? `<span class="num">${Math.round(x.pts)}<small>/${x.max}</small></span>` : "–"; }, p => part(p, l), "high"]),
+    ["Unusual APY flag", p => p.outlier ? '<span class="tag odd">Flagged</span>' : "No"],
+  ];
+  const cell = (row, p) => {
+    const [, html, num, better] = row;
+    let cls = "";
+    if (num && better && picked.length > 1){
+      const v = num(p), hi = max(num), lo = min(num);
+      if (hi !== lo && v === (better === "high" ? hi : lo)) cls = ' class="best"';
+    }
+    return `<td${cls}>${html(p)}</td>`;
+  };
+  const chips = Object.keys(RANGES).map(k => `<button class="chip" type="button" data-range="${k}" aria-pressed="${k === state.range}">${k}</button>`).join("");
+  box.innerHTML = `
+    <div class="tablebox cmptable"><table>
+      <thead><tr><th scope="col"><span class="visually-hidden">Measure</span></th>${picked.map((p, i) => `<th scope="col">
+        <div class="cmphead"><i class="key ${CMP_CLS[i]}" aria-hidden="true"></i>
+          <div><a href="${canStar(p) ? poolHref(p) : "#"}"><b>${esc(p.symbol)}</b></a><small>${esc(p.name)}${p.meta ? " · " + esc(p.meta) : ""}</small></div>
+          <span class="cmpacts">${star(p)}<button class="dlgx sm" type="button" data-remove="${esc(p.id)}" aria-label="Remove ${esc(p.symbol)} on ${esc(p.name)} from the comparison">×</button></span></div></th>`).join("")}
+        ${picked.length < CMP_MAX ? `<th scope="col" class="addcol"><label class="addhint" for="cmpQ">+ Add a pool</label></th>` : ""}</tr></thead>
+      <tbody>${ROWS.map(r => `<tr><th scope="row">${r[0]}</th>${picked.map(p => cell(r, p)).join("")}${picked.length < CMP_MAX ? "<td></td>" : ""}</tr>`).join("")}</tbody>
+    </table></div>
+    <p class="note">Highlighted: the best value in each row. Higher APY isn’t automatically better: compare it with the risk score and how much is paid in reward tokens.</p>
+    <section class="glass panel cmpchart" aria-label="APY history">
+      <div class="gchead"><div><h3>APY history</h3><p id="cmpStats">Daily readings from DefiLlama, on days all ${picked.length > 1 ? "selected pools" : "of them"} have data.</p></div>
+        <div class="gctools"><div class="chips" role="group" aria-label="Time range">${chips}</div><button class="btn ghost small" type="button" id="cmpShare">Copy link</button></div></div>
+      <div class="gclegend">${picked.map((p, i) => `<span><i class="key ${CMP_CLS[i]}"></i>${esc(p.symbol)} · ${esc(p.name)}</span>`).join("")}</div>
+      <div class="gcplot" id="cmpPlot"><p class="muted">Loading history…</p></div>
+    </section>`;
+  cmpSync();
+  drawCompareChart(picked);
+}
+async function drawCompareChart(picked){
+  const box = $("cmpPlot"); if (!box) return;
+  const ids = picked.map(p => p.id).join();
+  const hist = await Promise.all(picked.map(p => canStar(p) ? loadPoolHistory(p.id) : Promise.resolve([])));
+  if (!$("cmpPlot") || cmp.join() !== ids) return;
+  const from = Date.now() - RANGES[state.range], day = t => Math.floor(t / 864e5);
+  const maps = hist.map(h => new Map(h.filter(q => q[0] >= from).map(q => [day(q[0]), q])));
+  const days = [...maps[0].keys()].filter(d => maps.every(m => m.has(d))).sort((a, b) => a - b);
+  if (!days.length){ box.innerHTML = `<p class="muted">${hist.every(h => !h.length) ? "No history available for these pools yet." : "These pools have no days with data in common in this range."}</p>`; return; }
+  const series = picked.map((p, i) => ({name: `${p.symbol} · ${p.name}`, cls: CMP_CLS[i], pts: days.map(d => [maps[i].get(d)[0], maps[i].get(d)[1]])}));
+  const avgs = series.map(s => s.pts.reduce((a, q) => a + q[1], 0) / s.pts.length);
+  set("cmpStats", `Average APY over ${days.length} common day${days.length === 1 ? "" : "s"}: ` + picked.map((p, i) => `${p.symbol} ${fmtPct(avgs[i])}`).join(" · ") + ". Daily readings from DefiLlama.");
+  TWChart.draw(box, {series, fmt: fmtPct, axisFmt: v => (Math.round(v * 100) / 100) + "%", floor: 0, include: [0], daily: true, breakMs: 3 * 864e5, height: 260,
+    label: `APY of ${picked.map(p => p.symbol).join(", ")} over ${state.range === "All" ? "all time" : "the last " + state.range}.`});
+}
+
 function renderAll(){
   if (POOL_PAGE) renderPool();
+  if (COMPARE_PAGE) renderCompare();
   updateWatchCount();
   if (NEW_PAGE) renderNew();
   renderGauge(); renderTopNow();
@@ -558,6 +670,27 @@ document.addEventListener("click", e => {
     if (p){ e.preventDefault(); e.stopPropagation(); riskDialog(p); }
   }
 }, true);
+$("cmpQ")?.addEventListener("input", cmpResults);
+$("cmpQ")?.addEventListener("keydown", e => {
+  if (e.key === "Enter"){ e.preventDefault(); $("cmpRes")?.querySelector("button[data-add]")?.click(); }
+  if (e.key === "Escape"){ e.target.value = ""; cmpResults(); }
+});
+$("cmpPage")?.addEventListener("click", e => {
+  const add = e.target.closest("[data-add]"), rm = e.target.closest("[data-remove]"), setb = e.target.closest("[data-set]"), rg = e.target.closest("[data-range]");
+  if (add && cmp && cmp.length < CMP_MAX){ cmp.push(add.dataset.add); $("cmpQ").value = ""; cmpResults(); renderCompare(); $("cmpQ").focus(); return; }
+  if (rm && cmp){ cmp = cmp.filter(id => id !== rm.dataset.remove); renderCompare(); return; }
+  if (setb){ cmp = setb.dataset.set.split(",").slice(0, CMP_MAX); renderCompare(); return; }
+  if (rg){
+    state.range = rg.dataset.range;
+    document.querySelectorAll("[data-range]").forEach(x => x.setAttribute("aria-pressed", x === rg ? "true" : "false"));
+    drawCompareChart(cmp.map(id => state.pools.find(p => p.id === id)).filter(Boolean)); return;
+  }
+  if (e.target.closest("#cmpShare")){
+    const b = $("cmpShare");
+    navigator.clipboard?.writeText(location.href).then(() => { b.textContent = "Copied"; setTimeout(() => b.textContent = "Copy link", 1500); }, () => {});
+  }
+});
+document.addEventListener("click", e => { if ($("cmpRes") && !e.target.closest(".cmppick")) { $("cmpRes").hidden = true; } });
 $("poolMain")?.addEventListener("click", e => {
   const rg = e.target.closest("[data-range]");
   if (rg){
@@ -587,7 +720,10 @@ $("rows")?.addEventListener("click", e => {
   if (!a || matchMedia("(pointer: coarse)").matches || typeof HTMLDialogElement !== "function") return;
   e.preventDefault(); alertDialog(a.dataset.pool, a.dataset.label);
 });
-let rz; window.addEventListener("resize", () => { clearTimeout(rz); rz = setTimeout(() => { if (state.open && $("gcplot")) drawPoolChart(); }, 150); });
+let rz; window.addEventListener("resize", () => { clearTimeout(rz); rz = setTimeout(() => {
+  if (state.open && $("gcplot")) drawPoolChart();
+  if (COMPARE_PAGE && cmp && $("cmpPlot")) drawCompareChart(cmp.map(id => state.pools.find(p => p.id === id)).filter(Boolean));
+}, 150); });
 document.querySelectorAll("th button").forEach(b => b.addEventListener("click", () => {
   const k = b.dataset.sort;
   if (state.sort === k) state.dir = -state.dir; else { state.sort = k; state.dir = (k === "name" || k === "symbol") ? 1 : -1; }

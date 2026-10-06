@@ -533,3 +533,43 @@ button.risk:hover,button.risk:focus-visible{border-color:currentColor}
 .topnow .tn-a a:hover{text-decoration:underline}
 @media (max-width:900px){.poolgrid{grid-template-columns:minmax(0,1fr)}}
 @media (prefers-reduced-motion:reduce){.samecard{transition:none}.samecard:hover{transform:none}}
+
+/* compare */
+.gcsvg .gline.c1{stroke:var(--chart-2)} .gcsvg .gdot.c1{fill:var(--chart-2)} .key.c1{border-top-color:var(--chart-2)}
+.gcsvg .gline.c2{stroke:#3DDC97} .gcsvg .gdot.c2{fill:#3DDC97} .key.c2{border-top-color:#3DDC97}
+.cmppick{position:relative;max-width:560px;margin:4px 0 22px}
+.cmppick input{width:100%;padding:13px 16px;border-radius:14px;font-size:15px}
+.cmpres{position:absolute;z-index:6;left:0;right:0;top:calc(100% + 6px);list-style:none;margin:0;padding:6px;max-height:360px;overflow:auto;background:rgba(8,24,64,.97)}
+.cmpres button{appearance:none;width:100%;display:flex;justify-content:space-between;align-items:center;gap:12px;text-align:left;background:none;border:0;color:var(--ink);padding:10px 12px;border-radius:10px;cursor:pointer;font:inherit}
+.cmpres button:hover,.cmpres button:focus-visible,.cmpres button.first{background:rgba(61,134,255,.14)}
+.cmpres b{font:500 14px var(--mono)}
+.cmpres small{color:var(--muted);font-size:12.5px}
+.cmpres .num{color:var(--muted);font-size:12.5px;white-space:nowrap}
+.cmpres li.none{padding:12px;color:var(--muted)}
+.cmpempty{padding:30px}
+.cmpempty h2{margin-bottom:6px}
+.cmpsugs{display:flex;flex-wrap:wrap;gap:10px}
+.cmptable table{min-width:640px;table-layout:fixed}
+.cmptable thead th{text-transform:none;letter-spacing:0;font:inherit;vertical-align:top;padding:14px 16px}
+.cmptable thead th:first-child,.cmptable tbody th{width:190px}
+.cmptable tbody th{font:500 13px/1.3 var(--body);color:var(--muted);text-transform:none;letter-spacing:0;background:transparent;text-align:left}
+.cmptable tbody th .indent{padding-left:14px;display:inline-block;font-size:12.5px}
+.cmptable td{font-size:14px}
+.cmptable td small{color:var(--muted);font-size:11.5px}
+.cmptable td.best{background:rgba(61,220,151,.08);box-shadow:inset 3px 0 0 #3DDC97}
+.cmptable td b.num{font-size:17px;font-weight:500}
+.cmphead{display:flex;align-items:flex-start;gap:10px}
+.cmphead .key{margin-top:10px;width:16px;border-top-width:3px}
+.cmphead > div{flex:1;min-width:0}
+.cmphead a{color:var(--ink);text-decoration:none}
+.cmphead a:hover{text-decoration:underline}
+.cmphead b{display:block;font:500 15px var(--mono);overflow-wrap:anywhere}
+.cmphead small{display:block;color:var(--muted);font-size:12px;margin-top:2px}
+.cmpacts{display:flex;gap:6px;flex:none}
+.dlgx.sm{position:static;width:30px;height:30px;font-size:18px;background:rgba(255,255,255,.05);color:var(--muted)}
+.addcol{color:var(--muted)}
+.addhint{cursor:pointer;color:var(--accent);font-weight:600;font-size:13.5px}
+.cmpchart{padding:22px;margin-top:22px}
+.cmpchart .gcplot{position:relative}
+.cmppage .note{margin-top:10px}
+td .up{color:var(--low)} td .down{color:var(--high)}
