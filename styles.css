@@ -20,7 +20,7 @@ body{margin:0;color:var(--ink);font:15px/1.6 var(--body);
              linear-gradient(90deg, rgba(120,160,255,.045) 1px, transparent 1px) 0 0/96px 96px,
              radial-gradient(1200px 600px at 85% -10%, rgba(31,91,255,.30) 0%, transparent 60%),
              radial-gradient(900px 500px at -10% 30%, rgba(20,60,180,.22) 0%, transparent 60%),
-             linear-gradient(180deg, #021033 0%, var(--ground) 40%, var(--ground-2) 100%);
+             linear-gradient(180deg, #021033 0%, var(--ground) 40%, var(--ground-2) 100%) var(--ground);
   background-attachment:fixed}
 a{color:var(--accent)}
 :focus-visible{outline:2px solid var(--accent);outline-offset:3px}
