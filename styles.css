@@ -573,19 +573,3 @@ button.risk:hover,button.risk:focus-visible{border-color:currentColor}
 .cmpchart .gcplot{position:relative}
 .cmppage .note{margin-top:10px}
 td .up{color:var(--low)} td .down{color:var(--high)}
-
-/* token page */
-.tokenstatus{padding:28px 30px;margin-top:8px;max-width:860px}
-.tokenstatus h2{margin-bottom:10px}
-.tokenstatus p{color:var(--muted);max-width:70ch;margin:0 0 10px}
-.tokenstatus.none{border-color:rgba(255,201,77,.45);background:linear-gradient(135deg,rgba(255,201,77,.08),rgba(12,34,92,.55))}
-.tokenstatus.none .eyebrow{color:#FFD877}
-.tokenstatus.live{border-color:rgba(61,134,255,.5)}
-.tokenstatus h3{margin:22px 0 8px;font-size:16px}
-.tokaddr{margin:6px 0 12px;max-width:640px}
-.tokaddr code{font-size:14px}
-.tokbtns{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px}
-.tokteam{list-style:none;margin:0;padding:0;max-width:560px}
-.tokteam li{display:grid;grid-template-columns:minmax(0,1fr) auto 70px;gap:12px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line)}
-.tokteam a{color:var(--accent);text-decoration:none;font-size:13.5px}
-.tokteam b{text-align:right;font-weight:500}
