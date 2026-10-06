@@ -17,6 +17,9 @@
     },
     "api/pool-page.js": {
       "includeFiles": "pool.html"
+    },
+    "api/compare-page.js": {
+      "includeFiles": "compare.html"
     }
   },
   "redirects": [
@@ -76,6 +79,10 @@
     {
       "source": "/pool/:slug",
       "destination": "/api/pool-page?slug=:slug"
+    },
+    {
+      "source": "/compare/:ids",
+      "destination": "/api/compare-page?ids=:ids"
     }
   ]
 }

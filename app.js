@@ -18,7 +18,7 @@ const RANGES = {"30d": 30 * 864e5, "90d": 90 * 864e5, "All": Infinity};
 const poolHistory = new Map();   // pool id -> [[time ms, APY, base APY, reward APY, TVL], ...]
 const NEW_PAGE = document.body.dataset.page === "new";
 const POOL_PAGE = document.body.dataset.page === "pool";   // /pool/<slug>: one pool in full
-const COMPARE_PAGE = document.body.dataset.page === "compare";   // /compare?p=<id8>,<id8>: up to three pools side by side
+const COMPARE_PAGE = document.body.dataset.page === "compare";   // /compare/<id8>,<id8> (or ?p=): up to three pools side by side
 const CMP_MAX = 3;
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;   // "New on the chain": only pools first seen recently
 const COLS = NEW_PAGE ? 7 : 6;
@@ -267,7 +267,7 @@ function renderTable(){
   if (cw){
     const ids = rows.filter(canStar).slice(0, CMP_MAX).map(p => String(p.id).slice(0, 8));
     cw.hidden = !(state.kind === "watch" && ids.length >= 2);
-    cw.href = "/compare?p=" + ids.join(",");
+    cw.href = "/compare/" + ids.join(",");
   }
   if (state.open && shown.some(p => p.id === state.open)) drawPoolChart();
   if ($("showMore")) $("showMore").hidden = rows.length <= state.limit;
@@ -451,7 +451,7 @@ function renderPool(){
       <div class="ph-row">
         <div><h1>${esc(p.symbol)} <span>on ${esc(p.name)}</span></h1>
           <p class="lede">${esc(p.category || "Yield pool")}${p.meta ? " · " + esc(p.meta) : ""} on Base. ${mostlyRewards(p) ? `${Math.round(rewardShare(p) * 100)}% of this APY is paid in reward tokens, which can drop quickly or lose value.` : ""}</p></div>
-        <div class="ph-acts">${star(p).replace('class="star"', 'class="star big"')}${bell(p).replace('class="bell"', 'class="btn ghost small bellbtn"').replace("</svg></a>", "</svg> Alert me</a>")}<button class="btn ghost small" type="button" id="shareBtn">Copy link</button><a class="btn ghost small" href="/compare?p=${String(p.id).slice(0, 8)}">Compare</a><a class="btn primary small" href="${esc(p.url)}" target="_blank" rel="noopener">Open ${esc(p.name)} ↗</a></div>
+        <div class="ph-acts">${star(p).replace('class="star"', 'class="star big"')}${bell(p).replace('class="bell"', 'class="btn ghost small bellbtn"').replace("</svg></a>", "</svg> Alert me</a>")}<button class="btn ghost small" type="button" id="shareBtn">Copy link</button><a class="btn ghost small" href="/compare/${String(p.id).slice(0, 8)}">Compare</a><a class="btn primary small" href="${esc(p.url)}" target="_blank" rel="noopener">Open ${esc(p.name)} ↗</a></div>
       </div>
     </header>
     <section class="gauge glass" aria-label="Key figures">
@@ -493,15 +493,18 @@ let cmp = null;   // selected pool ids, in order
 const CMP_CLS = ["", "c1", "c2"];
 function cmpInit(){
   if (cmp) return;
-  const want = (new URLSearchParams(location.search).get("p") || "").split(",").map(x => x.trim().toLowerCase()).filter(Boolean);
+  // shared links are /compare/<id8>,<id8> (served by api/compare-page.js); ?p= still works
+  const fromPath = (location.pathname.match(/^\/compare\/([0-9a-f,]+)\/?$/i) || [])[1];
+  const want = (fromPath || new URLSearchParams(location.search).get("p") || "").split(",").map(x => x.trim().toLowerCase()).filter(Boolean);
   cmp = [];
   want.forEach(w => { const p = state.pools.find(x => String(x.id).toLowerCase().startsWith(w)); if (p && !cmp.includes(p.id) && cmp.length < CMP_MAX) cmp.push(p.id); });
 }
 function cmpSync(){
   const ids = cmp.map(id => String(id).slice(0, 8)).join(",");
-  history.replaceState(null, "", ids ? `/compare?p=${ids}` : "/compare");
+  history.replaceState(null, "", ids ? `/compare/${ids}` : "/compare");
   const picked = cmp.map(id => state.pools.find(p => p.id === id)).filter(Boolean);
-  document.title = picked.length ? `Compare ${picked.map(p => p.symbol).join(" vs ")} · Basewatch` : "Compare pools · Basewatch";
+  const dup = new Set(picked.map(p => p.symbol)).size < picked.length;
+  document.title = picked.length ? `Compare ${picked.map(p => dup ? `${p.symbol} on ${p.name}` : p.symbol).join(" vs ")} · Basewatch` : "Compare pools · Basewatch";
 }
 function cmpResults(){
   const q = ($("cmpQ")?.value || "").trim().toLowerCase(), box = $("cmpRes");
