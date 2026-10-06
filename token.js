@@ -1,8 +1,8 @@
-/* The Basewatch token page. Everything about the token lives in BW_TOKEN below: leave `address` empty until a
-   token really exists, and the page says there is none (so look-alikes can't borrow the name). At launch, fill
-   in the fields and commit; nothing else needs to change. */
+/* The Basewatch token page. Everything about the token lives in BW_TOKEN below: leave `address` empty until the
+   token is live, and the page says it's coming and that only this page carries the address (so look-alikes can't
+   borrow the name). At launch, fill in the fields and commit; nothing else needs to change. */
 window.BW_TOKEN = {
-  address: "",          // contract address on Base, 0x… (42 characters). Empty = no official token.
+  address: "",          // contract address on Base, 0x… (42 characters). Empty = not launched yet.
   ticker: "",           // e.g. "WATCH", without $
   name: "",             // e.g. "Basewatch"
   launchpad: "",        // e.g. "Clanker" or "Zora"
@@ -23,9 +23,9 @@ const box = $("tokenStatus");
 if (!box) return;
 if (!live){
   box.className = "tokenstatus glass none";
-  box.innerHTML = `<p class="eyebrow">Status</p><h2>There is no Basewatch token</h2>
-    <p>Basewatch has not launched a token. Any token using our name or logo is not ours, whatever it claims.</p>
-    <p>If we ever launch one, its contract address will be posted on this page and pinned on <a href="https://x.com/usebasewatch" target="_blank" rel="noopener">@usebasewatch</a>, and nowhere else. We will never DM you about a token.</p>`;
+  box.innerHTML = `<p class="eyebrow">Status</p><h2>Coming soon</h2>
+    <p>The Basewatch token hasn't launched yet. Until it does, any token using our name or logo is not ours, whatever it claims.</p>
+    <p>At launch, the contract address will be posted on this page and pinned on <a href="https://x.com/usebasewatch" target="_blank" rel="noopener">@usebasewatch</a>, and nowhere else. We will never DM you about the token.</p>`;
   return;
 }
 const scan = a => `https://basescan.org/token/${a}`;
