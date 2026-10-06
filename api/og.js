@@ -69,6 +69,18 @@ const CARDS = {
       path: `/pool/${slug}-${id.slice(0, 8)}`,
     };
   },
+  async compare(q){
+    const want = String((q || {}).ids || "").toLowerCase().split(",").filter(x => /^[0-9a-f]{8}$/.test(x)).slice(0, 3);
+    if (!want.length) return null;
+    const {data, protocols} = await currentPools(A.SITE);
+    const picked = want.map(w => data.find(x => String(x.pool).startsWith(w))).filter(Boolean);
+    if (!picked.length) return null;
+    const best = Math.max(...picked.map(p => p.apyMean30d || 0));
+    return {
+      eyebrow: "Compare pools", path: "/compare/" + picked.map(p => String(p.pool).slice(0, 8)).join(","),
+      cols: picked.map(p => ({sym: p.symbol, name: A.nameOf(p, protocols), apy: A.pct(A.apyOf(p)), avg: A.pct(p.apyMean30d), tvl: usd(p.tvlUsd), top: picked.length > 1 && (p.apyMean30d || 0) === best})),
+    };
+  },
   async yields(){ return {...await CARDS.home(), eyebrow: "Every yield pool, ranked", path: "/yields"}; },
   async new(){
     const [{data}, seenRaw] = await Promise.all([currentPools(A.SITE), redis("HGETALL", "on:firstseen")]);
@@ -85,6 +97,23 @@ const CARDS = {
   },
 };
 
+// Side-by-side card for /compare: one column per pool, the best 30-day average marked.
+const SERIES = [C.accent, "#F2A23A", "#3DDC97"];
+function compareBody(c){
+  const n = c.cols.length, small = n === 3;
+  return h({gap: 20, marginTop: 40, flex: 1},
+    c.cols.map((x, i) => h({flexDirection: "column", flex: 1, padding: small ? "24px 26px" : "28px 32px", borderRadius: 24, background: C.card, border: `1px solid ${x.top ? "rgba(61,220,151,0.55)" : C.edge}`},
+      h({alignItems: "center"},
+        h({width: 34, height: 6, borderRadius: 3, background: SERIES[i], marginRight: 14}),
+        h({fontFamily: "Montserrat", fontWeight: 700, fontSize: small ? 30 : 36, color: C.ink}, x.sym.length > 16 ? x.sym.slice(0, 15) + "…" : x.sym)),
+      h({fontSize: 22, color: C.muted, marginTop: 6}, x.name.length > 26 ? x.name.slice(0, 25) + "…" : x.name),
+      h({fontFamily: "Montserrat", fontWeight: 700, fontSize: small ? 64 : 80, color: SERIES[i], marginTop: 26, letterSpacing: -2}, x.apy),
+      h({fontSize: 22, color: C.muted, marginTop: 2}, "APY now"),
+      h({marginTop: "auto", paddingTop: 22, justifyContent: "space-between", fontSize: 22},
+        h({flexDirection: "column"}, h({color: C.ink, fontFamily: "Montserrat", fontWeight: 600, fontSize: 28}, x.avg), h({color: C.muted}, "30-day avg")),
+        h({flexDirection: "column", alignItems: "flex-end"}, h({color: C.ink, fontFamily: "Montserrat", fontWeight: 600, fontSize: 28}, x.tvl), h({color: C.muted}, "TVL"))))));
+}
+
 function card(c, logo){
   const stat = ([v, cap]) => h({flexDirection: "column", padding: "22px 28px", borderRadius: 22, background: C.card, border: `1px solid ${C.edge}`, flex: 1},
     h({fontFamily: "Montserrat", fontWeight: 700, fontSize: 40, color: C.ink}, v),
@@ -96,10 +125,10 @@ function card(c, logo){
         {type: "img", props: {src: logo, width: 52, height: 52, style: {marginRight: 16}}},
         h({fontFamily: "Montserrat", fontWeight: 600, fontSize: 28, letterSpacing: 6, color: C.ink}, "BASE", h({color: C.accent}, "WATCH"))),
       h({fontFamily: "Montserrat", fontWeight: 600, fontSize: 20, letterSpacing: 5, color: C.accent, textTransform: "uppercase"}, c.eyebrow)),
-    h({flexDirection: "column", marginTop: 46, flex: 1},
+    c.cols ? compareBody(c) : h({flexDirection: "column", marginTop: 46, flex: 1},
       h({fontFamily: "Montserrat", fontWeight: 700, fontSize: 132, lineHeight: 1, color: c.bigColor, letterSpacing: -3}, c.big),
       h({fontFamily: "IBM Plex Sans", fontWeight: 500, fontSize: 34, color: C.ink, marginTop: 18, maxWidth: 1000, lineHeight: 1.25}, c.label)),
-    h({gap: 20}, c.stats.map(stat)),
+    c.cols ? null : h({gap: 20}, c.stats.map(stat)),
     h({marginTop: 22, fontSize: 20, color: C.muted, justifyContent: "space-between"},
       h({}, "usebasewatch.vercel.app" + c.path), h({}, "Live on-chain data · Not financial advice")));
 }
