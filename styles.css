@@ -478,3 +478,58 @@ tr.here td{font-weight:600;background:var(--accent-soft)}
 /* the sea-glass illustrations sit a touch darker on the navy theme */
 .feature img,.headpic img,.visual figure img{filter:brightness(.9) saturate(1.06)}
 .widepic img{filter:none}
+
+/* watchlist star */
+.rowacts{display:inline-flex;align-items:center;gap:6px}
+.star{appearance:none;display:inline-grid;place-items:center;width:30px;height:30px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.05);color:var(--muted);font:400 16px/1 var(--body);cursor:pointer;flex:none;transition:color .15s ease,border-color .15s ease}
+.star:hover{color:#FFC94D;border-color:#FFC94D}
+.star[aria-pressed="true"]{color:#FFC94D;border-color:rgba(255,201,77,.5);background:rgba(255,201,77,.1)}
+.star.big{width:40px;height:40px;font-size:20px}
+.chip.watchchip[aria-pressed="true"]{background:rgba(255,201,77,.16);border-color:rgba(255,201,77,.5);color:#FFD877}
+.headbtns{display:flex;gap:8px;flex-wrap:wrap}
+
+/* risk badge opens the breakdown */
+button.risk{appearance:none;border:1px solid transparent;cursor:pointer;transition:border-color .15s ease}
+button.risk:hover,button.risk:focus-visible{border-color:currentColor}
+.rparts{list-style:none;margin:6px 0 0;padding:0;display:flex;flex-direction:column}
+.rparts li{display:grid;grid-template-columns:minmax(0,1fr) 84px 58px;gap:12px;align-items:center;padding:11px 0;border-bottom:1px solid var(--line)}
+.rp-l b{display:block;font-weight:600;font-size:14px}
+.rp-l small{display:block;color:var(--muted);font-size:12.5px;line-height:1.35;margin-top:2px}
+.rp-bar{height:6px;border-radius:99px;background:rgba(150,180,255,.14);overflow:hidden}
+.rp-bar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--accent),var(--accent-2))}
+.rp-v{text-align:right;font-size:15px}
+.rp-v small{color:var(--muted);font-size:11.5px}
+.rparts li.neg .rp-v{color:var(--high)}
+.rp-total{display:flex;align-items:center;gap:12px;margin:14px 0 6px}
+.rp-total span:first-child{font-weight:600}
+.rp-total b{font:500 26px/1 var(--mono)}
+.rp-total b small{font-size:14px;color:var(--muted)}
+.riskdlg{max-width:520px}
+
+/* pool page */
+.poolhead .eyebrow a{color:inherit;text-decoration:none}
+.poolhead .eyebrow a:hover{text-decoration:underline}
+.ph-row{display:flex;justify-content:space-between;align-items:flex-end;gap:18px 28px;flex-wrap:wrap}
+.poolhead h1{max-width:none;margin-bottom:10px}
+.poolhead h1 span{color:var(--muted);font-weight:600}
+.poolhead .lede{margin-bottom:0}
+.ph-acts{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.poolmain .gauge{margin:22px 0}
+.gauge strong .of{font-size:15px;color:var(--muted)}
+.gauge span.risk{align-self:flex-start;margin-top:2px}
+.poolgrid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:22px;align-items:start}
+.poolgrid .panel{padding:22px;min-width:0}
+.poolgrid .gapchart{padding:0;position:static;width:auto!important}
+.poolgrid h2{font-size:22px;margin-bottom:6px}
+.samegrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px}
+.samecard{display:flex;flex-direction:column;gap:6px;padding:16px 18px;color:inherit;text-decoration:none;transition:transform .2s ease}
+.samecard:hover{transform:translateY(-2px)}
+.samecard b{font:500 15px var(--mono)}
+.samecard .num{font:500 22px var(--mono)}
+.samecard small{color:var(--muted);font-size:12.5px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.samecard .risk{font-size:10.5px;padding:3px 7px}
+.poolmain .banner{margin-top:22px}
+.topnow .tn-a a{color:inherit;text-decoration:none}
+.topnow .tn-a a:hover{text-decoration:underline}
+@media (max-width:900px){.poolgrid{grid-template-columns:minmax(0,1fr)}}
+@media (prefers-reduced-motion:reduce){.samecard{transition:none}.samecard:hover{transform:none}}

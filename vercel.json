@@ -14,6 +14,9 @@
   "functions": {
     "api/og.js": {
       "includeFiles": "assets/logo-mark.png"
+    },
+    "api/pool-page.js": {
+      "includeFiles": "pool.html"
     }
   },
   "redirects": [
@@ -67,6 +70,12 @@
       "source": "/chain",
       "destination": "/yields",
       "permanent": false
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/pool/:slug",
+      "destination": "/api/pool-page?slug=:slug"
     }
   ]
 }

@@ -12,6 +12,12 @@ Data: `api/pools.js` is a Vercel function that fetches DefiLlama, keeps only Bas
 
 Pool history: tapping a pool's asset opens its APY chart. `api/pool-history.js` proxies DefiLlama's daily `yields.llama.fi/chart/<pool>` (cached for an hour); the page falls back to DefiLlama directly.
 
+Pool pages: `/pool/<symbol>-<protocol>-<first 8 of the DefiLlama id>` (links from the table's history panel and the home page's top list). `vercel.json` rewrites them to `api/pool-page.js`, which serves `pool.html` with that pool's title, description and share image (`/api/og?p=pool&id=…`) filled in; `app.js` renders the page when `<body data-page="pool">`.
+
+Risk breakdown: `score()` in `app.js` also returns each part of the sum. Clicking a risk badge opens it in a dialog; pool pages show it inline.
+
+Watchlist: the ☆ on each pool saves its id in `localStorage` (`bw-watchlist`), so it's per browser with no account. `/yields?kind=watch` (the "★ Watchlist" chip) shows every starred pool regardless of the other filters.
+
 New on the chain: `new.html` (rendered by `app.js` when `<body data-page="new">`) lists pools first seen in the last 7/30/90 days and the protocols they belong to. `api/new.js` returns each pool's first-seen date: the first day in DefiLlama's history for that pool, looked up once and kept in Redis (`tw:firstseen`).
 
 Weekly recap: `api/weekly.js` (text built in `lib/weekly.js`) previews this week's X-sized recap on GET. On Mondays the `weekly.yml` workflow (plus a Vercel cron as backup) calls it with `?send=1`, and it sends once per ISO week to chats that turned on `/weekly`, with a "Post on X" button that opens X's composer with the text.

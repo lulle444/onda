@@ -16,7 +16,9 @@ const PAGE_LIMIT = +document.body.dataset.limit || 25;
 const HIST_API = "/api/pool-history?pool=", HIST_LLAMA = "https://yields.llama.fi/chart/";
 const RANGES = {"30d": 30 * 864e5, "90d": 90 * 864e5, "All": Infinity};
 const poolHistory = new Map();   // pool id -> [[time ms, APY, base APY, reward APY, TVL], ...]
-const NEW_PAGE = document.body.dataset.page === "new";   // "New on the chain": only pools first seen recently
+const NEW_PAGE = document.body.dataset.page === "new";
+const POOL_PAGE = document.body.dataset.page === "pool";   // /pool/<slug>: one pool in full
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;   // "New on the chain": only pools first seen recently
 const COLS = NEW_PAGE ? 7 : 6;
 const state = {open:null, range:"30d", newDays:30, newComplete:true, pools:[], kind:"all", minTvl: +(document.body.dataset.minTvl ?? 100000), maxRisk: document.body.dataset.maxRisk || "high", q:"", hideOdd:true, sort: document.body.dataset.sort || "apy", dir:-1, limit:PAGE_LIMIT, sample:false};
 
@@ -55,13 +57,54 @@ function score(p, meta){
   let s = 25*audited + 25*tvl + 20*age + 15*liq + 15*organic;
   if (p.outlier) s -= 15;
   s = Math.round(Math.max(0, Math.min(100, s)));
-  return {s, band: (s >= 75 && audited) ? "low" : s >= 50 ? "mid" : "high", audited, ageDays};
+  // The same sum, item by item, for the breakdown on the risk badge and the pool page.
+  const parts = [
+    {label: "Audit", pts: 25*audited, max: 25, note: audited ? "Public audit listed on DefiLlama" : "No public audit listed"},
+    {label: "Pool size (TVL)", pts: 25*tvl, max: 25, note: `${fmtUsd(p.tvlUsd)}; full marks at $100M`},
+    {label: "Protocol age", pts: 20*age, max: 20, note: ageDays ? `${Math.round(ageDays)} days; full marks at two years` : "Listing date unknown"},
+    {label: "Liquidity", pts: 15*liq, max: 15, note: p.ilRisk === "yes" ? "Impermanent loss possible" : p.exposure === "multi" ? "Several assets, no impermanent loss flagged" : "Single asset, no impermanent loss"},
+    {label: "Real interest", pts: 15*organic, max: 15, note: total > 0 ? `${Math.round(organic * 100)}% of the APY is fees and interest, not reward tokens` : "No APY split reported"},
+  ];
+  if (p.outlier) parts.push({label: "Unusual APY", pts: -15, max: 0, note: "DefiLlama flags this APY as unusual for the pool"});
+  return {s, band: (s >= 75 && audited) ? "low" : s >= 50 ? "mid" : "high", audited, ageDays, parts};
 }
 const BAND_LABEL = {low:"Low", mid:"Medium", high:"High"};
 // Share of the APY paid in reward tokens (e.g. AERO emissions on Aerodrome), which can drop or lose value fast.
 const rewardShare = p => { const t = (p.apyBase || 0) + (p.apyReward || 0); return t > 0 ? (p.apyReward || 0) / t : 0; };
 const mostlyRewards = p => rewardShare(p) > 0.5 && (p.apy || 0) >= 5;
 const BAND_RANK = {low:0, mid:1, high:2};
+
+/* Watchlist: pool ids starred in this browser. */
+const WATCH_KEY = "bw-watchlist";
+let watch = new Set();
+try { watch = new Set(JSON.parse(localStorage.getItem(WATCH_KEY) || "[]")); } catch (e) {}
+const watched = id => watch.has(id);
+function toggleWatch(id){
+  watched(id) ? watch.delete(id) : watch.add(id);
+  try { localStorage.setItem(WATCH_KEY, JSON.stringify([...watch])); } catch (e) {}
+  updateWatchCount();
+}
+function updateWatchCount(){
+  const n = state.pools.filter(p => watched(p.id)).length || watch.size;
+  document.querySelectorAll("[data-watch-count]").forEach(el => { el.textContent = n ? ` (${n})` : ""; });
+  const link = $("watchLink"); if (link) link.hidden = !watch.size;
+}
+const canStar = p => !state.sample && UUID_RE.test(p.id || "");
+const star = p => canStar(p) ? `<button class="star" type="button" data-star="${esc(p.id)}" aria-pressed="${watched(p.id)}" title="${watched(p.id) ? "Remove from" : "Add to"} your watchlist" aria-label="${watched(p.id) ? "Remove" : "Add"} ${esc(p.symbol)} on ${esc(p.name)} ${watched(p.id) ? "from" : "to"} your watchlist">${watched(p.id) ? "★" : "☆"}</button>` : "";
+
+/* Pool pages live at /pool/<symbol>-<protocol>-<first 8 of the DefiLlama id>. */
+const slugify = t => String(t).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+const poolHref = p => `/pool/${slugify(p.symbol + "-" + p.project)}-${String(p.id).slice(0, 8)}`;
+const riskBtn = p => `<button class="risk ${p.band}" type="button" data-risk="${esc(p.id)}" title="See how the score adds up" aria-label="${BAND_LABEL[p.band]} risk, score ${p.score}: see how it adds up">${BAND_LABEL[p.band]} <span class="num">${p.score}</span></button>`;
+function riskParts(p){
+  return `<ul class="rparts">${p.parts.map(x => `<li class="${x.pts < 0 ? "neg" : ""}">
+      <span class="rp-l"><b>${esc(x.label)}</b><small>${esc(x.note)}</small></span>
+      <span class="rp-bar" aria-hidden="true">${x.max ? `<i style="width:${Math.max(0, x.pts / x.max * 100).toFixed(0)}%"></i>` : ""}</span>
+      <span class="rp-v num">${x.pts < 0 ? "−" + Math.abs(x.pts).toFixed(0) : Math.round(x.pts)}${x.max ? `<small>/${x.max}</small>` : ""}</span>
+    </li>`).join("")}</ul>
+    <p class="rp-total"><span>Score</span><b class="num">${p.score}<small>/100</small></b><span class="risk ${p.band}">${BAND_LABEL[p.band]} risk</span></p>
+    <p class="note">${p.band === "low" ? "Low needs 75+ points and an audit." : p.band === "mid" ? "Medium is 50–74 points (or 75+ without an audit)." : "High is under 50 points."} <a href="/risk">How the score works</a></p>`;
+}
 
 /* ---------- data ---------- */
 async function fetchJson(url){
@@ -86,7 +129,7 @@ function build(poolsRaw, protocolsRaw){
       kind: classify(p.symbol, p.stablecoin), tvlUsd: p.tvlUsd, apy,
       apyBase: p.apyBase, apyReward: p.apyReward, apyMean30d: p.apyMean30d ?? apy,
       d7: p.apyPct7D, ilRisk: p.ilRisk, exposure: p.exposure, outlier: !!p.outlier,
-      score: sc.s, band: sc.band, audited: sc.audited, ageDays: sc.ageDays
+      score: sc.s, band: sc.band, audited: sc.audited, ageDays: sc.ageDays, parts: sc.parts
     };
   });
 }
@@ -171,6 +214,12 @@ async function load(){
 /* ---------- render ---------- */
 function filtered(){
   const q = state.q.trim().toLowerCase();
+  if (state.kind === "watch") return state.pools.filter(p => watched(p.id) &&
+    (!q || p.symbol.toLowerCase().includes(q) || p.name.toLowerCase().includes(q))).sort((a,b) => {
+    const k = state.sort, av = a[k], bv = b[k];
+    if (typeof av === "string") return state.dir * av.localeCompare(bv);
+    return state.dir * ((av ?? -Infinity) - (bv ?? -Infinity));
+  });
   return state.pools.filter(p =>
     (state.kind === "all" || p.kind === state.kind) &&
     (!NEW_PAGE || isNew(p)) &&
@@ -198,7 +247,6 @@ function renderTable(){
     const d = p.d7;
     const delta = (d != null && isFinite(d) && Math.abs(d) >= 0.01) ? `<span class="apy-split delta ${d>0?"up":"down"}">${d>0?"+":""}${d.toFixed(2)} pp 7d</span>` : "";
     const tag = p.kind === "eth" ? '<span class="tag stock">ETH</span>' : p.kind === "btc" ? '<span class="tag stock">BTC</span>' : p.kind === "stable" ? '<span class="tag">Stable</span>' : "";
-    const why = `Audit: ${p.audited ? "yes" : "no"} · Age: ${p.ageDays ? Math.round(p.ageDays) + " days" : "unknown"} · IL: ${p.ilRisk === "yes" ? "yes" : "no"}`;
     const canOpen = !state.sample && UUID_RE.test(p.id || ""), open = canOpen && state.open === p.id;
     const rew = mostlyRewards(p) ? ` <span class="tag odd" title="${Math.round(rewardShare(p) * 100)}% of this APY is paid in reward tokens, which can drop quickly or lose value. Fees and interest pay the rest.">Mostly rewards</span>` : "";
     const asset = `<span class="asset">${esc(p.symbol)}</span>${tag}${rew}`;
@@ -209,9 +257,9 @@ function renderTable(){
       <td class="r">${p.outlier ? '<span class="tag odd" title="DefiLlama flags this APY as unusual compared with its own history. Often short-lived reward tokens in a thin pool.">Unusual</span> ' : ""}<span class="apy">${fmtPct(p.apy)}</span>${split}${delta}</td>
       <td class="r num">${fmtPct(p.apyMean30d)}</td>
       <td class="r num">${fmtUsd(p.tvlUsd)}</td>
-      <td><div class="riskcell"><span class="risk ${p.band}" title="${esc(why)}">${BAND_LABEL[p.band]} <span class="num">${p.score}</span></span>${bell(p)}</div></td>
+      <td><div class="riskcell">${riskBtn(p)}<span class="rowacts">${star(p)}${bell(p)}</span></div></td>
     </tr>${open ? detailRow(p) : ""}`;
-  }).join("") : `<tr><td colspan="${COLS}" class="empty">${NEW_PAGE && state.sample ? "New pools need live data. Reload the page to try again." : NEW_PAGE ? "No new pools match these filters. Try a longer time window or untick “Hide unusual APYs”." : "No pools match these filters. Try a lower min. TVL or more risk levels."}</td></tr>`;
+  }).join("") : `<tr><td colspan="${COLS}" class="empty">${state.kind === "watch" ? (watch.size ? "None of your starred pools are listed right now." : "Your watchlist is empty. Tap ☆ next to any pool to add it.") : NEW_PAGE && state.sample ? "New pools need live data. Reload the page to try again." : NEW_PAGE ? "No new pools match these filters. Try a longer time window or untick “Hide unusual APYs”." : "No pools match these filters. Try a lower min. TVL or more risk levels."}</td></tr>`;
   set("count", `Showing ${shown.length} of ${rows.length} pools`);
   if (state.open && shown.some(p => p.id === state.open)) drawPoolChart();
   if ($("showMore")) $("showMore").hidden = rows.length <= state.limit;
@@ -242,7 +290,7 @@ function renderTopNow(){
     .sort((a,b) => b.apyMean30d - a.apyMean30d).slice(0, 3);
   el.innerHTML = top.length ? top.map((p,i) => `<li>
       <span class="tn-n">0${i+1}</span>
-      <span class="tn-a"><b>${esc(p.symbol)}</b><small>${esc(p.name)} · ${fmtUsd(p.tvlUsd)} TVL</small></span>
+      <span class="tn-a"><a href="${canStar(p) ? poolHref(p) : "/yields"}"><b>${esc(p.symbol)}</b></a><small>${esc(p.name)} · ${fmtUsd(p.tvlUsd)} TVL</small></span>
       <span class="tn-y">${fmtPct(p.apyMean30d)}<br><span class="risk ${p.band}">${BAND_LABEL[p.band]} ${p.score}</span></span>
     </li>`).join("") : `<li class="tn-empty">No steady pools above $5M TVL yet.</li>`;
 }
@@ -276,16 +324,19 @@ function renderCalc(){
     : `<p class="note">No pools above $1M TVL at that risk level. Choose "All" under max risk.</p>`;
 }
 
-function detailRow(p){
+function chartBlock(p, title){
   const chips = Object.keys(RANGES).map(k => `<button class="chip" type="button" data-range="${k}" aria-pressed="${k === state.range}">${k}</button>`).join("");
-  return `<tr class="detail"><td colspan="${COLS}"><div class="gapchart" id="gapchart">
+  return `<div class="gapchart" id="gapchart">
     <div class="gchead">
-      <div><h3>${esc(p.symbol)} on ${esc(p.name)}: APY history</h3><p id="gcstats">Daily readings from DefiLlama.</p></div>
-      <div class="gctools"><div class="chips" role="group" aria-label="Time range">${chips}</div>${bell(p).replace('class="bell"', 'class="btn ghost small bellbtn"').replace("</svg></a>", "</svg> Alert me</a>")}</div>
+      <div><h3>${title}</h3><p id="gcstats">Daily readings from DefiLlama.</p></div>
+      <div class="gctools"><div class="chips" role="group" aria-label="Time range">${chips}</div>${POOL_PAGE ? "" : `<a class="btn ghost small" href="${poolHref(p)}">Pool page →</a>`}${bell(p).replace('class="bell"', 'class="btn ghost small bellbtn"').replace("</svg></a>", "</svg> Alert me</a>")}</div>
     </div>
     <div class="gclegend" id="gclegend" hidden><span><i class="key"></i>Total APY</span><span><i class="key base"></i>Base APY, without reward tokens</span></div>
     <div class="gcplot" id="gcplot"><p class="muted">Loading history…</p></div>
-  </div></td></tr>`;
+  </div>`;
+}
+function detailRow(p){
+  return `<tr class="detail"><td colspan="${COLS}">${chartBlock(p, `${esc(p.symbol)} on ${esc(p.name)}: APY history`)}</td></tr>`;
 }
 
 async function loadPoolHistory(id){
@@ -303,7 +354,7 @@ async function loadPoolHistory(id){
 async function drawPoolChart(){
   const id = state.open, p = state.pools.find(x => x.id === id), box = $("gcplot");
   if (!p || !box) return;
-  const tb = box.closest(".tablebox"); $("gapchart").style.width = Math.max(260, tb.clientWidth - 2) + "px";
+  const tb = box.closest(".tablebox"); if (tb) $("gapchart").style.width = Math.max(260, tb.clientWidth - 2) + "px";
   const all = await loadPoolHistory(id);
   if (state.open !== id || !$("gcplot")) return;
   const from = Date.now() - RANGES[state.range], pts = all.filter(q => q[0] >= from);
@@ -366,7 +417,72 @@ function renderNew(){
   }).join("") : `<div class="glass note-card empty-card"><p>No new protocols in the ${esc(win)}. ${state.newDays < 90 ? "Try a longer window above." : ""}</p></div>`;
 }
 
+/* ---------- pool page ---------- */
+function findPagePool(){
+  const q = new URLSearchParams(location.search).get("id");
+  const tail = (location.pathname.match(/-([0-9a-f]{8})\/?$/i) || [])[1];
+  return state.pools.find(p => q ? p.id === q : tail && String(p.id).startsWith(tail.toLowerCase()));
+}
+function renderPool(){
+  const p = findPagePool(), box = $("poolMain");
+  if (!box) return;
+  if (!p){
+    document.title = "Pool not found · Basewatch";
+    box.innerHTML = `<header class="pagehead"><p class="eyebrow">Pool</p><h1>Pool not found</h1>
+      <p class="lede">${state.sample ? "Live data couldn’t be loaded, so pool pages can’t be shown right now. Reload to try again." : "This pool isn’t listed any more, or it has dropped below $25k TVL."}</p>
+      <a class="btn primary" href="/yields">See all yields</a></header>`;
+    return;
+  }
+  document.title = `${p.symbol} on ${p.name}: ${fmtPct(p.apy)} APY · Basewatch`;
+  state.open = p.id;
+  const d = p.d7, split = p.apyReward > 0 ? `${fmtPct(p.apyBase || 0)} base + ${fmtPct(p.apyReward)} rewards` : "All base yield, no reward tokens";
+  const same = state.pools.filter(x => x.project === p.project && x.id !== p.id && !x.outlier).sort((a, b) => b.tvlUsd - a.tvlUsd).slice(0, 6);
+  box.innerHTML = `
+    <header class="pagehead poolhead">
+      <p class="eyebrow"><a href="/yields">Yields</a> / ${esc(p.name)}</p>
+      <div class="ph-row">
+        <div><h1>${esc(p.symbol)} <span>on ${esc(p.name)}</span></h1>
+          <p class="lede">${esc(p.category || "Yield pool")}${p.meta ? " · " + esc(p.meta) : ""} on Base. ${mostlyRewards(p) ? `${Math.round(rewardShare(p) * 100)}% of this APY is paid in reward tokens, which can drop quickly or lose value.` : ""}</p></div>
+        <div class="ph-acts">${star(p).replace('class="star"', 'class="star big"')}${bell(p).replace('class="bell"', 'class="btn ghost small bellbtn"').replace("</svg></a>", "</svg> Alert me</a>")}<button class="btn ghost small" type="button" id="shareBtn">Copy link</button><a class="btn primary small" href="${esc(p.url)}" target="_blank" rel="noopener">Open ${esc(p.name)} ↗</a></div>
+      </div>
+    </header>
+    <section class="gauge glass" aria-label="Key figures">
+      <div><small>APY now</small><strong>${fmtPct(p.apy)}</strong><span>${split}</span></div>
+      <div><small>30-day average</small><strong>${fmtPct(p.apyMean30d)}</strong><span>${d != null && isFinite(d) ? `${d > 0 ? "+" : ""}${d.toFixed(2)} pp over 7 days` : "&nbsp;"}</span></div>
+      <div><small>TVL</small><strong>${fmtUsd(p.tvlUsd)}</strong><span>${p.kind === "stable" ? "Stablecoin pool" : p.kind === "eth" ? "ETH pool" : p.kind === "btc" ? "BTC pool" : "Crypto pool"}</span></div>
+      <div><small>Risk score</small><strong>${p.score}<small class="of">/100</small></strong><span class="risk ${p.band}">${BAND_LABEL[p.band]} risk</span></div>
+    </section>
+    <div class="poolgrid">
+      <section class="glass panel" aria-label="APY history">${chartBlock(p, "APY history")}</section>
+      <section class="glass panel" aria-labelledby="whyH"><p class="eyebrow">Risk score</p><h2 id="whyH">How ${p.score} adds up</h2>${riskParts(p)}</section>
+    </div>
+    ${same.length ? `<section class="block-sm" aria-labelledby="sameH"><div class="sectionhead"><div><p class="eyebrow">Same protocol</p><h2 id="sameH">More pools on ${esc(p.name)}</h2></div></div>
+      <div class="samegrid">${same.map(x => `<a class="samecard glass" href="${poolHref(x)}"><b>${esc(x.symbol)}</b><span class="num">${fmtPct(x.apy)}</span><small>${fmtUsd(x.tvlUsd)} TVL · <span class="risk ${x.band}">${BAND_LABEL[x.band]} ${x.score}</span></small></a>`).join("")}</div></section>` : ""}
+    ${p.outlier ? `<p class="banner"><b>Unusual APY.</b><span>DefiLlama flags this APY as unusual compared with the pool’s own history. That’s often short-lived reward tokens in a thin pool.</span></p>` : ""}`;
+  drawPoolChart();
+  $("shareBtn").addEventListener("click", () => {
+    navigator.clipboard?.writeText(location.origin + poolHref(p)).then(() => { $("shareBtn").textContent = "Copied"; setTimeout(() => $("shareBtn").textContent = "Copy link", 1500); }, () => {});
+  });
+}
+
+/* Risk breakdown dialog, opened from any risk badge in a table. */
+function riskDialog(p){
+  let d = $("riskDlg");
+  if (!d){
+    d = document.createElement("dialog"); d.id = "riskDlg"; d.className = "alertdlg glass riskdlg";
+    d.setAttribute("aria-labelledby", "riskDlgH");
+    d.innerHTML = `<form method="dialog"><button class="dlgx" aria-label="Close">×</button></form><p class="eyebrow">Risk score</p><h3 id="riskDlgH"></h3><div id="riskDlgBody"></div>`;
+    document.body.appendChild(d);
+    d.addEventListener("click", e => { if (e.target === d) d.close(); });
+  }
+  $("riskDlgH").textContent = `${p.symbol} on ${p.name}`;
+  $("riskDlgBody").innerHTML = riskParts(p) + (canStar(p) ? `<p class="dlgsub"><a href="${poolHref(p)}">Open the pool page →</a></p>` : "");
+  d.showModal();
+}
+
 function renderAll(){
+  if (POOL_PAGE) renderPool();
+  updateWatchCount();
   if (NEW_PAGE) renderNew();
   renderGauge(); renderTopNow();
   if ($("rows")) renderTable();
@@ -423,6 +539,36 @@ function alertDialog(id, label){
   $("dlgCopy").textContent = "Copy";
   d.showModal();
 }
+document.addEventListener("click", e => {
+  const st = e.target.closest("[data-star]");
+  if (st){
+    e.preventDefault(); e.stopPropagation();
+    const id = st.dataset.star; toggleWatch(id);
+    const on = watched(id);
+    document.querySelectorAll(`[data-star="${CSS.escape(id)}"]`).forEach(b => {
+      b.setAttribute("aria-pressed", on); b.textContent = on ? "★" : "☆";
+      b.title = (on ? "Remove from" : "Add to") + " your watchlist";
+    });
+    if (state.kind === "watch" && $("rows")) renderTable();
+    return;
+  }
+  const rk = e.target.closest("[data-risk]");
+  if (rk && typeof HTMLDialogElement === "function"){
+    const p = state.pools.find(x => x.id === rk.dataset.risk);
+    if (p){ e.preventDefault(); e.stopPropagation(); riskDialog(p); }
+  }
+}, true);
+$("poolMain")?.addEventListener("click", e => {
+  const rg = e.target.closest("[data-range]");
+  if (rg){
+    state.range = rg.dataset.range;
+    document.querySelectorAll("[data-range]").forEach(x => x.setAttribute("aria-pressed", x === rg ? "true" : "false"));
+    drawPoolChart(); return;
+  }
+  const a = e.target.closest(".bellbtn");
+  if (!a || matchMedia("(pointer: coarse)").matches || typeof HTMLDialogElement !== "function") return;
+  e.preventDefault(); alertDialog(a.dataset.pool, a.dataset.label);
+});
 $("rows")?.addEventListener("click", e => {
   const rg = e.target.closest("[data-range]");
   if (rg){
@@ -431,7 +577,7 @@ $("rows")?.addEventListener("click", e => {
     drawPoolChart(); return;
   }
   const tr = e.target.closest("tr.srow");
-  if (tr && !e.target.closest("a")){
+  if (tr && !e.target.closest("a, button.star, button.risk")){
     state.open = state.open === tr.dataset.id ? null : tr.dataset.id;
     renderTable();
     if (state.open) $("rows").querySelector(`tr.srow[data-id="${CSS.escape(state.open)}"] .ticker`)?.focus();
