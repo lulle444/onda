@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Token · Tripod</title>
+<meta name="description" content="The official status of a Tripod token, how to verify it, and the rules that keep basket levels independent of it.">
+<meta name="theme-color" content="#FFFFFF">
+<meta name="twitter:site" content="@usetripod">
+<meta property="og:title" content="Token · Tripod">
+<meta property="og:description" content="The official status of a Tripod token, how to verify it, and the rules that keep basket levels independent of it.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Crect width='30' height='30' rx='7' fill='%231B2A12'/%3E%3Cpath fill='%23B5E878' d='M5 24 10 6h4L9 24H5zm7 0 5-18h4l-5 18h-4zm7 0 3-11h4l-3 11h-4z'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<header class="top pad">
+  <a class="logo" href="/" aria-label="Tripod home"><svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><path fill="currentColor" d="M4 25 10 5h5L9 25H4zm8 0 6-20h5l-6 20h-5zm8 0 4-13h4l-4 13h-4z"/></svg>TRIPOD</a>
+  <nav class="links" aria-label="Main">
+    <a href="/">Markets</a>
+    <a href="/tokens">Tokens</a>
+    <a href="/create">Create</a>
+    <a href="/method">Method</a>
+  </nav>
+  <div class="acts">
+    <button class="pill" type="button" data-wallet>No wallet</button>
+    <a class="cta" href="/create">Build a basket</a>
+  </div>
+</header>
+<nav class="mnav pad" aria-label="Sections"><a href="/">Markets</a><a href="/tokens">Tokens</a><a href="/create">Create</a><a href="/method">Method</a></nav>
+
+<div class="strip">
+  <ul class="caps pad" aria-label="Network status">
+    <li><span class="live" aria-hidden="true"></span><span id="stripState">Robinhood Chain</span> · Block <span id="block">–</span></li>
+    <li>ETH <span id="eth">–</span></li>
+    <li><span id="nTokens">–</span> stock tokens</li>
+    <li>24h volume <span id="vol">–</span></li>
+    <li id="mkt">–</li>
+    <li>Updated <span id="updated">–</span></li>
+  </ul>
+</div>
+
+<main class="pad">
+  <section class="hero slim" aria-labelledby="h1">
+    <p class="caps eyebrow">Token</p>
+    <h1 id="h1">The Tripod <span>token.</span></h1>
+    <p class="lead" id="tokenLede">What’s official, how to check it, and the rules that keep Tripod’s basket levels independent of any token.</p>
+  </section>
+
+  <section id="tokenStatus" class="tokenbox" aria-live="polite"><p class="muted">Loading…</p></section>
+
+  <section class="how" aria-label="Our commitments">
+    <div><span class="caps">01 · Independent</span><h3>Levels stay untouched</h3><p>A token changes nothing about which baskets are listed, which tokens appear or how any level is calculated. Every basket uses the same <a href="/method">public method</a>.</p></div>
+    <div><span class="caps">02 · No promises</span><h3>No returns promised</h3><p>No promised returns, buybacks, airdrops or features that don’t exist yet. A token isn’t a share in Tripod and gives no claim on revenue, votes or data.</p></div>
+    <div><span class="caps">03 · In the open</span><h3>Holdings disclosed</h3><p>Every team wallet holding the token, and how much it holds, is listed on this page. If the team ever sells, we’ll say so on X before or as it happens.</p></div>
+  </section>
+
+  <section class="faq" id="safety" aria-labelledby="safeH">
+    <h2 class="h2" id="safeH">Stay safe</h2>
+    <details open><summary>How to spot a fake</summary><p>The only official address is the one on this page, also pinned on <a href="https://x.com/usetripod" target="_blank" rel="noopener">@usetripod</a>. Tokens with our name at other addresses, on other chains or offered in DMs are not ours.</p></details>
+    <details><summary>We never ask you to connect a wallet</summary><p>Tripod stays read-only. We will never ask you to connect a wallet, send funds or “claim” anything.</p></details>
+    <details><summary>Read this before you buy anything</summary><p>Tokens like this are highly speculative. Most lose most of their value, liquidity can be thin, and you can lose everything you put in. Rules for crypto-assets differ by country, including the EU’s MiCA rules. Nothing here is financial advice or an offer to buy or sell.</p></details>
+  </section>
+</main>
+
+<footer>
+  <div class="pad">
+    <div class="fgrid">
+      <div class="fbrand">
+        <a class="logo" href="/" aria-label="Tripod home"><svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><path fill="currentColor" d="M4 25 10 5h5L9 25H4zm8 0 6-20h5l-6 20h-5zm8 0 4-13h4l-4 13h-4z"/></svg>TRIPOD</a>
+        <p>Put three to five stock tokens in one fixed-weight basket and follow the whole thesis as a single number, priced live on Robinhood Chain.</p>
+        <button class="pill" type="button" data-wallet>No wallet</button>
+      </div>
+      <nav aria-label="Product"><h4>Product</h4><a href="/">Markets</a><a href="/tokens">Tokens</a><a href="/create">Create a basket</a></nav>
+      <nav aria-label="Reference"><h4>Reference</h4><a href="/method">Method</a><a href="/method#risk">Risk</a><a href="/method#faq">Questions</a><a href="/token">Token</a><a href="https://x.com/usetripod" target="_blank" rel="noopener">X · @usetripod</a></nav>
+      <div class="chain"><h4>Data</h4><p>Robinhood stock-token API</p><p>DexScreener on-chain pools</p><p class="net">Robinhood Chain · 4663</p></div>
+    </div>
+    <div class="fbase"><span>© 2026 Tripod</span><span>Not investment advice</span><span>Read-only · no contracts</span><span>Prices can lag</span></div>
+  </div>
+</footer>
+<script src="/app.js"></script>
+<script src="/token.js"></script>
+<script src="/orb.js"></script>
+<script>
+Tripod.load().catch(() => Tripod.fail(null));
+</script>
+</body>
+</html>
