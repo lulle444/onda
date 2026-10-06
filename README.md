@@ -18,6 +18,8 @@ Risk breakdown: `score()` in `app.js` also returns each part of the sum. Clickin
 
 Watchlist: the ☆ on each pool saves its id in `localStorage` (`bw-watchlist`), so it's per browser with no account. `/yields?kind=watch` (the "★ Watchlist" chip) shows every starred pool regardless of the other filters.
 
+Compare: `compare.html` (`<body data-page="compare">`) puts up to three pools side by side: APY, 30-day average, 7-day change, share paid in reward tokens, TVL, impermanent loss and every part of the risk score, with the best value per row highlighted and their APY history in one chart (only days all of them have data, so the tooltip compares like with like). The selection lives in the URL as `/compare?p=<id8>,<id8>,<id8>`, so it can be shared. Pool pages link to it with "Compare", and the watchlist with "Compare starred".
+
 New on the chain: `new.html` (rendered by `app.js` when `<body data-page="new">`) lists pools first seen in the last 7/30/90 days and the protocols they belong to. `api/new.js` returns each pool's first-seen date: the first day in DefiLlama's history for that pool, looked up once and kept in Redis (`tw:firstseen`).
 
 Weekly recap: `api/weekly.js` (text built in `lib/weekly.js`) previews this week's X-sized recap on GET. On Mondays the `weekly.yml` workflow (plus a Vercel cron as backup) calls it with `?send=1`, and it sends once per ISO week to chats that turned on `/weekly`, with a "Post on X" button that opens X's composer with the text.
